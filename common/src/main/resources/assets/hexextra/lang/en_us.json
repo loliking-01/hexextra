@@ -1,6 +1,5 @@
 {
   "hexcasting.action.hexextra:case": "Case's Strategy",
-  "hexcasting.action.hexextra:else_chain": "Else's Strategy",
   "hexcasting.action.hexextra:for_loop": "For's Strategy",
   "hexcasting.action.hexextra:if_chain": "If-Else's Strategy",
   "hexextra.entry.for_loop": "Simple Meta-Run",
@@ -17,7 +16,6 @@
   "hexextra.mishap.switch_type_mismatch": "A %s switch and a %s switch cannot be merged",
   "hexextra.mishap.switch_value_type_mismatch": "This switch matches on %s, but the value given was %s",
   "hexextra.page.case": "Makes one case: the constant to match, plus the code block to run when it matches.$(br2)$(thing)Push the constant first, the code block second/$ -- so the code block is on top.$(br2)The constant must be a number, boolean, null or pattern; anything else (list, entity, vector) is an immediate error.",
-  "hexextra.page.else_chain": "Takes a single code block off the stack and ties it into an else-only chain: no conditions at all, it simply runs that block.$(br2)It is the shape a branch takes on the stack, ready to be attached to another chain with $(action)Additive Distillation/$.",
   "hexextra.page.for_loop": "Takes a loop count and a code block off the stack, then runs that block that many times.$(br2)$(thing)Push the count first, the code block second/$ -- so the code block is on top.",
   "hexextra.page.for_loop.rule": "The loop itself costs no _media -- whatever is drawn inside the block settles its own cost.$(br2)A count of 0 or less does nothing; the cap is 10000.$(br2)The loop shares the stack with everything around it, so each pass picks up where the last one left off.$(br2)Drawing $(action)Charon's Gambit/$ inside the block breaks out early.",
   "hexextra.page.if_chain": "Takes a condition block and a code block off the stack and ties the two into a conditional chain.$(br2)$(thing)Push the condition block first, the code block second/$ -- so the code block is on top. Swapping them raises no error; it merely looks like nothing happened.$(br2)This only puts the chain on the stack. Draw $(action)Hermes' Gambit/$ on it to run it.",

@@ -1,84 +1,81 @@
 {
-  "name": "hexextra.entry.if_else",
-  "category": "hexcasting:hexextra",
-  "icon": "minecraft:comparator",
-  "sortnum": 1,
-  "advancement": "hexcasting:root",
-  "read_by_default": true,
-  "pages": [
-    {
-      "type": "hexcasting:manual_pattern",
-      "header": "hexcasting.action.hexextra:if_chain",
-      "input": "evaluatable, evaluatable",
-      "output": "if_else",
-      "text": "hexextra.page.if_chain",
-      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aedaqda" } ]
-    },
-    {
-      "type": "patchouli:text",
-      "text": "hexextra.page.if_chain.rule"
-    },
-    {
-      "type": "hexcasting:manual_pattern",
-      "header": "hexcasting.action.hexextra:else_chain",
-      "input": "evaluatable",
-      "output": "if_else",
-      "text": "hexextra.page.else_chain",
-      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aedaqdaaw" } ]
-    },
-    {
-      "type": "patchouli:text",
-      "title": "hexextra.page.overload.intro.title",
-      "text": "hexextra.page.overload.intro"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:add",
-      "input": "if_else, if_else|if_else, list",
-      "output": "if_else",
-      "text": "hexextra.page.overload.add"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:remove_from",
-      "input": "if_else, num",
-      "output": "if_else",
-      "text": "hexextra.page.overload.remove_from"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:replace",
-      "input": "if_else, num, if_else",
-      "output": "if_else",
-      "text": "hexextra.page.overload.replace"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:index",
-      "input": "if_else, num",
-      "output": "if_else",
-      "text": "hexextra.page.overload.index"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:abs",
-      "input": "if_else",
-      "output": "num",
-      "text": "hexextra.page.overload.abs"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:splat",
-      "input": "if_else|switch|list",
-      "output": "",
-      "text": "hexextra.page.overload.splat"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:last_n_list",
-      "input": "many, num",
-      "output": "if_else",
-      "text": "hexextra.page.overload.last_n_list"
-    }
-  ]
+    "name":  "hexextra.entry.if_else",
+    "category":  "hexcasting:hexextra",
+    "icon":  "minecraft:comparator",
+    "sortnum":  1,
+    "advancement":  "hexcasting:root",
+    "read_by_default":  true,
+    "pages":  [
+                  {
+                      "type":  "hexcasting:manual_pattern",
+                      "header":  "hexcasting.action.hexextra:if_chain",
+                      "input":  "evaluatable, evaluatable",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.if_chain",
+                      "patterns":  [
+                                       {
+                                           "startdir":  "SOUTH_EAST",
+                                           "signature":  "aedaqda"
+                                       }
+                                   ]
+                  },
+                  {
+                      "type":  "patchouli:text",
+                      "text":  "hexextra.page.if_chain.rule"
+                  },
+                  {
+                      "type":  "patchouli:text",
+                      "title":  "hexextra.page.overload.intro.title",
+                      "text":  "hexextra.page.overload.intro"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:add",
+                      "input":  "if_else, if_else|if_else, list",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.overload.add"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:remove_from",
+                      "input":  "if_else, num",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.overload.remove_from"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:replace",
+                      "input":  "if_else, num, if_else",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.overload.replace"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:index",
+                      "input":  "if_else, num",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.overload.index"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:abs",
+                      "input":  "if_else",
+                      "output":  "num",
+                      "text":  "hexextra.page.overload.abs"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:splat",
+                      "input":  "if_else|switch|list",
+                      "output":  "",
+                      "text":  "hexextra.page.overload.splat"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexcasting:last_n_list",
+                      "input":  "many, num",
+                      "output":  "if_else",
+                      "text":  "hexextra.page.overload.last_n_list"
+                  }
+              ]
 }

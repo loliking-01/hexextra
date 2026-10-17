@@ -14,7 +14,6 @@ import com.llk.hexextra.pattern.if_else.FrameIfElse;
 import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
 import com.llk.hexextra.pattern.if_else.IfElseSpecialHandlers;
-import com.llk.hexextra.pattern.if_else.OpCreateElseChain;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
 import com.llk.hexextra.pattern.switch_case.CaseIota;
@@ -63,7 +62,6 @@ public final class HexextraContent {
     public static final String IF_CHAIN_PATTERN_ANGLES = "aedaqda";
 
     /** 「艾儿丝之策略」:1 参,造一条只有 else 的链。 */
-    public static final String ELSE_CHAIN_PATTERN_ANGLES = "aedaqdaaw";
 
     /** 所有图案的起始方向。 */
     /**
@@ -136,9 +134,8 @@ public final class HexextraContent {
     /** {@code hexextra:for_loop} —— for 循环的图案。 */
     public static final ResourceLocation FOR_LOOP_ACTION_ID = id("for_loop");
 
-    /** {@code hexextra:if_chain} / {@code hexextra:else_chain} —— 造链的两个图案。 */
+    /** {@code hexextra:if_chain} —— 造条件链的图案。 */
     public static final ResourceLocation IF_CHAIN_ACTION_ID = id("if_chain");
-    public static final ResourceLocation ELSE_CHAIN_ACTION_ID = id("else_chain");
 
     /**
      * 特殊处理器 —— 在正常图案解析<b>之前</b>被询问,用来替换某枚图案的行为。
@@ -162,10 +159,7 @@ public final class HexextraContent {
                         new OpForLoop())),
                 new Entry<>(IF_CHAIN_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(IF_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),
-                        new OpCreateIfChain())),
-                new Entry<>(ELSE_CHAIN_ACTION_ID, new ActionRegistryEntry(
-                        HexPattern.fromAngles(ELSE_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),
-                        new OpCreateElseChain())));
+                        new OpCreateIfChain())));
     }
 
     // =======================================================================

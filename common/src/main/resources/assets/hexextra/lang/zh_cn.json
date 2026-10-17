@@ -1,6 +1,5 @@
 {
   "hexcasting.action.hexextra:case": "凯斯之策略",
-  "hexcasting.action.hexextra:else_chain": "艾儿丝之策略",
   "hexcasting.action.hexextra:for_loop": "佛尔之策略",
   "hexcasting.action.hexextra:if_chain": "伊芙艾儿丝之策略",
   "hexextra.entry.for_loop": "简易元运行",
@@ -17,7 +16,6 @@
   "hexextra.mishap.switch_type_mismatch": "不能把「%s」型和「%s」型的两条 switch 合并起来",
   "hexextra.mishap.switch_value_type_mismatch": "这条 switch 匹配的是「%s」,但你给的值是 %s",
   "hexextra.page.case": "造一条 case:匹配用的常量,加上命中时执行的代码块。$(br2)$(thing)先压常量,再压代码块/$——代码块在栈顶。$(br2)常量必须是数值、布尔、null 或图案;其它类型(列表 / 实体 / 向量)当场报错。",
-  "hexextra.page.else_chain": "从栈上取一段代码块,拼成一条「只有 else」的链:没有任何条件,执行时直接跑它。$(br2)它就是「分支」在栈上的形态,可以用 $(action)加法之馏化/$ 接到别的链后面。",
   "hexextra.page.for_loop": "从栈上取循环次数和一段代码块,把代码块重复执行该次数。$(br2)$(thing)先压次数,再压代码块/$——代码块在栈顶。",
   "hexextra.page.for_loop.rule": "循环本身不耗$(media)媒质/$——耗多少取决于循环体里画了什么。$(br2)次数小于等于 0 时什么都不做,上限 10000 次。$(br2)循环体和外面共用同一个栈,所以每一轮都接着上一轮继续。$(br2)在循环体里画 $(action)卡戎之策略/$ 可以提前跳出来。",
   "hexextra.page.if_chain": "从栈上取一个条件块和一段代码块,把两者拼成一条条件链。$(br2)$(thing)先压条件块,再压代码块——代码块在栈顶。顺序写反不会报错,只会显得「什么都没发生」。$(br2)它只是把链放到栈上;要在链上画 $(action)赫尔墨斯之策略/$ 才会执行。",

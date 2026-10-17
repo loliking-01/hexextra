@@ -11,7 +11,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-base { archivesName = "$modID-forge" }
+base { archivesName = "${minecraftVersion}forge" }
 
 minecraft {
     mappings channel: 'official', version: minecraftVersion
