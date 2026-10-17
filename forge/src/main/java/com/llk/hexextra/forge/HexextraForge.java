@@ -9,6 +9,8 @@ import com.llk.hexextra.core.HexextraContent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Forge 侧的入口 —— 只做<b>注册胶水</b>,不含任何玩法逻辑。
@@ -29,6 +31,8 @@ import net.minecraftforge.registries.DeferredRegister;
  */
 @Mod(HexextraCommon.MOD_ID)
 public final class HexextraForge {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("hexextra");
 
     private static final String MOD_ID = HexextraCommon.MOD_ID;
 
@@ -61,5 +65,7 @@ public final class HexextraForge {
         IOTA_TYPES.register(modEventBus);
         ARITHMETICS.register(modEventBus);
         ACTIONS.register(modEventBus);
+
+        LOGGER.info("hexextra: DeferredRegister 已挂上事件总线 —— iota 类型 2 个、算术 1 个、图案 1 个");
     }
 }

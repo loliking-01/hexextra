@@ -9,6 +9,8 @@ import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import com.llk.hexextra.core.HexextraContent;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fabric 侧的入口 —— 与 Forge 侧一一对应的<b>注册胶水</b>。
@@ -24,6 +26,8 @@ import net.minecraft.core.Registry;
  */
 public final class HexextraFabric implements ModInitializer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("hexextra");
+
     @Override
     public void onInitialize() {
         for (HexextraContent.Entry<IotaType<?>> entry : HexextraContent.iotaTypes()) {
@@ -35,5 +39,7 @@ public final class HexextraFabric implements ModInitializer {
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());
         }
+
+        LOGGER.info("hexextra: 注册完成 —— iota 类型 2 个、算术 1 个、图案 1 个");
     }
 }
