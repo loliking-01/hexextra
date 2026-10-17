@@ -3,77 +3,47 @@
   "hexcasting.action.hexextra:if_chain": "伊芙艾儿丝之策略",
   "hexcasting.action.hexextra:else_chain": "艾儿丝之策略",
   "hexcasting.action.hexextra:case": "凯斯之策略",
-
   "hexextra.mishap.if_condition_count": "if 的条件代码块必须恰好留下一个布尔值,实际留下了 %s 个(两个参数是「先条件、后代码块」,写反了也会报这个错)",
   "hexextra.mishap.if_condition_not_bool": "if 的条件代码块必须留下一个布尔值,实际留下的是 %s(两个参数是「先条件、后代码块」,写反了也会报这个错)",
   "hexextra.mishap.chain_already_has_else": "这条链已经有 else 块了,一条链只能有一个最终 else",
   "hexextra.mishap.replacement_has_else": "作为分支替换项的链不能自带 else 块(分支只由「条件 + 代码块」组成)",
-
   "hexextra.mishap.duplicate_case": "%s 这个值在 switch 里出现了不止一次,每个 case 的常量必须唯一",
   "hexextra.mishap.case_not_constant": "case 的匹配值必须是常量(数值、布尔、null 或图案),实际是 %s",
   "hexextra.mishap.case_type_mismatch": "这条 switch 匹配的是「%s」,不能塞进类型不符的 case(实际是 %s)",
   "hexextra.mishap.switch_value_type_mismatch": "这条 switch 匹配的是「%s」,但你给的值是 %s",
   "hexextra.mishap.switch_type_mismatch": "不能把「%s」型和「%s」型的两条 switch 合并起来",
   "hexextra.mishap.switch_already_has_default": "这条 switch 已经有 default 了,一条 switch 只能有一个 default",
-
   "hexextra.switch.type.number": "数值",
   "hexextra.switch.type.boolean": "布尔",
   "hexextra.switch.type.null": "null",
   "hexextra.switch.type.pattern": "图案",
-
   "hexextra.entry.switch": "简易多路分派",
-
-
-
   "hexextra.page.switch.rule": "执行时,switch 会$(thing)消费栈顶那个值/$去查表:命中哪条 case 就只跑那一条的代码块,$(italic)不会/$往下滑——所以不需要 break。$(br2)没有命中时,有 default 就跑 default;都没有就什么都不做。$(br2)匹配是$(thing)精确/$比较(与 Java 的 switch 用 == 一致),不是容差比较。$(br2)一张表只匹配一种类型:往数值型表里塞图案 case 会当场报错。",
-
   "hexextra.page.switch.overload.title": "作用于 switch 表的原有图案",
-
   "hexextra.page.switch.overload.intro": "下面几枚咒法学原有的图案,作用在 switch 表上时按「表」的语义行事:",
-
-  "hexextra.page.switch.overload.add": "$(n)(case, case)|(switch, case)|(switch, switch)|(switch, list)/$ → $(n)switch/$$(br2)把两条 case 拼成一张表、往表里追加一条、合并两张表(类型须相同,且至多一边带 default),或者把一段代码块接成 default。",
-
-  "hexextra.page.switch.overload.remove_from": "$(n)switch, num/$ → $(n)switch/$$(br2)删掉第 i 条 case;下标越界时原样返回,不报错。",
-
-  "hexextra.page.switch.overload.replace": "$(n)switch, num, case/$ → $(n)switch/$$(br2)把第 i 条 case 换成给的那一条。$(br2)下标越界会报错;该 case 的类型必须与表一致。",
-
-  "hexextra.page.switch.overload.index": "$(n)switch, num/$ → $(n)case | null/$$(br2)取出第 i 条 case。$(br2)下标越界时得到 null。",
-
-  "hexextra.page.switch.overload.abs": "$(n)switch/$ → $(n)num/$$(br2)case 条数。default $(italic)不/$计入。",
-
+  "hexextra.page.switch.overload.add": "把两条 case 拼成一张表、往表里追加一条、合并两张表(类型须相同,且至多一边带 default),或者把一段代码块接成 default。",
+  "hexextra.page.switch.overload.remove_from": "删掉第 i 条 case;下标越界时原样返回,不报错。",
+  "hexextra.page.switch.overload.replace": "把第 i 条 case 换成给的那一条。$(br2)下标越界会报错;该 case 的类型必须与表一致。",
+  "hexextra.page.switch.overload.index": "取出第 i 条 case。$(br2)下标越界时得到 null。",
+  "hexextra.page.switch.overload.abs": "case 条数。default $(italic)不/$计入。",
   "hexextra.category.patterns": "简易图案",
   "hexextra.category.patterns.desc": "本模组往咒法学里添的几枚图案。它们都建立在原有机制之上——可以被拆开,也可以被重新拼起来。",
-
   "hexextra.entry.for_loop": "简易元运行",
   "hexextra.entry.if_else": "简易逻辑判断",
-
-  "hexextra.page.for_loop": "$(n)num, evaluatable/$ →$(br2)从栈上取循环次数和一段代码块,把代码块重复执行该次数。$(br2)$(thing)先压次数,再压代码块/$——代码块在栈顶。",
-
+  "hexextra.page.for_loop": "从栈上取循环次数和一段代码块,把代码块重复执行该次数。$(br2)$(thing)先压次数,再压代码块/$——代码块在栈顶。",
   "hexextra.page.for_loop.rule": "循环本身不耗$(media)媒质/$——耗多少取决于循环体里画了什么。$(br2)次数小于等于 0 时什么都不做,上限 10000 次。$(br2)循环体和外面共用同一个栈,所以每一轮都接着上一轮继续。$(br2)在循环体里画 $(action)卡戎之策略/$ 可以提前跳出来。",
-
-  "hexextra.page.if_chain": "$(n)evaluatable, evaluatable/$ → $(n)if_else/$$(br2)从栈上取一个条件块和一段代码块,把两者拼成一条条件链。$(br2)$(thing)先压条件块,再压代码块/$——代码块在栈顶。顺序写反不会报错,只会显得「什么都没发生」。$(br2)它只是把链放到栈上;要在链上画 $(action)赫尔墨斯之策略/$ 才会执行。",
-
+  "hexextra.page.if_chain": "从栈上取一个条件块和一段代码块,把两者拼成一条条件链。$(br2)$(thing)先压条件块,再压代码块/$——代码块在栈顶。顺序写反不会报错,只会显得「什么都没发生」。$(br2)它只是把链放到栈上;要在链上画 $(action)赫尔墨斯之策略/$ 才会执行。",
   "hexextra.page.if_chain.rule": "执行时会依次求值各分支的条件。$(br2)条件块必须$(thing)恰好/$在栈上留下一个布尔值,否则报错。$(br2)第一个为真的分支执行自己的代码块,其余全部跳过;只有全都不成立时,才执行 else。$(br2)条件为假、而后面既无分支也无 else 时,整条链什么都不做——这是正常行为。$(br2)想再接分支,用 $(action)加法之馏化/$。",
-
-  "hexextra.page.else_chain": "$(n)evaluatable/$ → $(n)if_else/$$(br2)从栈上取一段代码块,拼成一条「只有 else」的链:没有任何条件,执行时直接跑它。$(br2)它就是「分支」在栈上的形态,可以用 $(action)加法之馏化/$ 接到别的链后面。",
-
+  "hexextra.page.else_chain": "从栈上取一段代码块,拼成一条「只有 else」的链:没有任何条件,执行时直接跑它。$(br2)它就是「分支」在栈上的形态,可以用 $(action)加法之馏化/$ 接到别的链后面。",
   "hexextra.page.overload.intro.title": "认识条件链的原有图案",
-
   "hexextra.page.overload.intro": "下面这些是咒法学原有的图案。它们作用在$(thing)条件链/$上时会按「链」的语义行事,因此参数与平时不同。$(br2)它们作用于普通列表时的行为不受影响。",
-
-  "hexextra.page.overload.add": "$(n)(if_else, if_else)|(if_else, list)/$ → $(n)if_else/$$(br2)把两条链接起来,或用一段代码块充当最终的 else。$(br2)第一个参数已经有 else 时会报错。",
-
-  "hexextra.page.overload.remove_from": "$(n)if_else, num/$ → $(n)if_else/$$(br2)删掉第 i 个分支。$(br2)下标越界时原样返回,不报错。",
-
-  "hexextra.page.overload.replace": "$(n)if_else, num, if_else/$ → $(n)if_else/$$(br2)把第 i 个分支换成另一条链。$(br2)下标越界会报错;替换项自身不能带 else。",
-
-  "hexextra.page.overload.index": "$(n)if_else, num/$ → $(n)if_else | null/$$(br2)取出第 i 个分支,表示成一条单分支链。$(br2)下标越界时得到 null。",
-
-  "hexextra.page.overload.abs": "$(n)if_else/$ → $(n)num/$$(br2)分支数量。最终的 else 块$(italic)不/$计入。",
-
-  "hexextra.page.overload.splat": "$(n)if_else/$ → $(n)many/$$(br2)把链摊开:每个分支压成一条单分支链;若原链带 else,最后再压一个「仅 else 链」。",
-
-  "hexextra.page.overload.last_n_list": "$(n)many, num/$ → $(n)if_else/$$(br2)若栈顶那 n 个都是条件链,把它们一次性串成一条——等价于连续做加法。$(br2)否则保持原行为:打包成一个列表。",
+  "hexextra.page.overload.add": "把两条链接起来,或用一段代码块充当最终的 else。$(br2)第一个参数已经有 else 时会报错。",
+  "hexextra.page.overload.remove_from": "删掉第 i 个分支。$(br2)下标越界时原样返回,不报错。",
+  "hexextra.page.overload.replace": "把第 i 个分支换成另一条链。$(br2)下标越界会报错;替换项自身不能带 else。",
+  "hexextra.page.overload.index": "取出第 i 个分支,表示成一条单分支链。$(br2)下标越界时得到 null。",
+  "hexextra.page.overload.abs": "分支数量。最终的 else 块$(italic)不/$计入。",
+  "hexextra.page.overload.splat": "把链摊开:每个分支压成一条单分支链;若原链带 else,最后再压一个「仅 else 链」。",
+  "hexextra.page.overload.last_n_list": "若栈顶那 n 个都是条件链,把它们一次性串成一条——等价于连续做加法。$(br2)否则保持原行为:打包成一个列表。",
   "hexextra.page.switch": "switch 表由一条条 case 拼成。$(br2)一条 case 是「常量 → 命中时执行的代码块」的配对,用 $(action)凯斯之策略/$ 造出来;再用 $(action)加法之馏化/$ 把若干条 case 拼成一张表,或往已有表里追加。$(br2)表的匹配类型由$(italic)第一条 case/$决定,之后塞入类型不符的 case 会当场报错。$(br2)单独一条 case 是$(thing)原料/$、不是可执行的表 —— 在它上面画 $(action)赫尔墨斯之策略/$ 会得到「未逃逸的值」。",
-  "hexextra.page.case": "$(n)num|bool|null|pattern, evaluatable/$ → $(n)case/$$(br2)造一条 case:匹配用的常量,加上命中时执行的代码块。$(br2)$(thing)先压常量,再压代码块/$——代码块在栈顶。$(br2)常量必须是数值、布尔、null 或图案;其它类型(列表 / 实体 / 向量)当场报错。"
+  "hexextra.page.case": "造一条 case:匹配用的常量,加上命中时执行的代码块。$(br2)$(thing)先压常量,再压代码块/$——代码块在栈顶。$(br2)常量必须是数值、布尔、null 或图案;其它类型(列表 / 实体 / 向量)当场报错。"
 }
