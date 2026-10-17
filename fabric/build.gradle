@@ -9,6 +9,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:$fabricLoaderVersion"
     modImplementation "net.fabricmc.fabric-api:fabric-api:$fabricVersion"
+    modImplementation "maven.modrinth:$hexcastingModrinthId:$hexcastingFabricVersionId"
 }
 
 // 把 common 的源码直接编进本模块,而不是依赖 Architectury 之类的额外插件

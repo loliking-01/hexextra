@@ -19,6 +19,8 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
+    // Forge 侧必须 deobf 才能用 mod 的类
+    implementation fg.deobf("maven.modrinth:$hexcastingModrinthId:$hexcastingForgeVersionId")
 }
 
 // 同 Fabric:把 common 的源码与资源编进来

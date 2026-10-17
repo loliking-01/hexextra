@@ -9,4 +9,5 @@ minecraft {
 
 dependencies {
     compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    compileOnly "maven.modrinth:$hexcastingModrinthId:$hexcastingForgeVersionId"
 }
