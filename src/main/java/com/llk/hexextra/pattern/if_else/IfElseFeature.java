@@ -66,7 +66,6 @@ public final class IfElseFeature {
     public static final String IF_PATTERN_ANGLES = "aedaqda";
 
     /** 建仅 else 链的图案:1 个参数(代码块)。 */
-    public static final String ELSE_PATTERN_ANGLES = "aedaqdaaw";
 
     /** 两个图案共用的起始方向:东南。 */
     public static final HexDir PATTERN_START_DIR = HexDir.SOUTH_EAST;
@@ -97,20 +96,6 @@ public final class IfElseFeature {
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(IF_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateIfChain());
-            });
-
-    /**
-     * 「建仅 else 链」的注册项。
-     *
-     * <p>名称本地化键:{@code hexcasting.action.hexextra:else_chain}。
-     */
-    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> ELSE_CHAIN =
-            HexextraRegistries.ACTIONS.register("else_chain", () -> {
-                Hexextra.LOGGER.info("hexextra: 操作符图案 {} 已登记( {} 个角度 )",
-                        ELSE_PATTERN_ANGLES, ELSE_PATTERN_ANGLES.length());
-                return new ActionRegistryEntry(
-                        HexPattern.fromAngleString(ELSE_PATTERN_ANGLES, PATTERN_START_DIR),
-                        new OpCreateElseChain());
             });
 
     /**

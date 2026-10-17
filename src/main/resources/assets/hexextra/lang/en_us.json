@@ -1,7 +1,6 @@
 {
   "hexcasting.action.hexextra:for_loop": "For's Strategy",
   "hexcasting.action.hexextra:if_chain": "If-Else's Strategy",
-  "hexcasting.action.hexextra:else_chain": "Else's Strategy",
   "hexcasting.action.hexextra:case": "Case's Strategy",
   "hexextra.mishap.if_condition_count": "An if condition must leave exactly one boolean on the stack, but it left %s (the two arguments go condition first, code block second -- swapping them causes this too)",
   "hexextra.mishap.if_condition_not_bool": "An if condition must leave a boolean, but it left %s (the two arguments go condition first, code block second -- swapping them causes this too)",
@@ -34,7 +33,6 @@
   "hexextra.page.for_loop.rule": "The loop itself costs no _media -- whatever is drawn inside the block settles its own cost.$(br2)A count of 0 or less does nothing; the cap is 10000.$(br2)The loop shares the stack with everything around it, so each pass picks up where the last one left off.$(br2)Drawing $(action)Charon's Gambit/$ inside the block breaks out early.",
   "hexextra.page.if_chain": "Takes a condition block and a code block off the stack and ties the two into a conditional chain.$(br2)$(thing)Push the condition block first, the code block second/$ -- so the code block is on top. Swapping them raises no error; it merely looks like nothing happened.$(br2)This only puts the chain on the stack. Draw $(action)Hermes' Gambit/$ on it to run it.",
   "hexextra.page.if_chain.rule": "When run, each branch's condition is evaluated in turn.$(br2)A condition block must leave $(thing)exactly/$ one boolean on the stack, or the cast mishaps.$(br2)The first branch that comes up true runs its code block and the rest are skipped; only when nothing matches does the else block run.$(br2)If a condition is false and no branch or else follows it, the whole chain simply does nothing -- that is normal.$(br2)To add more branches, use $(action)Additive Distillation/$.",
-  "hexextra.page.else_chain": "Takes a single code block off the stack and ties it into an else-only chain: no conditions at all, it simply runs that block.$(br2)It is the shape a branch takes on the stack, ready to be attached to another chain with $(action)Additive Distillation/$.",
   "hexextra.page.overload.intro.title": "Existing Patterns That Know Chains",
   "hexextra.page.overload.intro": "These patterns belong to Hexcasting itself. Handed a $(thing)conditional chain/$ they follow the chain's logic, so their arguments differ from usual.$(br2)Their behaviour on plain lists is unaffected.",
   "hexextra.page.overload.add": "Joins two chains, or turns a code block into the final else.$(br2)Errors if the first argument already has an else.",

@@ -19,14 +19,6 @@
                       "text":  "hexextra.page.if_chain.rule"
                   },
                   {
-                      "type":  "hexcasting:pattern",
-                      "op_id":  "hexextra:else_chain",
-                      "anchor":  "hexextra:else_chain",
-                      "text":  "hexextra.page.else_chain",
-                      "input":  "evaluatable",
-                      "output":  "if_else"
-                  },
-                  {
                       "type":  "patchouli:text",
                       "title":  "hexextra.page.overload.intro.title",
                       "text":  "hexextra.page.overload.intro"
