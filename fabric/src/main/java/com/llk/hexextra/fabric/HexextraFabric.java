@@ -44,6 +44,6 @@ public final class HexextraFabric implements ModInitializer {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());
         }
 
-        LOGGER.info("hexextra: 注册完成 —— iota 类型 2 个、算术 1 个、图案 1 个");
+        LOGGER.info("hexextra: 注册完成 —— iota 类型 3、续延帧 2、算术 2、图案 4");
     }
 }

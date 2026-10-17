@@ -74,6 +74,6 @@ public final class HexextraForge {
         ARITHMETICS.register(modEventBus);
         ACTIONS.register(modEventBus);
 
-        LOGGER.info("hexextra: DeferredRegister 已挂上事件总线 —— iota 类型 2 个、算术 1 个、图案 1 个");
+        LOGGER.info("hexextra: DeferredRegister 已挂上事件总线 —— iota 类型 3、续延帧 2、算术 2、图案 4");
     }
 }
