@@ -18,6 +18,15 @@ minecraft {
 
     // 开发用运行配置。runs 必须嵌在 minecraft { } 里面(ForgeGradle 6 的要求)
     runs {
+        client {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                hexextra { source sourceSets.main }
+            }
+        }
+
         server {
             workingDirectory project.file('run')
             // 本工程的 common 源码已经通过 compileJava { source(...) } 编进 main,
@@ -51,6 +60,8 @@ dependencies {
     // 服务端启动时会报 "Missing or unsupported mandatory dependencies"
     implementation "thedarkcolour:kotlinforforge:$kotlinForForgeVersion"
     implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion")
+    // inline 硬依赖 cloth-config(客户端尤其需要,否则 Missing or unsupported mandatory dependencies)
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:$clothConfigVersion")
     implementation fg.deobf("com.samsthenerd.inline:inline-forge:$minecraftVersion-$inlineVersion")
     implementation fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
     implementation fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
