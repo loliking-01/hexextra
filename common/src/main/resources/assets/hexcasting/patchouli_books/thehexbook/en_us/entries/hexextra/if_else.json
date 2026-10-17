@@ -31,12 +31,54 @@
       "title": "hexextra.page.overload.intro.title",
       "text": "hexextra.page.overload.intro"
     },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:add",            "text": "hexextra.page.overload.add" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:remove_from",    "text": "hexextra.page.overload.remove_from" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:replace",        "text": "hexextra.page.overload.replace" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:index",          "text": "hexextra.page.overload.index" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:abs",            "text": "hexextra.page.overload.abs" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:splat",          "text": "hexextra.page.overload.splat" },
-    { "type": "hexcasting:pattern", "op_id": "hexcasting:last_n_list",    "text": "hexextra.page.overload.last_n_list" }
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:add",
+      "input": "if_else, if_else",
+      "output": "if_else",
+      "text": "hexextra.page.overload.add"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:remove_from",
+      "input": "if_else, num",
+      "output": "if_else",
+      "text": "hexextra.page.overload.remove_from"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:replace",
+      "input": "if_else, num, if_else",
+      "output": "if_else",
+      "text": "hexextra.page.overload.replace"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:index",
+      "input": "if_else, num",
+      "output": "if_else",
+      "text": "hexextra.page.overload.index"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:abs",
+      "input": "if_else",
+      "output": "num",
+      "text": "hexextra.page.overload.abs"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:splat",
+      "input": "if_else",
+      "output": "",
+      "text": "hexextra.page.overload.splat"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:last_n_list",
+      "input": "many, num",
+      "output": "if_else",
+      "text": "hexextra.page.overload.last_n_list"
+    }
   ]
 }
