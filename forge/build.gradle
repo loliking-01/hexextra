@@ -21,6 +21,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
     // Forge 侧必须 deobf 才能用 mod 的类
     implementation fg.deobf("maven.modrinth:$hexcastingModrinthId:$hexcastingForgeVersionId")
+    // 咒法学把 TropheusJ 的 serialization-hooks 用 include 打进了自己的 jar,没有公开 Maven。
+    // 这里从 HC 的 jar 里解出来当本地依赖用(见 libs/README 说明)。
+    implementation files(rootProject.file('libs/serialization-hooks-0.4.99999.jar'))
 }
 
 // 同 Fabric:把 common 的源码与资源编进来

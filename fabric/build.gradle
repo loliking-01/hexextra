@@ -10,6 +10,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$fabricLoaderVersion"
     modImplementation "net.fabricmc.fabric-api:fabric-api:$fabricVersion"
     modImplementation "maven.modrinth:$hexcastingModrinthId:$hexcastingFabricVersionId"
+    // 咒法学把 TropheusJ 的 serialization-hooks 用 include 打进了自己的 jar,没有公开 Maven。
+    // 这里从 HC 的 jar 里解出来当本地依赖用(见 libs/README 说明)。
+    modImplementation files(rootProject.file('libs/serialization-hooks-0.4.99999.jar'))
     // ---- 咒法学 0.11.4 自身的硬依赖(不装它 refuses to start)----
     // 坐标与版本全部照抄上游 v0.11.4 的 Fabric/build.gradle 与 gradle.properties
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
