@@ -15,6 +15,21 @@ base { archivesName = "$modID-forge" }
 
 minecraft {
     mappings channel: 'official', version: minecraftVersion
+
+    // 开发用运行配置。runs 必须嵌在 minecraft { } 里面(ForgeGradle 6 的要求)
+    runs {
+        server {
+            workingDirectory project.file('run')
+            // 本工程的 common 源码已经通过 compileJava { source(...) } 编进 main,
+            // 所以这里只需要声明 main 这一个 source
+            mods {
+                hexextra {
+                    source sourceSets.main
+                }
+            }
+            args '--nogui', '--port', '25588'
+        }
+    }
 }
 
 dependencies {
