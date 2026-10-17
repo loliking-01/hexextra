@@ -9,6 +9,11 @@ import at.petrak.hexcasting.api.casting.math.HexDir;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
 import com.llk.hexextra.HexextraCommon;
 import com.llk.hexextra.pattern.for_loop.FrameForLoop;
+import com.llk.hexextra.pattern.if_else.FrameIfElse;
+import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
+import com.llk.hexextra.pattern.if_else.IfElseIota;
+import com.llk.hexextra.pattern.if_else.OpCreateElseChain;
+import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
 import com.llk.hexextra.pattern.switch_case.CaseIota;
 import com.llk.hexextra.pattern.switch_case.OpCreateCase;
@@ -52,6 +57,12 @@ public final class HexextraContent {
     /** 「佛尔之策略」:2 参,循环。 */
     public static final String FOR_LOOP_PATTERN_ANGLES = "aeqqqqqawwd";
 
+    /** 「伊芙艾儿丝之策略」:2 参,造一条条件链。 */
+    public static final String IF_CHAIN_PATTERN_ANGLES = "aedaqda";
+
+    /** 「艾儿丝之策略」:1 参,造一条只有 else 的链。 */
+    public static final String ELSE_CHAIN_PATTERN_ANGLES = "aedaqdaaw";
+
     /** 所有图案的起始方向。 */
     public static final HexDir PATTERN_START_DIR = HexDir.SOUTH_EAST;
 
@@ -65,11 +76,15 @@ public final class HexextraContent {
     /** {@code hexextra:case} —— 一条 case 的类型。 */
     public static final ResourceLocation CASE_IOTA_ID = id("case");
 
+    /** {@code hexextra:if_else} —— 条件链的类型。 */
+    public static final ResourceLocation IF_ELSE_IOTA_ID = id("if_else");
+
     /** 所有 iota 类型(id → 实例)。 */
     public static Iterable<Entry<IotaType<?>>> iotaTypes() {
         return java.util.List.of(
                 new Entry<>(SWITCH_IOTA_ID, SwitchIota.TYPE),
-                new Entry<>(CASE_IOTA_ID, CaseIota.TYPE));
+                new Entry<>(CASE_IOTA_ID, CaseIota.TYPE),
+                new Entry<>(IF_ELSE_IOTA_ID, IfElseIota.TYPE));
     }
 
     // =======================================================================
@@ -82,14 +97,23 @@ public final class HexextraContent {
     /** {@code hexextra:for_loop} —— for 循环的续延帧类型。 */
     public static final ResourceLocation FOR_LOOP_FRAME_ID = id("for_loop");
 
+    /** {@code hexextra:if_else} —— 条件链的续延帧类型。 */
+    public static final ResourceLocation IF_ELSE_FRAME_ID = id("if_else");
+
     /** 所有续延帧类型(id → 类型对象)。 */
     public static Iterable<Entry<ContinuationFrame.Type<?>>> frameTypes() {
-        return java.util.List.of(new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE));
+        return java.util.List.of(
+                new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE),
+                new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE));
     }
+
+    /** {@code hexextra:if_else} —— 给已有图案补上条件链的算子。 */
+    public static final ResourceLocation IF_ELSE_ARITHMETIC_ID = id("if_else");
 
     public static Iterable<Entry<Arithmetic>> arithmetics() {
         return java.util.List.of(
-                new Entry<>(SWITCH_ARITHMETIC_ID, new SwitchArithmetic()));
+                new Entry<>(SWITCH_ARITHMETIC_ID, new SwitchArithmetic()),
+                new Entry<>(IF_ELSE_ARITHMETIC_ID, new IfElseArithmetic()));
     }
 
     // =======================================================================
@@ -102,6 +126,10 @@ public final class HexextraContent {
     /** {@code hexextra:for_loop} —— for 循环的图案。 */
     public static final ResourceLocation FOR_LOOP_ACTION_ID = id("for_loop");
 
+    /** {@code hexextra:if_chain} / {@code hexextra:else_chain} —— 造链的两个图案。 */
+    public static final ResourceLocation IF_CHAIN_ACTION_ID = id("if_chain");
+    public static final ResourceLocation ELSE_CHAIN_ACTION_ID = id("else_chain");
+
     public static Iterable<Entry<ActionRegistryEntry>> actions() {
         return java.util.List.of(
                 new Entry<>(CASE_ACTION_ID, new ActionRegistryEntry(
@@ -109,7 +137,13 @@ public final class HexextraContent {
                         new OpCreateCase())),
                 new Entry<>(FOR_LOOP_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(FOR_LOOP_PATTERN_ANGLES, PATTERN_START_DIR),
-                        new OpForLoop())));
+                        new OpForLoop())),
+                new Entry<>(IF_CHAIN_ACTION_ID, new ActionRegistryEntry(
+                        HexPattern.fromAngles(IF_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),
+                        new OpCreateIfChain())),
+                new Entry<>(ELSE_CHAIN_ACTION_ID, new ActionRegistryEntry(
+                        HexPattern.fromAngles(ELSE_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),
+                        new OpCreateElseChain())));
     }
 
     // =======================================================================
