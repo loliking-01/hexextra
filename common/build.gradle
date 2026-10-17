@@ -10,4 +10,7 @@ minecraft {
 dependencies {
     compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
     compileOnly "maven.modrinth:$hexcastingModrinthId:$hexcastingForgeVersionId"
+    // 咒法学是 Kotlin 写的,ContinuationFrame.breakDownwards 返回 kotlin.Pair
+    // common 只编原版,所以要自己声明 kotlin 标准库(compileOnly 即可)
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinStdlibVersion"
 }
