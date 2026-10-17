@@ -1,0 +1,17 @@
+plugins {
+    id 'fabric-loom' version '1.9+'
+}
+
+base { archivesName = "$modID-fabric" }
+
+dependencies {
+    minecraft "com.mojang:minecraft:$minecraftVersion"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:$fabricLoaderVersion"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$fabricVersion"
+}
+
+// 把 common 的源码直接编进本模块,而不是依赖 Architectury 之类的额外插件
+compileJava { source(project(':common').sourceSets.main.allSource) }
+
+processResources { from project(':common').sourceSets.main.resources }

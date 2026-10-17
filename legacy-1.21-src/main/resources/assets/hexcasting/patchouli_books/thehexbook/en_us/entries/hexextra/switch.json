@@ -1,0 +1,54 @@
+{
+  "name": "hexextra.entry.switch",
+  "category": "hexcasting:hexextra",
+  "icon": "minecraft:hopper",
+  "sortnum": 2,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "hexextra.page.switch"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexextra:case",
+      "anchor": "hexextra:case",
+      "text": "hexextra.page.case"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexextra.page.switch.rule"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "hexextra.page.switch.overload.title",
+      "text": "hexextra.page.switch.overload.intro"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:add",
+      "text": "hexextra.page.switch.overload.add"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:remove_from",
+      "text": "hexextra.page.switch.overload.remove_from"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:replace",
+      "text": "hexextra.page.switch.overload.replace"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:index",
+      "text": "hexextra.page.switch.overload.index"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexcasting:abs",
+      "text": "hexextra.page.switch.overload.abs"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+plugins {
+    // 只依赖原版 Minecraft,不含任何加载器 —— 保证这里的代码天然双端
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+}
+
+minecraft {
+    version(minecraftVersion)
+}
+
+dependencies {
+    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+}

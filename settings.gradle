@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+        maven { name = 'Sponge Snapshots'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url 'https://maven.minecraftforge.net' }
+    }
+}
+
+rootProject.name = 'hexextra'
+
+// 三个模块:common 放与加载器无关的代码,fabric / forge 各自把 common 的源码编进来
+include 'common', 'fabric', 'forge'

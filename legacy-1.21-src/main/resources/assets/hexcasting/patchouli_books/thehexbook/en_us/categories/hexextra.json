@@ -1,0 +1,7 @@
+{
+  "name": "hexextra.category.patterns",
+  "icon": "minecraft:knowledge_book",
+  "description": "hexextra.category.patterns.desc",
+  "parent": "hexcasting:patterns",
+  "sortnum": 10
+}

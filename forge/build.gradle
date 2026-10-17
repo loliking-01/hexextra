@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+base { archivesName = "$modID-forge" }
+
+minecraft {
+    mappings channel: 'official', version: minecraftVersion
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
+}
+
+// 同 Fabric:把 common 的源码与资源编进来
+compileJava { source(project(':common').sourceSets.main.allSource) }
+processResources { from project(':common').sourceSets.main.resources }
+
+// Forge 侧必须 reobf,否则运行时类名对不上
+jar.finalizedBy('reobfJar')

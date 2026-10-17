@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+
+[[mods]]
+modId = "hexextra"
+version = "0.0.1-alpha"
+displayName = "hexextra"
+authors = "I_am_a_lolikong"
+description = "为咒法学开发的新功能"
+
+[[dependencies.hexextra]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.hexextra]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.hexextra]]
+modId = "hexcasting"
+mandatory = true
+versionRange = "[0.11.4,)"
+ordering = "NONE"
+side = "BOTH"
