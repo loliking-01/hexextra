@@ -41,6 +41,7 @@ dependencies {
     implementation files(rootProject.file('libs/serialization-hooks-0.4.99999.jar'))
     // 咒法学的 ContinuationFrame.breakDownwards 返回 kotlin.Pair,编译需要 kotlin 标准库
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinStdlibVersion"
+}
 
 // 同 Fabric:把 common 的源码与资源编进来
 compileJava { source(project(':common').sourceSets.main.allSource) }
