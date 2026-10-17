@@ -95,7 +95,7 @@ public record FrameForLoop(TreeList<Iota> body, int remaining) implements Contin
                 new ListIota(this.body),
                 next,
                 // 每轮开始前清掉未闭合的括号状态,免得上一轮的括号泄漏到下一轮
-                image.withResetEscape(),
+                image.withUsedOp().withResetEscape(),
                 List.<OperatorSideEffect>of(),
                 ResolvedPatternType.EVALUATED,
                 HexEvalSounds.HERMES);
