@@ -43,5 +43,7 @@
   "hexextra.switch.type.boolean": "boolean",
   "hexextra.switch.type.null": "null",
   "hexextra.switch.type.number": "number",
-  "hexextra.switch.type.pattern": "pattern"
+  "hexextra.switch.type.pattern": "pattern",
+  "hexextra.category.patterns": "Simple Patterns",
+  "hexextra.category.patterns.desc": "The patterns this addon brings to Hexcasting. They all build on what is already there, and they can be taken apart and put back together again."
 }

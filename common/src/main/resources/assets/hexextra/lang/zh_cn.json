@@ -43,5 +43,7 @@
   "hexextra.switch.type.boolean": "布尔",
   "hexextra.switch.type.null": "null",
   "hexextra.switch.type.number": "数值",
-  "hexextra.switch.type.pattern": "图案"
+  "hexextra.switch.type.pattern": "图案",
+  "hexextra.category.patterns": "简易图案",
+  "hexextra.category.patterns.desc": "本模组往咒法学里添的几枚图案。它们都建立在原有机制之上——可以被拆开,也可以被重新拼起来。"
 }
