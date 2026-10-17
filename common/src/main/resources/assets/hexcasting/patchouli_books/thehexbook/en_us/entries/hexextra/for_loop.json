@@ -12,7 +12,7 @@
       "input": "num, evaluatable",
       "output": "",
       "text": "hexextra.page.for_loop",
-      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aeqqqqqawwd" } ]
+      "patterns": [ { "startdir": "NORTH_WEST", "signature": "qaweedwaqqwde" } ]
     },
     {
       "type": "patchouli:text",

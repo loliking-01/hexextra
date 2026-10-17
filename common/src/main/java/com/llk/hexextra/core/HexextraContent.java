@@ -55,7 +55,7 @@ public final class HexextraContent {
     public static final String CASE_PATTERN_ANGLES = "dawwaqw";
 
     /** 「佛尔之策略」:2 参,循环。 */
-    public static final String FOR_LOOP_PATTERN_ANGLES = "aeqqqqqawwd";
+    public static final String FOR_LOOP_PATTERN_ANGLES = "qaweedwaqqwde";
 
     /** 「伊芙艾儿丝之策略」:2 参,造一条条件链。 */
     public static final String IF_CHAIN_PATTERN_ANGLES = "aedaqda";
@@ -64,6 +64,14 @@ public final class HexextraContent {
     public static final String ELSE_CHAIN_PATTERN_ANGLES = "aedaqdaaw";
 
     /** 所有图案的起始方向。 */
+    /**
+     * for 循环的起始方向 —— <b>西北</b>。
+     *
+     * <p>与另外三枚图案不同:1.21.1 版就是用它 + 角度串 {@code qaweedwaqqwde};
+     * 移植时必须原样保留,否则玩家在 1.21.1 学会的画法在 1.20.1 上画不出来。
+     */
+    public static final HexDir FOR_LOOP_START_DIR = HexDir.NORTH_WEST;
+
     public static final HexDir PATTERN_START_DIR = HexDir.SOUTH_EAST;
 
     // =======================================================================
@@ -136,7 +144,7 @@ public final class HexextraContent {
                         HexPattern.fromAngles(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase())),
                 new Entry<>(FOR_LOOP_ACTION_ID, new ActionRegistryEntry(
-                        HexPattern.fromAngles(FOR_LOOP_PATTERN_ANGLES, PATTERN_START_DIR),
+                        HexPattern.fromAngles(FOR_LOOP_PATTERN_ANGLES, FOR_LOOP_START_DIR),
                         new OpForLoop())),
                 new Entry<>(IF_CHAIN_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(IF_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),

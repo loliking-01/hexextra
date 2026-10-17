@@ -27,6 +27,10 @@ minecraft {
                     source sourceSets.main
                 }
             }
+            // 关键:让 Mixin 把依赖 jar 里的 SRG refmap 重映射到开发环境的 mojmap 名,
+            // 否则 inline 之类前置的 mixin 会报 "could not find any targets matching ... m_131146_"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             args '--nogui', '--port', '25588'
         }
     }
@@ -43,11 +47,13 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinStdlibVersion"
 
     // ---- 咒法学 0.11.4 在 Forge 侧的硬依赖(坐标与版本照抄上游 v0.11.4)----
+    // 注意都用 implementation 而不是 compileOnly:compileOnly 不进运行期类路径,
+    // 服务端启动时会报 "Missing or unsupported mandatory dependencies"
     implementation "thedarkcolour:kotlinforforge:$kotlinForForgeVersion"
     implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion")
     implementation fg.deobf("com.samsthenerd.inline:inline-forge:$minecraftVersion-$inlineVersion")
-    compileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
+    implementation fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    implementation fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
 }
 
 // 同 Fabric:把 common 的源码与资源编进来

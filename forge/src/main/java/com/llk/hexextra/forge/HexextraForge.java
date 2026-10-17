@@ -7,6 +7,7 @@ import at.petrak.hexcasting.common.lib.HexRegistries;
 import com.llk.hexextra.HexextraCommon;
 import com.llk.hexextra.core.HexextraContent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import org.slf4j.Logger;
@@ -52,7 +53,15 @@ public final class HexextraForge {
     private static final DeferredRegister<ActionRegistryEntry> ACTIONS =
             DeferredRegister.create(HexRegistries.ACTION, MOD_ID);
 
-    public HexextraForge(IEventBus modEventBus) {
+    /**
+     * 无参构造 —— Forge 1.20.1 的 {@code @Mod} 类必须提供它。
+     *
+     * <p>注意:{@code IEventBus} 参数的构造器注入是 <b>NeoForge 1.21</b> 的写法,
+     * 在 Forge 1.20.1 上不行(FML 只会去找无参构造,找不到就抛
+     * {@code NoSuchMethodException})。1.20.1 要从 {@link FMLJavaModLoadingContext} 取总线。
+     */
+    public HexextraForge() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // 逐条把 common 里的定义登记进来。用 id 的 path 部分作为注册名
         // (例如 hexextra:switch → 路径 "switch")。
         for (HexextraContent.Entry<IotaType<?>> entry : HexextraContent.iotaTypes()) {
