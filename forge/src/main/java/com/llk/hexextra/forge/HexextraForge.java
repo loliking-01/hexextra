@@ -49,6 +49,10 @@ public final class HexextraForge {
     private static final DeferredRegister<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> FRAME_TYPES =
             DeferredRegister.create(HexRegistries.CONTINUATION_TYPE, MOD_ID);
 
+    /** 特殊处理器表。 */
+    private static final DeferredRegister<at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> SPECIAL_HANDLERS =
+            DeferredRegister.create(HexRegistries.SPECIAL_HANDLER, MOD_ID);
+
     /** 图案(动作)表。 */
     private static final DeferredRegister<ActionRegistryEntry> ACTIONS =
             DeferredRegister.create(HexRegistries.ACTION, MOD_ID);
@@ -73,6 +77,9 @@ public final class HexextraForge {
         for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> entry : HexextraContent.frameTypes()) {
             FRAME_TYPES.register(entry.id().getPath(), entry::value);
         }
+        for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> entry : HexextraContent.specialHandlers()) {
+            SPECIAL_HANDLERS.register(entry.id().getPath(), entry::value);
+        }
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             ACTIONS.register(entry.id().getPath(), entry::value);
         }
@@ -81,6 +88,7 @@ public final class HexextraForge {
         IOTA_TYPES.register(modEventBus);
         FRAME_TYPES.register(modEventBus);
         ARITHMETICS.register(modEventBus);
+        SPECIAL_HANDLERS.register(modEventBus);
         ACTIONS.register(modEventBus);
 
         LOGGER.info("hexextra: DeferredRegister 已挂上事件总线 —— iota 类型 3、续延帧 2、算术 2、图案 4");

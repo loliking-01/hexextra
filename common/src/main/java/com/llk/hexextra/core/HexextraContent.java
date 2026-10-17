@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.HexAPI;
 import at.petrak.hexcasting.api.casting.ActionRegistryEntry;
 import at.petrak.hexcasting.api.casting.arithmetic.Arithmetic;
 import at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame;
+import at.petrak.hexcasting.api.casting.castables.SpecialHandler;
 import at.petrak.hexcasting.api.casting.iota.IotaType;
 import at.petrak.hexcasting.api.casting.math.HexDir;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
@@ -12,6 +13,7 @@ import com.llk.hexextra.pattern.for_loop.FrameForLoop;
 import com.llk.hexextra.pattern.if_else.FrameIfElse;
 import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
+import com.llk.hexextra.pattern.if_else.IfElseSpecialHandlers;
 import com.llk.hexextra.pattern.if_else.OpCreateElseChain;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
@@ -137,6 +139,18 @@ public final class HexextraContent {
     /** {@code hexextra:if_chain} / {@code hexextra:else_chain} —— 造链的两个图案。 */
     public static final ResourceLocation IF_CHAIN_ACTION_ID = id("if_chain");
     public static final ResourceLocation ELSE_CHAIN_ACTION_ID = id("else_chain");
+
+    /**
+     * 特殊处理器 —— 在正常图案解析<b>之前</b>被询问,用来替换某枚图案的行为。
+     *
+     * <p>这里用它让「群体之拆解」与「群体之策略」认识条件链与 switch 表,
+     * 从而避开 Mixin(那条路在本工程被混淆映射问题挡住)。
+     */
+    public static Iterable<Entry<SpecialHandler.Factory<?>>> specialHandlers() {
+        return java.util.List.of(
+                new Entry<>(id("splat_chains"), IfElseSpecialHandlers.SPLAT),
+                new Entry<>(id("collect_chains"), IfElseSpecialHandlers.LAST_N_LIST));
+    }
 
     public static Iterable<Entry<ActionRegistryEntry>> actions() {
         return java.util.List.of(
