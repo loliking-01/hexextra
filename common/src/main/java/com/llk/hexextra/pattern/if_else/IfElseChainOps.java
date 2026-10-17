@@ -3,6 +3,7 @@ package com.llk.hexextra.pattern.if_else;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.utils.TreeList;
 import com.llk.hexextra.core.HexextraMishaps;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,29 @@ public final class IfElseChainOps {
         return acc;
     }
 
+    /**
+     * 尝试把一批 iota 收拢成一条链;只要有一个不是链、或不足两条,就返回 null。
+     *
+     * <p>给「群体之策略」(last_n_list)的算术算子用:那里必须能<b>无副作用地失败</b>
+     * —— 不是全链时要安静地"不匹配",把控制权交回原实现。
+     */
+    public static @Nullable IfElseIota concatAllOrNull(List<Iota> iotas) {
+        if (iotas.size() < 2) {
+            return null;
+        }
+        List<IfElseIota> chains = new ArrayList<>(iotas.size());
+        for (Iota iota : iotas) {
+            if (!(iota instanceof IfElseIota c)) {
+                return null;
+            }
+            chains.add(c);
+        }
+        try {
+            return concatAll(chains);
+        } catch (RuntimeException ex) {
+            return null;
+        }
+    }
     private IfElseChainOps() {
     }
 }
