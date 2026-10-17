@@ -6,22 +6,12 @@
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexextra:if_chain",
-      "anchor": "hexextra:if_chain",
-      "text": "hexextra.page.if_chain"
-    },
+    {"type": "patchouli:text", "text": "hexextra.page.if_chain"},
     {
       "type": "patchouli:text",
       "text": "hexextra.page.if_chain.rule"
     },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexextra:else_chain",
-      "anchor": "hexextra:else_chain",
-      "text": "hexextra.page.else_chain"
-    },
+    {"type": "patchouli:text", "text": "hexextra.page.else_chain"},
     {
       "type": "patchouli:text",
       "title": "hexextra.page.overload.intro.title",

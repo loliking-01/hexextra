@@ -10,12 +10,7 @@
       "type": "patchouli:text",
       "text": "hexextra.page.switch"
     },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexextra:case",
-      "anchor": "hexextra:case",
-      "text": "hexextra.page.case"
-    },
+    {"type": "patchouli:text", "text": "hexextra.page.case"},
     {
       "type": "patchouli:text",
       "text": "hexextra.page.switch.rule"
