@@ -1,0 +1,208 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = mod_version
+group = mod_group_id
+
+repositories {
+    mavenLocal()
+
+    // =======================================================================
+    // 链接式前置来源 1:Hex Casting 作者 CI(Jenkins)
+    // =======================================================================
+    // Hex Casting 的 1.21.x 分支从来没有发布到任何 Maven(BlameJared Maven 上
+    // 的 at.petra-k:hexcasting 只到 1.20.1)。唯一产地就是作者的 Jenkins。
+    //
+    // 这里把 Jenkins 的 artifact 目录当成一个「Ivy 仓库」来用:
+    //   .../Hexcasting/job/1.21/<build>/artifact/Neoforge/build/libs/
+    // 坐标 at.petra-k:hexcasting-neoforge:<version> 会按下面 pattern 拼成
+    //   hexcasting-neoforge-<version>.jar
+    // 正好就是 CI 上的产物文件名。于是依赖完全靠 URL 解析,
+    // 不需要往 libs/ 手动放任何 jar。
+    //
+    // (-[classifier] 是可选的,Ivy 的 (...) 语法:
+    //  无 classifier -> hexcasting-neoforge-<version>.jar
+    //  sources      -> hexcasting-neoforge-<version>-sources.jar,方便 IDEA 看源码)
+    ivy {
+        name = 'BlameJaredCI-Hexcasting'
+        url = "https://ci.blamejared.com/job/petrakat/job/Hexcasting/job/1.21/${hexcasting_ci_build}/artifact/Neoforge/build/libs"
+        patternLayout {
+            artifact '[module]-[revision](-[classifier]).[ext]'
+        }
+        metadataSources { artifact() }
+        content { includeModule('at.petra-k', 'hexcasting-neoforge') }
+    }
+
+    // =======================================================================
+    // 链接式前置来源 2:常规 Maven
+    // =======================================================================
+    maven { name = 'BlameJared';        url = 'https://maven.blamejared.com' }         // paucal / patchouli / inline
+    maven { name = 'ModMaven';          url = 'https://modmaven.dev' }                 // caelus / inline
+    maven { name = 'Architectury';      url = 'https://maven.architectury.dev' }       // architectury
+    maven { name = 'Shedaniel';         url = 'https://maven.shedaniel.me' }           // cloth config
+    maven { name = 'IllusiveSoulworks'; url = 'https://maven.theillusivec4.top' }      // curios
+    maven { name = 'KotlinForForge';    url = 'https://thedarkcolour.github.io/KotlinForForge' }
+    mavenCentral()
+}
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    // Specify the version of NeoForge to use.
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // This line is optional. Access Transformers are automatically detected
+    // accessTransformers.add('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            client()
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            // 开发用服务端固定换到 25566:
+            // 免得和本机正在运行的真实服务端争抢默认的 25565 端口。
+            programArguments.addAll '--nogui', '--port', project.dev_server_port
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+
+            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
+            // gameDirectory = project.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        // applies to all the run configs above
+        configureEach {
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        // define mod <-> source bindings
+        // these are used to tell the game which sources are for which mod
+        // mostly optional in a single mod project
+        // but multi mod projects should define one per mod
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+// Include resources generated by data generators.
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+
+dependencies {
+    // =======================================================================
+    // 咒法学前置链 —— 全部链接式声明,没有一行指向本地 jar
+    // 版本号统一在 gradle.properties 里管理
+    // =======================================================================
+
+    // 主前置:Hex Casting(仅 CI 有产物,靠上面的 Ivy 仓库链接解析)
+    implementation "at.petra-k:hexcasting-neoforge:${hexcasting_version}"
+
+    // Hex Casting 的硬前置
+    implementation "at.petra-k:paucal:${paucal_version}"
+    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
+    implementation "vazkii.patchouli:Patchouli:${patchouli_version}"
+    implementation "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
+    implementation "com.samsthenerd.inline:inline-neoforge:${inline_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+
+    // Hex Casting 的 modLoader 就是 kotlinforforge,必须一起加载
+    implementation "thedarkcolour:kotlinforforge-neoforge:${kotlinforforge_version}"
+
+    // 可选前置:Curios(饰品槽)。不玩饰品整合包就把这行删掉。
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+}
+
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [minecraft_version      : minecraft_version,
+                             minecraft_version_range: minecraft_version_range,
+                             neo_version            : neo_version,
+                             neo_version_range      : neo_version_range,
+                             loader_version_range   : loader_version_range,
+                             hexcasting_version_range: hexcasting_version_range,
+                             mod_id                 : mod_id,
+                             mod_name               : mod_name,
+                             mod_license            : mod_license,
+                             mod_version            : mod_version,
+                             mod_authors            : mod_authors,
+                             mod_description        : mod_description]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+// Include the output of "generateModMetadata" as an input directory for the build
+// this works with both building through Gradle and the IDE.
+sourceSets.main.resources.srcDir generateModMetadata
+// To avoid having to run "generateModMetadata" manually, make it run on every project reload
+neoForge.ideSyncTask generateModMetadata
+
+// Example configuration to allow publishing using the maven-publish plugin
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
