@@ -2,7 +2,7 @@ plugins {
     id 'fabric-loom' version '1.9+'
 }
 
-base { archivesName = "${minecraftVersion}fabric" }
+base { archivesName = "$modID-${minecraftVersion}fabric" }
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraftVersion"
