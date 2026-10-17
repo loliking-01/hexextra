@@ -30,7 +30,7 @@
     {
       "type": "hexcasting:pattern",
       "op_id": "hexcasting:add",
-      "input": "switch, switch",
+      "input": "case, case|switch, case|switch, switch|switch, list",
       "output": "switch",
       "text": "hexextra.page.switch.overload.add"
     },
