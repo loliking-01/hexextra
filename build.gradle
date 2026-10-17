@@ -17,6 +17,8 @@ subprojects {
         maven { url 'https://maven.blamejared.com' }
         maven { url 'https://maven.shedaniel.me/' }
         maven { url 'https://api.modrinth.com/maven' }
+        // KotlinForForge(咒法学在 Forge 侧的硬前置)专用仓库
+        maven { url 'https://thedarkcolour.github.io/KotlinForForge/' }
         maven { url 'https://maven.terraformersmc.com/releases' }
         maven { url 'https://modmaven.dev' }
         maven { url 'https://maven.fabricmc.net/' }

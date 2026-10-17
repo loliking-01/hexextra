@@ -41,6 +41,13 @@ dependencies {
     implementation files(rootProject.file('libs/serialization-hooks-0.4.99999.jar'))
     // 咒法学的 ContinuationFrame.breakDownwards 返回 kotlin.Pair,编译需要 kotlin 标准库
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinStdlibVersion"
+
+    // ---- 咒法学 0.11.4 在 Forge 侧的硬依赖(坐标与版本照抄上游 v0.11.4)----
+    implementation "thedarkcolour:kotlinforforge:$kotlinForForgeVersion"
+    implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion")
+    implementation fg.deobf("com.samsthenerd.inline:inline-forge:$minecraftVersion-$inlineVersion")
+    compileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
 }
 
 // 同 Fabric:把 common 的源码与资源编进来

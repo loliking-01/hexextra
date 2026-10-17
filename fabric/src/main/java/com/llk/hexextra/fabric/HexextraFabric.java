@@ -45,5 +45,21 @@ public final class HexextraFabric implements ModInitializer {
         }
 
         LOGGER.info("hexextra: 注册完成 —— iota 类型 3、续延帧 2、算术 2、图案 4");
+
+        // ---- 自检:把注册表的实际内容打出来 ----
+        // 帕秋莉手册报 "Missing key ... hexextra:case" 说明客户端查不到我们的动作,
+        // 这两行会告诉我们到底是"没注册进去"还是"注册进了别的实例"。
+        var actionKeys = HexActions.REGISTRY.keySet();
+        var ourActionKeys = actionKeys.stream()
+                .filter(k -> "hexextra".equals(k.getNamespace()))
+                .map(Object::toString)
+                .sorted()
+                .toList();
+        LOGGER.info("hexextra 自检:动作注册表共 {} 项,其中我们的 = {}", actionKeys.size(), ourActionKeys);
+        LOGGER.info("hexextra 自检:registry 实例 identityHashCode = {},注册表类型 = {}",
+                System.identityHashCode(HexActions.REGISTRY),
+                HexActions.REGISTRY.getClass().getName());
+        LOGGER.info("hexextra 自检:hexextra:case 是否在表中 = {}",
+                HexActions.REGISTRY.containsKey(new net.minecraft.resources.ResourceLocation("hexextra", "case")));
     }
 }

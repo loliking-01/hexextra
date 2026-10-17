@@ -6,51 +6,37 @@
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [
-    {"type": "patchouli:text", "text": "hexextra.page.if_chain"},
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:if_chain",
+      "input": "evaluatable, evaluatable",
+      "output": "if_else",
+      "text": "hexextra.page.if_chain",
+      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aedaqda" } ]
+    },
     {
       "type": "patchouli:text",
       "text": "hexextra.page.if_chain.rule"
     },
-    {"type": "patchouli:text", "text": "hexextra.page.else_chain"},
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:else_chain",
+      "input": "evaluatable",
+      "output": "if_else",
+      "text": "hexextra.page.else_chain",
+      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aedaqdaaw" } ]
+    },
     {
       "type": "patchouli:text",
       "title": "hexextra.page.overload.intro.title",
       "text": "hexextra.page.overload.intro"
     },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:add",
-      "text": "hexextra.page.overload.add"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:remove_from",
-      "text": "hexextra.page.overload.remove_from"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:replace",
-      "text": "hexextra.page.overload.replace"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:index",
-      "text": "hexextra.page.overload.index"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:abs",
-      "text": "hexextra.page.overload.abs"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:splat",
-      "text": "hexextra.page.overload.splat"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexcasting:last_n_list",
-      "text": "hexextra.page.overload.last_n_list"
-    }
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:add",            "text": "hexextra.page.overload.add" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:remove_from",    "text": "hexextra.page.overload.remove_from" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:replace",        "text": "hexextra.page.overload.replace" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:index",          "text": "hexextra.page.overload.index" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:abs",            "text": "hexextra.page.overload.abs" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:splat",          "text": "hexextra.page.overload.splat" },
+    { "type": "hexcasting:pattern", "op_id": "hexcasting:last_n_list",    "text": "hexextra.page.overload.last_n_list" }
   ]
 }

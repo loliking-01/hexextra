@@ -6,7 +6,14 @@
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [
-    {"type": "patchouli:text", "text": "hexextra.page.for_loop"},
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:for_loop",
+      "input": "num, evaluatable",
+      "output": "",
+      "text": "hexextra.page.for_loop",
+      "patterns": [ { "startdir": "SOUTH_EAST", "signature": "aeqqqqqawwd" } ]
+    },
     {
       "type": "patchouli:text",
       "text": "hexextra.page.for_loop.rule"
