@@ -1,5 +1,7 @@
 {
   "hexcasting.action.hexextra:case": "Case's Strategy",
+  "hexcasting.action.hexextra:for_loop": "For's Strategy",
+  "hexextra.entry.for_loop": "Simple Meta-Run",
   "hexextra.entry.switch": "Simple Multi-Way Dispatch",
   "hexextra.mishap.case_not_constant": "A case value must be a constant (number, boolean, null or pattern), but it was %s",
   "hexextra.mishap.case_type_mismatch": "This switch matches on %s, so it cannot take a case of a different type (that one was %s)",
@@ -12,6 +14,8 @@
   "hexextra.mishap.switch_type_mismatch": "A %s switch and a %s switch cannot be merged",
   "hexextra.mishap.switch_value_type_mismatch": "This switch matches on %s, but the value given was %s",
   "hexextra.page.case": "$(n)num|bool|null|pattern, evaluatable/$ → $(n)case/$$(br2)Makes one case: the constant to match, plus the code block to run when it matches.$(br2)$(thing)Push the constant first, the code block second/$ -- so the code block is on top.$(br2)The constant must be a number, boolean, null or pattern; anything else (list, entity, vector) is an immediate error.",
+  "hexextra.page.for_loop": "$(n)num, evaluatable/$ →$(br2)Takes a loop count and a code block off the stack, then runs that block that many times.$(br2)$(thing)Push the count first, the code block second/$ -- so the code block is on top.",
+  "hexextra.page.for_loop.rule": "The loop itself costs no _media -- whatever is drawn inside the block settles its own cost.$(br2)A count of 0 or less does nothing; the cap is 10000.$(br2)The loop shares the stack with everything around it, so each pass picks up where the last one left off.$(br2)Drawing $(action)Charon's Gambit/$ inside the block breaks out early.",
   "hexextra.page.switch": "A switch table is built out of cases.$(br2)A case pairs a constant with the code block to run when it matches. $(action)Case's Strategy/$ makes one, and $(action)Additive Distillation/$ either gathers cases into a table or appends one to an existing table.$(br2)The type a table matches on comes from its $(italic)first case/$; adding a case of another type is an immediate error.$(br2)A lone case is $(thing)raw material/$, not a runnable table -- drawing $(action)Hermes' Gambit/$ on it gives an unescaped-value mishap.",
   "hexextra.page.switch.overload.abs": "$(n)switch/$ → $(n)num/$$(br2)The number of cases. The default is $(italic)not/$ counted.",
   "hexextra.page.switch.overload.add": "$(n)(case, case)|(switch, case)|(switch, switch)|(switch, list)/$ → $(n)switch/$$(br2)Gathers two cases into a table, appends a case to a table, merges two tables (same type, at most one carrying a default), or turns a code block into the default.",

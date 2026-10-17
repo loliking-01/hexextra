@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.casting.arithmetic.Arithmetic;
 import at.petrak.hexcasting.api.casting.iota.IotaType;
 import at.petrak.hexcasting.common.lib.hex.HexActions;
 import at.petrak.hexcasting.common.lib.hex.HexArithmetics;
+import at.petrak.hexcasting.common.lib.hex.HexContinuationTypes;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import com.llk.hexextra.core.HexextraContent;
 import net.fabricmc.api.ModInitializer;
@@ -35,6 +36,9 @@ public final class HexextraFabric implements ModInitializer {
         }
         for (HexextraContent.Entry<Arithmetic> entry : HexextraContent.arithmetics()) {
             Registry.register(HexArithmetics.REGISTRY, entry.id(), entry.value());
+        }
+        for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> entry : HexextraContent.frameTypes()) {
+            Registry.register(HexContinuationTypes.REGISTRY, entry.id(), entry.value());
         }
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());

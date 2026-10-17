@@ -44,6 +44,10 @@ public final class HexextraForge {
     private static final DeferredRegister<Arithmetic> ARITHMETICS =
             DeferredRegister.create(HexRegistries.ARITHMETIC, MOD_ID);
 
+    /** 续延帧类型表。 */
+    private static final DeferredRegister<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> FRAME_TYPES =
+            DeferredRegister.create(HexRegistries.CONTINUATION_TYPE, MOD_ID);
+
     /** 图案(动作)表。 */
     private static final DeferredRegister<ActionRegistryEntry> ACTIONS =
             DeferredRegister.create(HexRegistries.ACTION, MOD_ID);
@@ -57,12 +61,16 @@ public final class HexextraForge {
         for (HexextraContent.Entry<Arithmetic> entry : HexextraContent.arithmetics()) {
             ARITHMETICS.register(entry.id().getPath(), entry::value);
         }
+        for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> entry : HexextraContent.frameTypes()) {
+            FRAME_TYPES.register(entry.id().getPath(), entry::value);
+        }
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             ACTIONS.register(entry.id().getPath(), entry::value);
         }
 
         // DeferredRegister 必须挂到 mod 事件总线上,否则永远不会真正注册
         IOTA_TYPES.register(modEventBus);
+        FRAME_TYPES.register(modEventBus);
         ARITHMETICS.register(modEventBus);
         ACTIONS.register(modEventBus);
 
