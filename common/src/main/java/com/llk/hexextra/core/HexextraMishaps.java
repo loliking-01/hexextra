@@ -242,4 +242,117 @@ public final class HexextraMishaps {
             return Component.translatable("hexextra.mishap.switch_already_has_default");
         }
     }
+
+    // =======================================================================
+    // if / elseif / else(条件链)相关的报错
+    // =======================================================================
+
+    /**
+     * if 的条件代码块没有「恰好」在栈上留下一个值。
+     *
+     * <p>玩家看到的提示会说明实际留下了几个 —— 0 个通常意味着条件块忘了产出结果,
+     * 负数意味着它把原有的栈内容吃掉了,大于 1 意味着多留了东西。
+     */
+    public static final class IfConditionCount extends Mishap {
+
+        private final int produced;
+
+        public IfConditionCount(int produced) {
+            this.produced = produced;
+        }
+
+        public int getProduced() {
+            return this.produced;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.CYAN);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.if_condition_count", this.produced);
+        }
+    }
+
+    /**
+     * if 的条件代码块留下了东西,但那个东西不是布尔值。
+     */
+    public static final class IfConditionNotBool extends Mishap {
+
+        private final Iota perpetrator;
+
+        public IfConditionNotBool(Iota perpetrator) {
+            this.perpetrator = perpetrator;
+        }
+
+        public Iota getPerpetrator() {
+            return this.perpetrator;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.CYAN);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.if_condition_not_bool", this.perpetrator.display());
+        }
+    }
+
+    /**
+     * 往一条<b>已经有 else 块</b>的链上再接东西。
+     *
+     * <p>刻意报错而不是默默覆盖:链只能有一个最终 else,默默丢掉玩家之前接的那个
+     * 会让人完全看不出问题。
+     */
+    public static final class ChainAlreadyHasElse extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.chain_already_has_else");
+        }
+    }
+
+    /**
+     * 拿一条<b>自带 else 的链</b>去当分支替换项。
+     *
+     * <p>分支只由「条件 + 代码块」组成,不含 else;替换时若悄悄丢掉替换项里的 else,
+     * 玩家会以为接上了却没接上。
+     */
+    public static final class ReplacementHasElse extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.replacement_has_else");
+        }
+    }
 }
