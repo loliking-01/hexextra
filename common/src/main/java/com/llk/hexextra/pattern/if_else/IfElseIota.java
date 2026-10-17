@@ -234,16 +234,18 @@ public class IfElseIota extends Iota {
             var branchesTag = HexUtils.downcast(ctag.get("branches"), ListTag.TYPE);
             for (int i = 0; i < branchesTag.size(); i++) {
                 var csub = HexUtils.downcast(branchesTag.get(i), CompoundTag.TYPE);
-                out.append(Component.literal(i == 0 ? "if " : "\nelseif ")
+                out.append(Component.literal(i == 0 ? "if(" : "\nelseif(")
                         .withStyle(ChatFormatting.GOLD));
                 out.append(renderBlock(csub.get("condition")));
-                out.append(Component.literal(" -> ").withStyle(ChatFormatting.GOLD));
+                out.append(Component.literal("){").withStyle(ChatFormatting.GOLD));
                 out.append(renderBlock(csub.get("body")));
+                    out.append(Component.literal("}").withStyle(ChatFormatting.GOLD));
             }
 
             if (ctag.contains("else", Tag.TAG_LIST)) {
-                out.append(Component.literal("\nelse ").withStyle(ChatFormatting.GOLD));
+                out.append(Component.literal("\nelse {").withStyle(ChatFormatting.GOLD));
                 out.append(renderBlock(ctag.get("else")));
+                    out.append(Component.literal("}").withStyle(ChatFormatting.GOLD));
             }
             return out;
         }

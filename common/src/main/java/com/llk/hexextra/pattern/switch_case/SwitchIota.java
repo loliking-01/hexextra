@@ -386,18 +386,18 @@ public class SwitchIota extends Iota {
 
             out.append(Component.literal("switch<").withStyle(ChatFormatting.GOLD));
             out.append(Component.translatable(
-                    "hexextra.switch.type." + ctag.getString("match_type").toLowerCase()));
+                    "hexextra.switch.type." + ctag.getString("match_type").toLowerCase()).withStyle(ChatFormatting.AQUA));
             out.append(Component.literal(">{").withStyle(ChatFormatting.GOLD));
 
             var casesTag = HexUtils.downcast(ctag.get("cases"), ListTag.TYPE);
             for (int i = 0; i < casesTag.size(); i++) {
                 var csub = HexUtils.downcast(casesTag.get(i), CompoundTag.TYPE);
-                out.append(Component.literal("\n  "));
+                out.append(Component.literal("\n"));
                 out.append(CaseIota.TYPE.display(csub));
             }
 
             if (ctag.contains("default", Tag.TAG_LIST)) {
-                out.append(Component.literal("\n  default -> ").withStyle(ChatFormatting.GOLD));
+                out.append(Component.literal("\ndefault -> {").withStyle(ChatFormatting.GOLD));
                 MutableComponent bodyOut = Component.empty();
                 var defTag = HexUtils.downcast(ctag.get("default"), ListTag.TYPE);
                 for (int i = 0; i < defTag.size(); i++) {

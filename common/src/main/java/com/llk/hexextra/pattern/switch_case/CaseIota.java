@@ -186,7 +186,7 @@ public class CaseIota extends Iota {
             MutableComponent out = Component.empty();
             out.append(Component.literal("case ").withStyle(ChatFormatting.GOLD));
             out.append(IotaType.getDisplay(HexUtils.downcast(ctag.get("value"), CompoundTag.TYPE)));
-            out.append(Component.literal(" -> ").withStyle(ChatFormatting.GOLD));
+            out.append(Component.literal(" -> {").withStyle(ChatFormatting.GOLD));
 
             // 代码块:和 ListIota 一样的渲染方式(外面套一层 list_contents 的括号样式)
             MutableComponent bodyOut = Component.empty();
