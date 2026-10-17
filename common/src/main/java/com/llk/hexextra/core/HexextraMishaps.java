@@ -1,0 +1,245 @@
+package com.llk.hexextra.core;
+
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.mishaps.Mishap;
+import at.petrak.hexcasting.api.pigment.FrozenPigment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.DyeColor;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+/**
+ * hexextra 的自定义施法报错(Mishap)。
+ *
+ * <h2>为什么不用官方的 MishapInvalidIota</h2>
+ * 那个报错的文案是「期望 X,实际是 Y」,但它要求身上有一个"肇事 iota"。
+ * 而"同一个常量在 switch 里出现了两次"这类错误<b>没有单一肇事者</b>(是两个都在),
+ * 硬塞一个进去提示会误导玩家。所以自建,把话说清楚。
+ *
+ * <h2>与 1.21.1 版的差异</h2>
+ * 0.11.4 的 {@link Mishap#execute} 第三个参数是 <b>{@code MutableList<Iota>}</b>,
+ * 不是 0.12.0 的 {@code TreeList<Iota>}。Java 侧类型写 {@code List<Iota>} 即可
+ * (Kotlin 的 MutableList 编译后就是 java.util.List)。
+ *
+ * <p>类型信息以<b>翻译键字符串</b>传入(如 {@code hexextra.switch.type.number}),
+ * 而不是传功能层的枚举 —— 这样 core 不会反向依赖具体功能,又仍然可本地化。
+ */
+public final class HexextraMishaps {
+
+    private HexextraMishaps() {
+    }
+
+    /**
+     * 同一个常量在 switch 里对应了不止一个 case。
+     *
+     * <p>照 Java 的规矩:重复的 case 是编译错误。放任不管的话玩家根本没法从界面
+     * 判断"到底会走哪一个",而建索引时也会互相覆盖。
+     */
+    public static final class DuplicateCase extends Mishap {
+
+        private final Iota value;
+
+        public DuplicateCase(Iota value) {
+            this.value = value;
+        }
+
+        public Iota getValue() {
+            return this.value;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        /** 本报错不改动栈。 */
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.duplicate_case", this.value.display());
+        }
+    }
+
+    /**
+     * 拿来当 case 的值根本不是常量。
+     *
+     * <p>与 {@link CaseTypeMismatch} 的区别:这里是"压根不是可匹配的类型"
+     * (列表 / 实体 / 向量),那里是"是常量、但类型与这张表声明的不符"。
+     */
+    public static final class CaseNotConstant extends Mishap {
+
+        private final Iota value;
+
+        public CaseNotConstant(Iota value) {
+            this.value = value;
+        }
+
+        public Iota getValue() {
+            return this.value;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.case_not_constant", this.value.display());
+        }
+    }
+
+    /**
+     * 往 switch 里塞了一个类型不符的 case。
+     *
+     * <p>照 Java 的定位,这类错误应当在<b>建造期</b>就被抓住,
+     * 而不是等到执行时默默不命中。
+     *
+     * @param expectedKey 期望类型的翻译键
+     * @param actual      实际塞进来的那个值
+     */
+    public static final class CaseTypeMismatch extends Mishap {
+
+        private final String expectedKey;
+        private final Iota actual;
+
+        public CaseTypeMismatch(String expectedKey, Iota actual) {
+            this.expectedKey = expectedKey;
+            this.actual = actual;
+        }
+
+        public String getExpectedKey() {
+            return this.expectedKey;
+        }
+
+        public Iota getActual() {
+            return this.actual;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.case_type_mismatch",
+                    Component.translatable(this.expectedKey), this.actual.display());
+        }
+    }
+
+    /**
+     * switch 拿去匹配的那个值,类型与这张表声明的不符。
+     *
+     * <p>照 Java「switch 不支持这种类型」的做法当场说清楚,而不是当作不命中滑到 default
+     * —— 后者会把玩家的错误盖住。
+     */
+    public static final class SwitchValueTypeMismatch extends Mishap {
+
+        private final String expectedKey;
+        private final Iota actual;
+
+        public SwitchValueTypeMismatch(String expectedKey, Iota actual) {
+            this.expectedKey = expectedKey;
+            this.actual = actual;
+        }
+
+        public String getExpectedKey() {
+            return this.expectedKey;
+        }
+
+        public Iota getActual() {
+            return this.actual;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.switch_value_type_mismatch",
+                    Component.translatable(this.expectedKey), this.actual.display());
+        }
+    }
+
+    /**
+     * 试图把两张<b>声明了不同类型</b>的表合并起来。
+     *
+     * <p>一张表只匹配一种类型,类型不同的两张表合并没有意义 ——
+     * 默默丢掉其中一张的 case 更是会让人完全看不出问题。
+     */
+    public static final class SwitchTypeMismatch extends Mishap {
+
+        private final String firstKey;
+        private final String secondKey;
+
+        public SwitchTypeMismatch(String firstKey, String secondKey) {
+            this.firstKey = firstKey;
+            this.secondKey = secondKey;
+        }
+
+        public String getFirstKey() {
+            return this.firstKey;
+        }
+
+        public String getSecondKey() {
+            return this.secondKey;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.switch_type_mismatch",
+                    Component.translatable(this.firstKey), Component.translatable(this.secondKey));
+        }
+    }
+
+    /**
+     * 试图把两张<b>各自都带 default</b> 的表合并,或给一张已有 default 的表再接一个。
+     *
+     * <p>一张表只能有一个 default —— 默默丢掉其中一个会让人完全看不出问题。
+     */
+    public static final class SwitchAlreadyHasDefault extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.dyeColor(DyeColor.LIGHT_BLUE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.switch_already_has_default");
+        }
+    }
+}
