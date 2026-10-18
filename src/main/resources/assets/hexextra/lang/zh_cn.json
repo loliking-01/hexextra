@@ -54,5 +54,6 @@
   "hexextra.page.get_index": "当前是第几轮,从 0 数起。倒序 for 里则从 n-1 递减到 0。只能在循环里用,脱离循环会报错。",
   "hexextra.page.get_remaining": "这一轮之后还剩几轮。在 foreach 里则是还剩几个元素没遍历。只能在循环里用。",
   "hexextra.page.for_each": "把可执行 iota 对列表里的每个元素各跑一遍。$(br2)与托特不同:元素不会自动压栈。要在循环体里画 $(action)卡润特之精思/$ 才拿得到。",
-  "hexextra.page.get_current": "当前正在处理的元素。只能在 $(action)佛尔易池循环之策略/$ 里用。"
+  "hexextra.page.get_current": "当前正在处理的元素。只能在 $(action)佛尔易池循环之策略/$ 里用。",
+  "item.hexextra.betterspellbook": "强化法术书"
 }

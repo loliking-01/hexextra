@@ -80,11 +80,21 @@ public final class HexextraRegistries {
      *
      * <p>必须在各功能的注册条目都创建好之后再调用,所以调用前要先执行各功能的 init()。
      */
+    /** 自定义数据组件(强化法术书需要存 UUID)。 */
+    public static final DeferredRegister<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPES =
+            DeferredRegister.create(net.minecraft.core.registries.Registries.DATA_COMPONENT_TYPE, Hexextra.MODID);
+
+    /** 物品。 */
+    public static final DeferredRegister<net.minecraft.world.item.Item> ITEMS =
+            DeferredRegister.create(net.minecraft.core.registries.Registries.ITEM, Hexextra.MODID);
+
     public static void registerAll(IEventBus modEventBus) {
         ACTIONS.register(modEventBus);
         CONTINUATION_TYPES.register(modEventBus);
         IOTA_TYPES.register(modEventBus);
         ARITHMETICS.register(modEventBus);
         SPECIAL_HANDLERS.register(modEventBus);
+        DATA_COMPONENT_TYPES.register(modEventBus);
+        ITEMS.register(modEventBus);
     }
 }
