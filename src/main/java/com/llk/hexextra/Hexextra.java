@@ -57,6 +57,13 @@ public class Hexextra {
         // ---- 把注册表挂到模组事件总线 ----
         HexextraRegistries.registerAll(modEventBus);
 
+        // 让强化法术书出现在创造模式「工具与实用物品」页(咒法学法术书也在那一页附近)
+        modEventBus.addListener((net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent event) -> {
+            if (event.getTabKey() == net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES) {
+                event.accept(com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.ITEM.get());
+            }
+        });
+
         // ---- 启动自检 ----
         // 算术引擎是懒构建的,若某个图案的算子 arity 写错,会在玩家第一次施法时才炸,
         // 且会连带整个算术系统瘫痪。这里在注册完成后立刻用快照造一个一次性引擎跑一遍校验,
