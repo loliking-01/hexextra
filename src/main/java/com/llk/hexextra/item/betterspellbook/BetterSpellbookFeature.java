@@ -5,6 +5,10 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
 import java.util.UUID;
 
 /**
@@ -24,6 +28,23 @@ public final class BetterSpellbookFeature {
     public static final DeferredHolder<Item, Item> ITEM =
             HexextraRegistries.ITEMS.register("betterspellbook",
                     () -> new BetterSpellbookItem(new Item.Properties()));
+
+    /** 合成用的自定义配方序列化器。 */
+    public static final DeferredHolder<
+            net.minecraft.world.item.crafting.RecipeSerializer<?>,
+            net.minecraft.world.item.crafting.RecipeSerializer<BetterSpellbookRecipe>> SERIALIZER =
+            HexextraRegistries.RECIPE_SERIALIZERS.register("betterspellbook",
+                    () -> new net.minecraft.world.item.crafting.RecipeSerializer<BetterSpellbookRecipe>() {
+                        @Override
+                        public MapCodec<BetterSpellbookRecipe> codec() {
+                            return BetterSpellbookRecipe.MAP_CODEC;
+                        }
+
+                        @Override
+                        public StreamCodec<RegistryFriendlyByteBuf, BetterSpellbookRecipe> streamCodec() {
+                            return BetterSpellbookRecipe.STREAM_CODEC;
+                        }
+                    });
 
     private BetterSpellbookFeature() {
     }
