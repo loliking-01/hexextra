@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.148'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = mod_version
@@ -156,6 +157,7 @@ dependencies {
 
     // 可选前置:Curios(饰品槽)。不玩饰品整合包就把这行删掉。
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -205,4 +207,7 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+kotlin {
+    jvmToolchain(21)
 }
