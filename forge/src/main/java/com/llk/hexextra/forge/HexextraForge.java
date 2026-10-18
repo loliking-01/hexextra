@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.casting.iota.IotaType;
 import at.petrak.hexcasting.common.lib.HexRegistries;
 import com.llk.hexextra.HexextraCommon;
 import com.llk.hexextra.core.HexextraContent;
+import com.llk.hexextra.core.ServerHolder;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -36,6 +37,19 @@ public final class HexextraForge {
     private static final Logger LOGGER = LoggerFactory.getLogger("hexextra");
 
     private static final String MOD_ID = HexextraCommon.MOD_ID;
+
+    /**
+     * 把服务端实例交给公共代码。
+     *
+     * <p>{@code common} 不能依赖 Forge 的 {@code ServerLifecycleHooks},所以这里用
+     * 事件总线在启停时填入/清空。
+     */
+    static {
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.event.server.ServerStartedEvent e) -> ServerHolder.set(e.getServer()));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.event.server.ServerStoppedEvent e) -> ServerHolder.set(null));
+    }
 
     /** iota 类型表。 */
     private static final DeferredRegister<IotaType<?>> IOTA_TYPES =

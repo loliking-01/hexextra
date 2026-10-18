@@ -9,6 +9,7 @@ import at.petrak.hexcasting.common.lib.hex.HexContinuationTypes;
 import at.petrak.hexcasting.xplat.IXplatAbstractions;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import com.llk.hexextra.core.HexextraContent;
+import com.llk.hexextra.core.ServerHolder;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
 import org.slf4j.Logger;
@@ -32,6 +33,11 @@ public final class HexextraFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // 把服务端实例交给公共代码(common 不能依赖任何一方的生命周期 API)
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTED
+                .register(ServerHolder::set);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPING
+                .register(server -> ServerHolder.set(null));
         for (HexextraContent.Entry<IotaType<?>> entry : HexextraContent.iotaTypes()) {
             Registry.register(HexIotaTypes.REGISTRY, entry.id(), entry.value());
         }
