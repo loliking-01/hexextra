@@ -8,8 +8,6 @@ import at.petrak.hexcasting.api.casting.eval.vm.CastingImage;
 import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation;
 import at.petrak.hexcasting.api.casting.iota.DoubleIota;
 import at.petrak.hexcasting.api.casting.iota.Iota;
-import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota;
-import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs;
 import at.petrak.hexcasting.api.utils.TreeList;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
 import com.llk.hexextra.core.CastingImages;
@@ -61,18 +59,23 @@ public final class LoopGetters {
     private record DepthArg(int depth, TreeList<Iota> rest) {
     }
 
+    /**
+     * 取层数:栈顶是数字就"当成层数消费掉",否则<b>默认 0(当前层)且不动栈</b>。
+     *
+     * <p>这是一个可省略参数 —— 不压层数时三枚图案的行为与旧版完全一致,
+     * 想取外层时才在栈顶压一个数字。
+     *
+     * <p><b>代价</b>:栈顶恰好有个数字(本来想留给别的图案)时会被吃掉。
+     * 这是"可选参数"无法避免的歧义,按需求接受。
+     */
     private static DepthArg popDepth(CastingImage image) {
         TreeList<Iota> stack = image.getStack();
-        if (stack.isEmpty()) {
-            throw new MishapNotEnoughArgs(1, 0);
+        if (!stack.isEmpty() && stack.last() instanceof DoubleIota number) {
+            // 负数当 0 处理(等价于"当前层")
+            int depth = Math.max(0, (int) Math.floor(number.getDouble()));
+            return new DepthArg(depth, stack.dropRight(1));
         }
-        Iota top = stack.last();
-        if (!(top instanceof DoubleIota number)) {
-            throw MishapInvalidIota.of(top, 0, "double");
-        }
-        // 负数当 0 处理(等价于"当前层"),避免玩家写 -1 时行为诡异
-        int depth = Math.max(0, (int) Math.floor(number.getDouble()));
-        return new DepthArg(depth, stack.dropRight(1));
+        return new DepthArg(0, stack);
     }
 
     /** 沿续延链找第 {@code depth} 层的 for 循环帧;找不到返回 null。 */
