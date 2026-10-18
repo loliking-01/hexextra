@@ -134,7 +134,7 @@ public final class HexextraContent {
     public static Iterable<Entry<ContinuationFrame.Type<?>>> frameTypes() {
         return java.util.List.of(
                 new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE),
-                new Entry<>(id("for_each"), FrameForEach.TYPE),
+                new Entry<>(hexId("for_each"), FrameForEach.TYPE),
                 new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE));
     }
 
@@ -192,10 +192,10 @@ public final class HexextraContent {
                 new Entry<>(id("get_remaining"), new ActionRegistryEntry(
                         HexPattern.fromAngles(GET_REMAINING_PATTERN_ANGLES, GET_REMAINING_START_DIR),
                         new LoopGetters.GetRemaining())),
-                new Entry<>(id("for_each"), new ActionRegistryEntry(
+                new Entry<>(hexId("for_each"), new ActionRegistryEntry(
                         HexPattern.fromAngles(FOR_EACH_PATTERN_ANGLES, FOR_EACH_START_DIR),
                         new com.llk.hexextra.pattern.for_each.OpForEach())),
-                new Entry<>(id("get_current"), new ActionRegistryEntry(
+                new Entry<>(hexId("get_current"), new ActionRegistryEntry(
                         HexPattern.fromAngles(GET_CURRENT_PATTERN_ANGLES, GET_CURRENT_START_DIR),
                         new LoopGetters.GetCurrent())));
     }
@@ -206,6 +206,17 @@ public final class HexextraContent {
 
     /** 一个「id → 值」的注册项。 */
     public record Entry<T>(ResourceLocation id, T value) {
+    }
+
+    /**
+     * 属于 hexextra 自己的 id。
+     *
+     * <p>不能用 {@link HexAPI#modLoc}:0.11.4 里它的命名空间固定是 {@code hexcasting},
+     * 返回 {@code hexcasting:path}。历史条目为了不破坏存档与语言键保留原样,
+     * 新增的一律走这个方法 —— 否则 {@code for_each} 会撞上咒法学自带的托特图案。
+     */
+    private static ResourceLocation hexId(String path) {
+        return new ResourceLocation("hexextra", path);
     }
 
     private static ResourceLocation id(String path) {
