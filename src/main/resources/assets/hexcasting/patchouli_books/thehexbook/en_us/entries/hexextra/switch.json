@@ -1,6 +1,6 @@
 {
     "name":  "hexextra.entry.switch",
-    "category":  "hexcasting:hexextra",
+    "category":  "hexcasting:hexextra_patterns",
     "icon":  "minecraft:hopper",
     "sortnum":  2,
     "advancement":  "hexcasting:root",

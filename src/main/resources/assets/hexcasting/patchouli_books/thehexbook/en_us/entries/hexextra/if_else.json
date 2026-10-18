@@ -1,6 +1,6 @@
 {
     "name":  "hexextra.entry.if_else",
-    "category":  "hexcasting:hexextra",
+    "category":  "hexcasting:hexextra_patterns",
     "icon":  "minecraft:comparator",
     "sortnum":  1,
     "advancement":  "hexcasting:root",

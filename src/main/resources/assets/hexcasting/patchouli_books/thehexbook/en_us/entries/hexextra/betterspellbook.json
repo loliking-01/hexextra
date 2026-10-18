@@ -1,6 +1,6 @@
 {
   "name": "hexextra.entry.spell_storage",
-  "category": "hexextra:hexextra_items",
+  "category": "hexcasting:hexextra_items",
   "icon": "hexextra:betterspellbook",
   "sortnum": 0,
   "advancement": "hexcasting:root",

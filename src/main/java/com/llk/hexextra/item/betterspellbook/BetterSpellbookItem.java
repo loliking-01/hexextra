@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
@@ -86,48 +87,123 @@ public class BetterSpellbookItem extends ItemSpellbook {
     // 组件 ↔ 文件
     // =======================================================================
 
-    /** 把组件里的书页缓存整本写进存档文件。 */
-    public static void flush(ItemStack stack, MinecraftServer server) {
-        UUID id = getOrCreateBookId(stack);
-        Iota data = stack.get(HexDataComponents.IOTA_HOLDER_IOTA.get());
+    /**
+     * 真正需要持久化的四个组件。
+     *
+     * <p><b>为什么不含 {@code SELECTED_SPELLBOOK_PAGE}</b>:那是"翻到第几页"的阅读位置,
+     * 不是书的内容。换台机器、换个人打开,从第 1 页开始更合理;
+     * 而且 {@code rotatePageIdx} 是静态方法,翻页时不会经过物品的实例方法,
+     * 我们没机会把它同步到文件 —— 与其留一份经常过期的数据,不如不存。
+     *
+     * <p><b>为什么是这四个</b>:直接对照 {@code ItemSpellbook} 的字节码。
+     * 咒法学<b>不用</b> {@code IOTA_HOLDER_IOTA} 存书页(那是最初踩的坑),
+     * 而是下面这套 Map<String, ...> 结构。
+     */
+    private static final java.util.List<String> PERSISTED_KEYS =
+            java.util.List.of("pages", "page_names", "page_seals", "variant");
 
-        SpellbookStorage storage = SpellbookStorage.get(server);
-        if (data == null) {
-            storage.getOrCreate(id);
-            return;
+    /** 把一个组件值编码成 NBT;组件不存在时返回 null。 */
+    private static <T> Tag encodeComponent(DataComponentType<T> type, ItemStack stack) {
+        T value = stack.get(type);
+        if (value == null) {
+            return null;
         }
-        Tag tag = IotaType.TYPED_CODEC.encodeStart(NbtOps.INSTANCE, data).getOrThrow();
-        storage.set(id, tag);
+        return type.codec().encodeStart(NbtOps.INSTANCE, value).getOrThrow();
     }
 
-    /** 从存档文件把书页读回组件缓存(只在服务端有意义)。 */
+    /** 把一个组件从 NBT 解回来并写进物品;NBT 里没有就跳过。 */
+    private static <T> void decodeComponent(DataComponentType<T> type, ItemStack stack,
+                                            CompoundTag parent, String key) {
+        if (!parent.contains(key)) {
+            return;
+        }
+        Tag tag = parent.get(key);
+        var parsed = type.codec().parse(NbtOps.INSTANCE, tag);
+        parsed.result().ifPresent(value -> stack.set(type, value));
+    }
+
+    /**
+     * 把物品上的书页数据整本写进存档文件。
+     *
+     * <p>四个组件逐个编码成一个 CompoundTag:
+     * <pre>
+     * {
+     *   "pages":      { ... },   // SPELLBOOK_PAGES
+     *   "page_names": { ... },   // SPELLBOOK_PAGE_NAMES
+     *   "page_seals": { ... },   // SPELLBOOK_PAGE_SEALS
+     *   "variant":    0          // ITEM_VARIANT
+     * }
+     * </pre>
+     */
+    public static void flush(ItemStack stack, MinecraftServer server) {
+        UUID id = getOrCreateBookId(stack);
+        CompoundTag out = new CompoundTag();
+
+        Tag pages = encodeComponent(HexDataComponents.SPELLBOOK_PAGES.get(), stack);
+        if (pages == null && !stack.has(BOOK_ID)) {
+            // 全新空书:只登记一个空条目
+            SpellbookStorage.get(server).getOrCreate(id);
+            return;
+        }
+        if (pages != null) {
+            out.put("pages", pages);
+        }
+        Tag names = encodeComponent(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), stack);
+        if (names != null) {
+            out.put("page_names", names);
+        }
+        Tag seals = encodeComponent(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), stack);
+        if (seals != null) {
+            out.put("page_seals", seals);
+        }
+        Tag variant = encodeComponent(HexDataComponents.ITEM_VARIANT.get(), stack);
+        if (variant != null) {
+            out.put("variant", variant);
+        }
+
+        SpellbookStorage.get(server).set(id, out);
+    }
+
+    /** 从存档文件把四个组件读回物品(只在服务端有意义)。 */
     public static void pull(ItemStack stack, MinecraftServer server) {
         UUID id = getBookId(stack);
         if (id == null) {
             return;
         }
         Tag tag = SpellbookStorage.get(server).get(id);
-        if (tag == null) {
+        if (!(tag instanceof CompoundTag data)) {
             return;
         }
-        Iota restored = IotaType.TYPED_CODEC.parse(NbtOps.INSTANCE, tag).getOrThrow();
-        stack.set(HexDataComponents.IOTA_HOLDER_IOTA.get(), restored);
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGES.get(), stack, data, "pages");
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), stack, data, "page_names");
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), stack, data, "page_seals");
+        decodeComponent(HexDataComponents.ITEM_VARIANT.get(), stack, data, "variant");
     }
 
     /**
      * 合成用:把原版法术书的内容搬进一本新的强化法术书。
      *
+     * <p>四个组件都要搬 —— 只搬书页会让新书丢失页名、封印状态与书皮外观。
+     *
      * @param source 原版法术书(或任何带书页组件的物品)
      * @param target 新造出来的强化法术书
      */
     public static void copyFrom(ItemStack source, ItemStack target, MinecraftServer server) {
-        Iota data = source.get(HexDataComponents.IOTA_HOLDER_IOTA.get());
-        if (data != null) {
-            target.set(HexDataComponents.IOTA_HOLDER_IOTA.get(), data);
-        }
+        copyComponent(HexDataComponents.SPELLBOOK_PAGES.get(), source, target);
+        copyComponent(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), source, target);
+        copyComponent(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), source, target);
+        copyComponent(HexDataComponents.ITEM_VARIANT.get(), source, target);
+
         // 新书分配全新 UUID,然后把内容立即落盘
         target.set(BOOK_ID, UUID.randomUUID());
         flush(target, server);
+    }
+
+    private static <T> void copyComponent(DataComponentType<T> type, ItemStack source, ItemStack target) {
+        T value = source.get(type);
+        if (value != null) {
+            target.set(type, value);
+        }
     }
 
     /** 触发本类的静态初始化。 */

@@ -27,7 +27,7 @@ public final class BetterSpellbookFeature {
     /** 强化法术书本体。 */
     public static final DeferredHolder<Item, Item> ITEM =
             HexextraRegistries.ITEMS.register("betterspellbook",
-                    () -> new BetterSpellbookItem(new Item.Properties()));
+                    () -> new BetterSpellbookItem(new Item.Properties().stacksTo(1)));
 
     /** 合成用的自定义配方序列化器。 */
     public static final DeferredHolder<

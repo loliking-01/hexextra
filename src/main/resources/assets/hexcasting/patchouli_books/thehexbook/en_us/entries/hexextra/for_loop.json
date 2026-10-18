@@ -1,6 +1,6 @@
 {
     "name":  "hexextra.entry.for_loop",
-    "category":  "hexcasting:hexextra",
+    "category":  "hexcasting:hexextra_patterns",
     "icon":  "minecraft:repeater",
     "sortnum":  0,
     "advancement":  "hexcasting:root",
