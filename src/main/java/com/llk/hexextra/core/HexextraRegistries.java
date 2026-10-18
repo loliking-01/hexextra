@@ -61,6 +61,14 @@ public final class HexextraRegistries {
      * 所以我们的条目只要在 {@code RegisterEvent} 期间落表(也就是本注册表的正常时机),
      * 就一定会被算进去。
      */
+    /**
+     * 特殊处理器表。它在正常图案解析<b>之前</b>被询问,用来替换某枚图案的行为。
+     *
+     * <p>目前用于让「群体之拆解」「群体之策略」认识条件链与 switch 表。
+     */
+    public static final DeferredRegister<at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> SPECIAL_HANDLERS =
+            DeferredRegister.create(HexRegistries.SPECIAL_HANDLER, Hexextra.MODID);
+
     public static final DeferredRegister<Arithmetic> ARITHMETICS =
             DeferredRegister.create(HexRegistries.ARITHMETIC, Hexextra.MODID);
 
@@ -77,5 +85,6 @@ public final class HexextraRegistries {
         CONTINUATION_TYPES.register(modEventBus);
         IOTA_TYPES.register(modEventBus);
         ARITHMETICS.register(modEventBus);
+        SPECIAL_HANDLERS.register(modEventBus);
     }
 }

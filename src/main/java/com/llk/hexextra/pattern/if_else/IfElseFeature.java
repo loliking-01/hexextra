@@ -109,6 +109,17 @@ public final class IfElseFeature {
                 return new IfElseArithmetic();
             });
 
+    /** 「群体之拆解」在条件链/switch 表上的特殊处理。 */
+    public static final net.neoforged.neoforge.registries.DeferredHolder<
+            at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>,
+            at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> SPLAT_CHAINS =
+            HexextraRegistries.SPECIAL_HANDLERS.register("splat_chains", () -> IfElseSpecialHandlers.SPLAT);
+
+    /** 「群体之策略」在条件链上的特殊处理。 */
+    public static final net.neoforged.neoforge.registries.DeferredHolder<
+            at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>,
+            at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> COLLECT_CHAINS =
+            HexextraRegistries.SPECIAL_HANDLERS.register("collect_chains", () -> IfElseSpecialHandlers.LAST_N_LIST);
     private IfElseFeature() {
     }
 
