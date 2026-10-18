@@ -35,7 +35,7 @@
                       "op_id":  "hexextra:get_index",
                       "anchor":  "hexextra:get_index",
                       "text":  "hexextra.page.get_index",
-                      "input":  "",
+                      "input":  "num",
                       "output":  "num"
                   },
                   {
@@ -43,7 +43,7 @@
                       "op_id":  "hexextra:get_remaining",
                       "anchor":  "hexextra:get_remaining",
                       "text":  "hexextra.page.get_remaining",
-                      "input":  "",
+                      "input":  "num",
                       "output":  "num"
                   },
                   {
@@ -59,7 +59,7 @@
                       "op_id":  "hexextra:get_current",
                       "anchor":  "hexextra:get_current",
                       "text":  "hexextra.page.get_current",
-                      "input":  "",
+                      "input":  "num",
                       "output":  "any"
                   }
               ]
