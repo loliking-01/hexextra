@@ -20,7 +20,7 @@
   "hexextra.page.switch.rule": "SwitchIota执行时,会$(thing)根据栈顶那个值/$去查表:命中哪条 case 就只释放那个对应的咒术,$(italic)不会/$往下滑——所以不需要 break。$(br2)没有命中时,有 default 就跑 default;都没有就什么都不做。$(br2)匹配是$(thing)精确/$比较(与 Java 的 switch 用 == 一致),不是容差比较。$(br2)一张表只匹配一种类型:往数值型表里塞图案 case 会当场报错。",
   "hexextra.page.switch.overload.title": "作用于 switch 表的图案",
   "hexextra.page.switch.overload.intro": "下面几枚原有的图案,作用在 switch 表上时按「表」的语义行事:",
-  "hexextra.page.switch.overload.add": "把两条 case 拼成一张表、往表里追加一条、合并两张表(类型须相同,且至多一边带 default),或者把一段代码块接成 default。",
+  "hexextra.page.switch.overload.add": "$(br2)把两条 case 拼成一张表、往表里追加一条、合并两张表(类型须相同,且至多一边带 default),或者把一段代码块接成 default。",
   "hexextra.page.switch.overload.remove_from": "删掉第 i 条 case;下标越界时原样返回,不报错。",
   "hexextra.page.switch.overload.replace": "把第 i 条 case 换成给的那一条。$(br2)下标越界会报错;该 case 的类型必须与表一致。",
   "hexextra.page.switch.overload.index": "取出第 i 条 case。$(br2)下标越界时得到 null。",
