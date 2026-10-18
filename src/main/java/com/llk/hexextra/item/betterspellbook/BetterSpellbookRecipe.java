@@ -62,7 +62,12 @@ public class BetterSpellbookRecipe extends CustomRecipe {
                 return false;
             }
             if (i == CENTER) {
-                if (!(stack.getItem() instanceof ItemSpellbook)) {
+                // 只接受「原版」法术书。
+                //
+                // 这里不能用 instanceof ItemSpellbook —— 强化法术书本身就是它的子类,
+                // 那样会让强化书也能再合成一次(而且会复制出第二份书页)。
+                // 用 stack.is(具体物品) 做精确匹配。
+                if (!stack.is(at.petrak.hexcasting.common.lib.HexItems.SPELLBOOK.get())) {
                     return false;
                 }
             } else {
