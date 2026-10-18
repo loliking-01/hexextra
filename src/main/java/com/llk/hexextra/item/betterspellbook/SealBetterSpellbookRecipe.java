@@ -30,11 +30,17 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
  */
 public class SealBetterSpellbookRecipe extends CustomRecipe {
 
-    public static final MapCodec<SealBetterSpellbookRecipe> MAP_CODEC =
-            MapCodec.unit(SealBetterSpellbookRecipe::new);
-
-    /** 唯一实例:unit codec 要求编码与解码是同一个对象,否则服务端同步配方会抛异常。 */
+    /**
+     * 唯一实例。
+     *
+     * <p>{@link MapCodec#unit}/{@link StreamCodec#unit} 都是"不编码内容、直接往返一个定值",
+     * 但它们<b>要求编出来的就是那个定的对象本身</b>。两个 codec 必须指向<b>同一个</b>实例 ——
+     * 一旦其中一个用 {@code ::new} 每次造新对象,服务端同步配方时会抛
+     * "Can't encode X, expected Y",客户端直接断开。
+     */
     public static final SealBetterSpellbookRecipe INSTANCE = new SealBetterSpellbookRecipe();
+
+    public static final MapCodec<SealBetterSpellbookRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SealBetterSpellbookRecipe> STREAM_CODEC =
             StreamCodec.unit(INSTANCE);
