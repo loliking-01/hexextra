@@ -30,6 +30,18 @@ public final class ForLoopFeature {
     /** 图案的起始方向(玩家从哪一边起笔)。 */
     public static final HexDir PATTERN_START_DIR = HexDir.NORTH_WEST;
 
+    /** 倒序计数的 for:角度串与方向由作者指定。跑几轮不变,只是「取当前次数」反着记。 */
+    public static final String FOR_DOWN_PATTERN_ANGLES = "edwqqawdeewaq";
+    public static final HexDir FOR_DOWN_START_DIR = HexDir.NORTH_EAST;
+
+    /** 取当前次数(0 起)。 */
+    public static final String GET_INDEX_PATTERN_ANGLES = "qaweedwaqqwdedd";
+    public static final HexDir GET_INDEX_START_DIR = HexDir.NORTH_WEST;
+
+    /** 取剩余次数。 */
+    public static final String GET_REMAINING_PATTERN_ANGLES = "aaqaweedwaqqwdedd";
+    public static final HexDir GET_REMAINING_START_DIR = HexDir.SOUTH_WEST;
+
     /**
      * 循环续延帧的类型。
      *
@@ -54,6 +66,30 @@ public final class ForLoopFeature {
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpForLoop());
+            });
+
+    /** 倒序计数的 for 循环。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> FOR_DOWN =
+            HexextraRegistries.ACTIONS.register("for_down", () -> {
+                return new ActionRegistryEntry(
+                        HexPattern.fromAngleString(FOR_DOWN_PATTERN_ANGLES, FOR_DOWN_START_DIR),
+                        new OpForLoop(true));
+            });
+
+    /** 取当前次数(仅在循环内有效)。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> GET_INDEX =
+            HexextraRegistries.ACTIONS.register("get_index", () -> {
+                return new ActionRegistryEntry(
+                        HexPattern.fromAngleString(GET_INDEX_PATTERN_ANGLES, GET_INDEX_START_DIR),
+                        new LoopGetters.GetIndex());
+            });
+
+    /** 取剩余次数(仅在循环内有效)。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> GET_REMAINING =
+            HexextraRegistries.ACTIONS.register("get_remaining", () -> {
+                return new ActionRegistryEntry(
+                        HexPattern.fromAngleString(GET_REMAINING_PATTERN_ANGLES, GET_REMAINING_START_DIR),
+                        new LoopGetters.GetRemaining());
             });
 
     private ForLoopFeature() {

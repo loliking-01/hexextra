@@ -43,5 +43,9 @@
   "hexextra.page.overload.splat": "Spreads the chain out: every branch becomes a single-branch chain, and if the chain carries an else, one else-only chain is pushed last.",
   "hexextra.page.overload.last_n_list": "If the top n iotas are all conditional chains, gathers them into one in a single step -- like repeated addition.$(br2)Otherwise it keeps its usual behaviour of packing them into a list.",
   "hexextra.page.switch": "A switch table is built out of cases.$(br2)A case pairs a constant with the code block to run when it matches. $(action)Case's Strategy/$ makes one, and $(action)Additive Distillation/$ either gathers cases into a table or appends one to an existing table.$(br2)The type a table matches on comes from its $(italic)first case/$; adding a case of another type is an immediate error.$(br2)A lone case is $(thing)raw material/$, not a runnable table -- drawing $(action)Hermes' Gambit/$ on it gives an unescaped-value mishap.",
-  "hexextra.page.case": "Makes one case: the constant to match, plus the code block to run when it matches.$(br2)$(thing)Push the constant first, the code block second/$ -- so the code block is on top.$(br2)The constant must be a number, boolean, null or pattern; anything else (list, entity, vector) is an immediate error."
+  "hexextra.page.case": "Makes one case: the constant to match, plus the code block to run when it matches.$(br2)$(thing)Push the constant first, the code block second/$ -- so the code block is on top.$(br2)The constant must be a number, boolean, null or pattern; anything else (list, entity, vector) is an immediate error.",
+  "hexcasting.action.hexextra:for_down": "For's Strategy, Reversed",
+  "hexcasting.action.hexextra:get_index": "Index's Strategy",
+  "hexcasting.action.hexextra:get_remaining": "Countdown's Strategy",
+  "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop"
 }

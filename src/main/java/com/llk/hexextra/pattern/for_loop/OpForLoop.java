@@ -48,6 +48,19 @@ public class OpForLoop implements Action {
      */
     public static final int MAX_ITERATIONS = 10_000;
 
+    /** 计数方向。false = 正着记(0→n-1),true = 倒着记(n-1→0)。 */
+    private final boolean reverse;
+
+    /** 正序循环的构造。 */
+    public OpForLoop() {
+        this(false);
+    }
+
+    /** @param reverse true 表示倒序计数(仅影响取值图案读到的数,不影响跑几轮) */
+    public OpForLoop(boolean reverse) {
+        this.reverse = reverse;
+    }
+
     /** 本操作符从栈上消费几个参数:n 和 x。 */
     private static final int ARGC = 2;
 
@@ -95,7 +108,7 @@ public class OpForLoop implements Action {
                 block -> block);
 
         // 把循环帧挂到续延上。之后 VM 每弹一次这个帧就跑一轮。
-        SpellContinuation withLoop = continuation.pushFrame(new FrameForLoop(code, iterations, iterations, false));
+        SpellContinuation withLoop = continuation.pushFrame(new FrameForLoop(code, iterations, iterations, this.reverse));
 
         // 本操作符自身不扣媒质(用户定:循环本身不收费,媒质由循环体里的操作符各自结算),
         // 所以这里没有任何 OperatorSideEffect。

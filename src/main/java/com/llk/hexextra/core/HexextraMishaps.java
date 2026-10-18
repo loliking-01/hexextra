@@ -365,4 +365,33 @@ public final class HexextraMishaps {
             return Component.translatable("hexextra.mishap.switch_already_has_default");
         }
     }
+
+    // =======================================================================
+    // 循环取值图案的报错
+    // =======================================================================
+
+    /**
+     * 取值图案(取当前次数 / 取剩余次数 / 取当前元素)脱离了循环使用。
+     *
+     * <p>这三枚图案的值来自<b>外层循环帧</b>(沿续延链找到的那个),
+     * 没有循环帧就没有值可言。这里刻意报错而不是给 0 或 null ——
+     * 那只会让玩家的结构错误被静默掩盖,更难排查。
+     */
+    public static final class NoEnclosingLoop extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public TreeList<Iota> execute(CastingEnvironment env, Mishap.Context errorCtx, TreeList<Iota> stack) {
+            return stack;
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.no_enclosing_loop");
+        }
+    }
 }
