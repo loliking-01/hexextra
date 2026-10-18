@@ -50,7 +50,6 @@
   "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop",
   "hexcasting.action.hexextra:for_each": "Each's Strategy",
   "hexcasting.action.hexextra:get_current": "Current's Strategy",
-  "hexextra.entry.for_each": "Simple Iteration",
   "hexextra.page.for_down": "Same as For's Strategy, only the index counts down. The first pass reports n-1, the last reports 0. Different from the reverse of a list: the body still runs in the same order.",
   "hexextra.page.get_index": "The current pass number, counting from 0.",
   "hexextra.page.get_remaining": "How many passes are left after this one. In a foreach, how many elements are still untouched.",
