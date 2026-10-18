@@ -41,10 +41,6 @@ public final class HexextraFabric implements ModInitializer {
         for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> entry : HexextraContent.frameTypes()) {
             Registry.register(HexContinuationTypes.REGISTRY, entry.id(), entry.value());
         }
-        for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> entry : HexextraContent.specialHandlers()) {
-            // 特殊处理器没有像 HexIotaTypes.REGISTRY 那样的公开字段,要从 xplat 抽象层取活注册表
-            Registry.register(IXplatAbstractions.INSTANCE.getSpecialHandlerRegistry(), entry.id(), entry.value());
-        }
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());
         }

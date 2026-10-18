@@ -1,4 +1,4 @@
-﻿package com.llk.hexextra.mixin;
+package com.llk.hexextra.mixin;
 
 import at.petrak.hexcasting.api.casting.OperatorUtils;
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment;
@@ -51,7 +51,7 @@ public class MixinOpLastNToList {
      * @param continuation 续延栈
      * @param cir          返回值回调;设置它并取消原方法
      */
-    @Inject(method = "operate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "operate", at = @At("HEAD"), cancellable = true, remap = false)
     private void hexextra$lastNListOfChains(CastingEnvironment env,
                                             CastingImage image,
                                             SpellContinuation continuation,

@@ -77,9 +77,6 @@ public final class HexextraForge {
         for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame.Type<?>> entry : HexextraContent.frameTypes()) {
             FRAME_TYPES.register(entry.id().getPath(), entry::value);
         }
-        for (HexextraContent.Entry<at.petrak.hexcasting.api.casting.castables.SpecialHandler.Factory<?>> entry : HexextraContent.specialHandlers()) {
-            SPECIAL_HANDLERS.register(entry.id().getPath(), entry::value);
-        }
         for (HexextraContent.Entry<ActionRegistryEntry> entry : HexextraContent.actions()) {
             ACTIONS.register(entry.id().getPath(), entry::value);
         }

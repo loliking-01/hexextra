@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.llk.hexextra.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "hexextra.forge.mixins.refmap.json",
+  "mixins": [
+    "MixinOpSplat",
+    "MixinOpLastNToList"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

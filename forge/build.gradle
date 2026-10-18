@@ -9,11 +9,14 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
         // Kotlin 仅用于工具扩展(见 AGENTS.md 规则 3);Forge 模块是 legacy buildscript 脚本,插件挂这里
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.0"
+    // Mixin 注解处理器 + Gradle 插件
+    classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.spongepowered.mixin'
 
 base { archivesName = "$modID-${minecraftVersion}forge" }
 
@@ -83,4 +86,20 @@ compileKotlin { source(project(':common').sourceSets.main.allSource) }
 
 kotlin {
     jvmToolchain(17)
+}
+
+// ---------------------------------------------------------------------------
+// Mixin:让「群体之拆解」「群体之策略」认识条件链与 switch 表
+//
+// 目标是咒法学自己的类(OpSplat / OpLastNToList),它们的方法名是 mod 自己定义的,
+// 不走 SRG 重映射 —— 所以 @Inject 上标了 remap = false,注解处理器也就不会去查
+// 那个查不到的混淆映射(这正是之前构建失败的原因)。
+// ---------------------------------------------------------------------------
+dependencies {
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, "hexextra.forge.mixins.refmap.json"
+    config "hexextra.forge.mixins.json"
 }

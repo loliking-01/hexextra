@@ -13,7 +13,6 @@ import com.llk.hexextra.pattern.for_loop.FrameForLoop;
 import com.llk.hexextra.pattern.if_else.FrameIfElse;
 import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
-import com.llk.hexextra.pattern.if_else.IfElseSpecialHandlers;
 import com.llk.hexextra.pattern.for_each.FrameForEach;
 import com.llk.hexextra.pattern.for_loop.LoopGetters;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
@@ -160,17 +159,6 @@ public final class HexextraContent {
     /** {@code hexextra:if_chain} —— 造条件链的图案。 */
     public static final ResourceLocation IF_CHAIN_ACTION_ID = id("if_chain");
 
-    /**
-     * 特殊处理器 —— 在正常图案解析<b>之前</b>被询问,用来替换某枚图案的行为。
-     *
-     * <p>这里用它让「群体之拆解」与「群体之策略」认识条件链与 switch 表,
-     * 从而避开 Mixin(那条路在本工程被混淆映射问题挡住)。
-     */
-    public static Iterable<Entry<SpecialHandler.Factory<?>>> specialHandlers() {
-        return java.util.List.of(
-                new Entry<>(id("splat_chains"), IfElseSpecialHandlers.SPLAT),
-                new Entry<>(id("collect_chains"), IfElseSpecialHandlers.LAST_N_LIST));
-    }
 
     public static Iterable<Entry<ActionRegistryEntry>> actions() {
         return java.util.List.of(
