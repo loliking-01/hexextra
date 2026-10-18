@@ -193,6 +193,9 @@ public class BetterSpellbookItem extends ItemSpellbook {
         copyComponent(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), source, target);
         copyComponent(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), source, target);
         copyComponent(HexDataComponents.ITEM_VARIANT.get(), source, target);
+        // 当前翻到第几页也一并复制 —— 页码只是物品组件,不参与文件存储(它是"阅读位置"),
+        // 但合成时让新书停在源书那一页更符合直觉。
+        copyComponent(HexDataComponents.SELECTED_SPELLBOOK_PAGE.get(), source, target);
 
         // 新书分配全新 UUID,然后把内容立即落盘
         target.set(BOOK_ID, UUID.randomUUID());
