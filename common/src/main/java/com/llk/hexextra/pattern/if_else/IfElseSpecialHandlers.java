@@ -16,6 +16,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota;
 import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs;
 import at.petrak.hexcasting.api.utils.TreeList;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
+import com.llk.hexextra.core.CastingImages;
 import com.llk.hexextra.pattern.switch_case.CaseIota;
 import com.llk.hexextra.pattern.switch_case.SwitchIota;
 import net.minecraft.network.chat.Component;
@@ -109,7 +110,7 @@ public final class IfElseSpecialHandlers {
             newStack.addAll(produced);
 
             return new OperationResult(
-                    withStack(image.withUsedOp(), newStack),
+                    CastingImages.withStack(image.withUsedOp(), newStack),
                     List.<OperatorSideEffect>of(),
                     continuation,
                     HexEvalSounds.NORMAL_EXECUTE);
@@ -159,7 +160,7 @@ public final class IfElseSpecialHandlers {
             }
 
             return new OperationResult(
-                    withStack(image.withUsedOp(), newStack),
+                    CastingImages.withStack(image.withUsedOp(), newStack),
                     List.<OperatorSideEffect>of(),
                     continuation,
                     HexEvalSounds.NORMAL_EXECUTE);
@@ -167,14 +168,6 @@ public final class IfElseSpecialHandlers {
     }
 
     /** CastingImage 是 Kotlin data class,copy 全是位置参数 —— 收进一处避免写错顺序。 */
-    private static CastingImage withStack(CastingImage image, List<Iota> stack) {
-        return image.copy(stack,
-                image.getParenCount(),
-                image.getParenthesized(),
-                image.getEscapeNext(),
-                image.getOpsConsumed(),
-                image.getUserData());
-    }
 
     private IfElseSpecialHandlers() {
     }

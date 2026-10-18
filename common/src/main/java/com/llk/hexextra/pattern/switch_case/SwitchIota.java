@@ -16,6 +16,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs;
 import at.petrak.hexcasting.api.utils.HexUtils;
 import at.petrak.hexcasting.api.utils.TreeList;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
+import com.llk.hexextra.core.CastingImages;
 import com.llk.hexextra.core.HexextraMishaps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -253,7 +254,7 @@ public class SwitchIota extends Iota {
         // ---- 2) 消费掉栈顶那个值 ----
         Iota scrutinee = stack.get(stack.size() - 1);
         List<Iota> rest = new ArrayList<>(stack.subList(0, stack.size() - 1));
-        CastingImage popped = withStack(image.withUsedOp(), rest);
+        CastingImage popped = CastingImages.withStack(image.withUsedOp(), rest);
 
         // ---- 3) 类型必须与这张表声明的相符 ----
         // 刻意报错而不是"当作不命中、走 default":类型不符的值注定匹配不上任何 case,
@@ -320,14 +321,6 @@ public class SwitchIota extends Iota {
      * 一旦写错顺序就会把 {@code escapeNext} 与别的布尔量对调 —— 那种 bug 极难查。
      * 所以集中到这里写一次。
      */
-    private static CastingImage withStack(CastingImage image, List<Iota> stack) {
-        return image.copy(stack,
-                image.getParenCount(),
-                image.getParenthesized(),
-                image.getEscapeNext(),
-                image.getOpsConsumed(),
-                image.getUserData());
-    }
 
     /** 本 iota 的类型对象。 */
     public static final IotaType<SwitchIota> TYPE = new IotaType<>() {

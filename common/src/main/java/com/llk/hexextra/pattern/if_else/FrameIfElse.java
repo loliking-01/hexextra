@@ -15,6 +15,7 @@ import at.petrak.hexcasting.api.casting.iota.ListIota;
 import at.petrak.hexcasting.api.casting.mishaps.Mishap;
 import at.petrak.hexcasting.api.utils.TreeList;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
+import com.llk.hexextra.core.CastingImages;
 import com.llk.hexextra.core.HexextraMishaps;
 import kotlin.Pair;
 import net.minecraft.nbt.CompoundTag;
@@ -102,7 +103,7 @@ public record FrameIfElse(List<IfElseIota.Branch> branches,
 
         // 消费掉那个布尔值
         List<Iota> rest = new ArrayList<>(stack.subList(0, stack.size() - 1));
-        CastingImage consumed = withStack(image.withUsedOp(), rest);
+        CastingImage consumed = CastingImages.withStack(image.withUsedOp(), rest);
 
         // ---- 条件为真:跑这条分支的代码块 ----
         if (bool.getBool()) {
@@ -162,14 +163,6 @@ public record FrameIfElse(List<IfElseIota.Branch> branches,
                 HexEvalSounds.MISHAP);
     }
 
-    private static CastingImage withStack(CastingImage image, List<Iota> stack) {
-        return image.copy(stack,
-                image.getParenCount(),
-                image.getParenthesized(),
-                image.getEscapeNext(),
-                image.getOpsConsumed(),
-                image.getUserData());
-    }
 
     // =======================================================================
     // 序列化
