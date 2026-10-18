@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.casting.eval.CastingEnvironment;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.mishaps.Mishap;
 import at.petrak.hexcasting.api.pigment.FrozenPigment;
+import at.petrak.hexcasting.api.utils.TreeList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
@@ -353,6 +354,33 @@ public final class HexextraMishaps {
         @Override
         protected @Nullable Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
             return Component.translatable("hexextra.mishap.replacement_has_else");
+        }
+    }
+
+    // =======================================================================
+    // 循环取值图案的报错
+    // =======================================================================
+
+    /**
+     * 取值图案(取当前次数 / 取剩余次数 / 取当前元素)脱离了循环使用。
+     *
+     * <p>这些图案的值来自<b>外层循环帧</b>,没有循环帧就没有值可言。
+     * 刻意报错而不是给 0 或 null —— 那只会掩盖玩家的结构错误。
+     */
+    public static final class NoEnclosingLoop extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.no_enclosing_loop");
         }
     }
 }

@@ -47,7 +47,7 @@ import java.util.List;
  *       {@link ContinuationFrame.Type},它只要求实现 {@code deserializeFromNBT}。</li>
  * </ul>
  */
-public record FrameForLoop(TreeList<Iota> body, int remaining) implements ContinuationFrame {
+public record FrameForLoop(TreeList<Iota> body, int total, int remaining, boolean reverse) implements ContinuationFrame {
 
     /**
      * 继续下发:返回 false 表示"不打断下层续延"。
@@ -88,7 +88,7 @@ public record FrameForLoop(TreeList<Iota> body, int remaining) implements Contin
         // 压栈顺序决定了执行顺序:后压的先跑。所以先 push 下一轮的帧、再 push 代码块,
         // 这样代码块跑完后会回到下一轮的帧。
         SpellContinuation next = continuation
-                .pushFrame(new FrameForLoop(this.body, this.remaining - 1))
+                .pushFrame(new FrameForLoop(this.body, this.total, this.remaining - 1, this.reverse))
                 .pushFrame(new FrameEvaluate(new SpellList.LList(this.body), true));
 
         return new CastResult(
@@ -111,8 +111,9 @@ public record FrameForLoop(TreeList<Iota> body, int remaining) implements Contin
     @Override
     public CompoundTag serializeToNBT() {
         var out = new CompoundTag();
-        out.put("body", serializeBlock(this.body));
+        out.putInt("total", this.total);
         out.putInt("remaining", this.remaining);
+        out.putBoolean("reverse", this.reverse);
         return out;
     }
 
@@ -160,7 +161,9 @@ public record FrameForLoop(TreeList<Iota> body, int remaining) implements Contin
         public @NotNull FrameForLoop deserializeFromNBT(CompoundTag tag, ServerLevel world) {
             return new FrameForLoop(
                     deserializeBlock(tag.get("body"), world),
-                    tag.getInt("remaining"));
+                    tag.contains("total") ? tag.getInt("total") : tag.getInt("remaining"),
+                    tag.getInt("remaining"),
+                    tag.contains("reverse") && tag.getBoolean("reverse"));
         }
     };
 }

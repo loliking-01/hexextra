@@ -43,5 +43,9 @@
   "hexextra.switch.type.number": "数值",
   "hexextra.switch.type.pattern": "图案",
   "hexextra.category.patterns": "简易图案",
-  "hexextra.category.patterns.desc": "本模组往咒法学里添的几枚图案。它们都建立在原有机制之上——可以被拆开,也可以被重新拼起来。"
+  "hexextra.category.patterns.desc": "本模组往咒法学里添的几枚图案。它们都建立在原有机制之上——可以被拆开,也可以被重新拼起来。",
+  "hexcasting.action.hexextra:for_down": "佛尔循环之策略二型",
+  "hexcasting.action.hexextra:get_index": "茵蒂克丝之精思",
+  "hexcasting.action.hexextra:get_remaining": "芮麦宁之策略",
+  "hexextra.mishap.no_enclosing_loop": "这枚图案只能在循环里用"
 }

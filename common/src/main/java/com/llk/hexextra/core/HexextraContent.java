@@ -14,6 +14,7 @@ import com.llk.hexextra.pattern.if_else.FrameIfElse;
 import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
 import com.llk.hexextra.pattern.if_else.IfElseSpecialHandlers;
+import com.llk.hexextra.pattern.for_loop.LoopGetters;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
 import com.llk.hexextra.pattern.switch_case.CaseIota;
@@ -57,6 +58,18 @@ public final class HexextraContent {
 
     /** 「佛尔之策略」:2 参,循环。 */
     public static final String FOR_LOOP_PATTERN_ANGLES = "qaweedwaqqwde";
+
+    /** 倒序计数的 for:角度串与方向由作者指定。跑几轮不变,只是「取当前次数」反着记。 */
+    public static final String FOR_DOWN_PATTERN_ANGLES = "edwqqawdeewaq";
+    public static final HexDir FOR_DOWN_START_DIR = HexDir.NORTH_EAST;
+
+    /** 取当前次数。 */
+    public static final String GET_INDEX_PATTERN_ANGLES = "qaweedwaqqwdedd";
+    public static final HexDir GET_INDEX_START_DIR = HexDir.NORTH_WEST;
+
+    /** 取剩余次数。 */
+    public static final String GET_REMAINING_PATTERN_ANGLES = "aaqaweedwaqqwdedd";
+    public static final HexDir GET_REMAINING_START_DIR = HexDir.SOUTH_WEST;
 
     /** 「伊芙艾儿丝之策略」:2 参,造一条条件链。 */
     public static final String IF_CHAIN_PATTERN_ANGLES = "aedaqda";
@@ -159,7 +172,16 @@ public final class HexextraContent {
                         new OpForLoop())),
                 new Entry<>(IF_CHAIN_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(IF_CHAIN_PATTERN_ANGLES, PATTERN_START_DIR),
-                        new OpCreateIfChain())));
+                        new OpCreateIfChain())),
+                new Entry<>(id("for_down"), new ActionRegistryEntry(
+                        HexPattern.fromAngles(FOR_DOWN_PATTERN_ANGLES, FOR_DOWN_START_DIR),
+                        new OpForLoop(true))),
+                new Entry<>(id("get_index"), new ActionRegistryEntry(
+                        HexPattern.fromAngles(GET_INDEX_PATTERN_ANGLES, GET_INDEX_START_DIR),
+                        new LoopGetters.GetIndex())),
+                new Entry<>(id("get_remaining"), new ActionRegistryEntry(
+                        HexPattern.fromAngles(GET_REMAINING_PATTERN_ANGLES, GET_REMAINING_START_DIR),
+                        new LoopGetters.GetRemaining())));
     }
 
     // =======================================================================

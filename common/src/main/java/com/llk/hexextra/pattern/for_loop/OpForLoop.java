@@ -32,6 +32,19 @@ import java.util.List;
  */
 public final class OpForLoop implements Action {
 
+    /** 计数方向。false = 正着记(0→n-1),true = 倒着记(n-1→0)。只影响取值图案,不影响跑几轮。 */
+    private final boolean reverse;
+
+    /** 正序循环。 */
+    public OpForLoop() {
+        this(false);
+    }
+
+    /** @param reverse true 表示倒序计数 */
+    public OpForLoop(boolean reverse) {
+        this.reverse = reverse;
+    }
+
     /** 次数上限。防止误用把服务器单次施法卡死。 */
     public static final int MAX_ITERATIONS = 10_000;
 
@@ -69,7 +82,7 @@ public final class OpForLoop implements Action {
         // 次数 > 0 才压帧;否则循环不执行(但仍然消费掉了参数)
         SpellContinuation next = continuation;
         if (iterations > 0) {
-            next = next.pushFrame(new FrameForLoop(body, iterations));
+            next = next.pushFrame(new FrameForLoop(body, iterations, iterations, this.reverse));
         }
 
         return new OperationResult(

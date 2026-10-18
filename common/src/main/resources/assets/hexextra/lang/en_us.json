@@ -43,5 +43,9 @@
   "hexextra.switch.type.number": "number",
   "hexextra.switch.type.pattern": "pattern",
   "hexextra.category.patterns": "Simple Patterns",
-  "hexextra.category.patterns.desc": "The patterns this addon brings to Hexcasting. They all build on what is already there, and they can be taken apart and put back together again."
+  "hexextra.category.patterns.desc": "The patterns this addon brings to Hexcasting. They all build on what is already there, and they can be taken apart and put back together again.",
+  "hexcasting.action.hexextra:for_down": "For's Strategy, Type II",
+  "hexcasting.action.hexextra:get_index": "Index's Strategy",
+  "hexcasting.action.hexextra:get_remaining": "Countdown's Strategy",
+  "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop"
 }
