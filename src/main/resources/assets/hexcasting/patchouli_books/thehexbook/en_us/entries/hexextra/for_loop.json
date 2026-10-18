@@ -7,6 +7,10 @@
     "read_by_default":  true,
     "pages":  [
                   {
+                      "type":  "patchouli:text",
+                      "text":  "hexextra.page.for_loop.intro"
+                  },
+                  {
                       "type":  "hexcasting:pattern",
                       "op_id":  "hexextra:for_loop",
                       "anchor":  "hexextra:for_loop",

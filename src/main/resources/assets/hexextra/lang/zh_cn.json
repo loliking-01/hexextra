@@ -30,7 +30,7 @@
   "hexextra.entry.for_loop": "HexExtra元运行",
   "hexextra.entry.if_else": "HexExtra逻辑判断",
   "hexextra.page.for_loop": "把它下面的可执行 iota 重复执行给定次数。$(br2)$(thing)先压次数,再压可执行 iota/$ —— 可执行 iota 在栈顶。",
-  "hexextra.page.for_loop.rule": "次数小于等于 0 时什么都不做,上限 10000 次。$(br2)每一轮共用同一个栈。想提前跳出就在循环体里画 $(action)卡戎之策略/$。$(br2)三枚取值图案(当前次数 / 剩余次数 / 当前元素)默认读的是<b>最内层</b>的那一层。想读外面一层,就在它下面压一个数字表示往外数第几层:0 是当前层,1 是外面一层,依次类推。不压数字时默认取当前层。$(br2)层数超出实际嵌套时,会报「这里没有这么多层循环」。",
+  "hexextra.page.for_loop.rule": "次数小于等于 0 时什么都不做,上限 10000 次。$(br2)每一轮共用同一个栈。想提前跳出就在循环体里画 $(action)卡戎之策略/$。",
   "hexextra.page.if_chain": "$(br2)接受两个可执行 iota,一个作为条件、一个作为实际要执行的咒术。把两者拼成一个条件链Iota。此Iota可以被$(action)赫尔墨斯之策略/$执行",
   "hexextra.page.if_chain.rule": "被执行时会依次求值各分支的条件。$(br2)条件Iota必须$(thing)恰好/$在栈上留下一个布尔值,否则会遭遇事故。$(br2)第一个为真的分支执行自己的咒术,其余全部跳过;只有全都不成立时,才执行 else。$(br2)条件为假、而后面既无分支也无 else 时,整条链什么都不做",
   "hexextra.page.overload.intro.title": "条件链操作图案",
@@ -61,5 +61,6 @@
   "hexextra.entry.spell_storage": "HexExtra 法术存储",
   "hexextra.page.spell_storage.intro": "轻量法术书。功能与咒法学法术书完全一致。唯一的不同在于数据的存储方式使用了uuid-nbt的形式存储到了物理文件中，这会使游戏不再因为持续扫描玩家的nbt而导致的卡顿！",
   "hexextra.page.spell_storage.craft": "合成方式:八块充能紫水晶围住一本法术书。$(br2)原书里的法术会完整复制到新书里 —— 原书本身不会被消耗掉之外的部分改变。",
-  "hexextra.page.spell_storage.storage": "每本轻量法术书都有一个 UUID,书页内容按 UUID 存在世界存档的 $(thing)hexextra_spellbooks.dat/$ 里。$(br2)$(italic)正因如此,复制出来的物品会共享同一份书页。/$"
+  "hexextra.page.spell_storage.storage": "每本轻量法术书都有一个 UUID,书页内容按 UUID 存在世界存档的 $(thing)hexextra_spellbooks.dat/$ 里。$(br2)$(italic)正因如此,复制出来的物品会共享同一份书页。/$",
+  "hexextra.page.for_loop.intro": "这是一组用来反复执行同一段代码的图案。$(br2)三枚取值图案(当前次数 / 剩余次数 / 当前元素)默认读的是<b>最内层</b>的那一层。想读外面一层,就在它下面压一个数字表示往外数第几层:0 是当前层,1 是外面一层,依次类推。不压数字时默认取当前层。$(br2)层数超出实际嵌套时,会报「这里没有这么多层循环」。"
 }
