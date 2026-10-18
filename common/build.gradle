@@ -19,3 +19,19 @@ dependencies {
 kotlin {
     jvmToolchain(17)
 }
+
+// ---------------------------------------------------------------------------
+// Mixin:让「群体之拆解」「群体之策略」认识条件链与 switch 表
+//
+// 目标是咒法学自己的类,方法名是 mod 自定义的、不走 intermediary / SRG 重映射,
+// 因此注入点标注 remap = false,两端共用这一份源码。
+// 这里只需要编译期的 Mixin 库;实际的加载配置在 common 的 hexextra.mixins.json,
+// 由 Fabric 的 fabric.mod.json 与 Forge 的 mixingradle 分别引入。
+// ---------------------------------------------------------------------------
+repositories {
+    maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+}
+
+dependencies {
+    compileOnly "org.spongepowered:mixin:0.8.5"
+}

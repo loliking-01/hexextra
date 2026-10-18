@@ -7,7 +7,7 @@
   "authors": [ "I_am_a_lolikong" ],
   "license": "MIT",
   "environment": "*",
-  "mixins": [ "hexextra.fabric.mixins.json" ],
+  "mixins": [ "hexextra.mixins.json" ],
   "entrypoints": {
     "main": [
       "com.llk.hexextra.fabric.HexextraFabric"

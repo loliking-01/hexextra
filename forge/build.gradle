@@ -100,6 +100,6 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, "hexextra.forge.mixins.refmap.json"
-    config "hexextra.forge.mixins.json"
+    add sourceSets.main, "hexextra.refmap.json"
+    config "hexextra.mixins.json"
 }
