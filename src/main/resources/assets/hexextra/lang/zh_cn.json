@@ -47,5 +47,7 @@
   "hexcasting.action.hexextra:for_down": "佛尔循环之策略二型",
   "hexcasting.action.hexextra:get_index": "因德克斯之策略",
   "hexcasting.action.hexextra:get_remaining": "剩余之策略",
-  "hexextra.mishap.no_enclosing_loop": "这枚图案只能在循环里用"
+  "hexextra.mishap.no_enclosing_loop": "这枚图案只能在循环里用",
+  "hexcasting.action.hexextra:for_each": "群体遍历之策略",
+  "hexcasting.action.hexextra:get_current": "当前元素之策略"
 }

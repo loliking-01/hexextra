@@ -37,6 +37,18 @@ import java.util.List;
  */
 public final class LoopGetters {
 
+    /** 沿续延链找最内层的 foreach 帧;找不到返回 null。 */
+    private static com.llk.hexextra.pattern.for_each.FrameForEach findEach(SpellContinuation continuation) {
+        SpellContinuation cursor = continuation;
+        while (cursor instanceof SpellContinuation.NotDone notDone) {
+            if (notDone.getFrame() instanceof com.llk.hexextra.pattern.for_each.FrameForEach each) {
+                return each;
+            }
+            cursor = notDone.getNext();
+        }
+        return null;
+    }
+
     /** 沿续延链找最内层的 for 循环帧;找不到返回 null。 */
     private static FrameForLoop findLoop(SpellContinuation continuation) {
         SpellContinuation cursor = continuation;
@@ -78,13 +90,39 @@ public final class LoopGetters {
 
         @Override
         public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
+            // 一个图案兼容两种循环:先找 for,再找 foreach。
             FrameForLoop loop = findLoop(continuation);
-            if (loop == null) {
-                throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
+            int remaining;
+            if (loop != null) {
+                remaining = loop.remaining() - 1;            // 本轮之后还剩几轮
+            } else {
+                com.llk.hexextra.pattern.for_each.FrameForEach each = findEach(continuation);
+                if (each == null) {
+                    throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
+                }
+                remaining = each.pending().size();           // 还没开始遍历的元素个数
             }
-            int remaining = loop.remaining() - 1;
             return new OperationResult(
                     CastingImages.withStack(image.withUsedOp(), image.getStack().appended(new DoubleIota(remaining))),
+                    List.<OperatorSideEffect>of(),
+                    continuation,
+                    HexEvalSounds.NORMAL_EXECUTE.get());
+        }
+    }
+
+    /**
+     * 「取当前元素」—— 只能在 foreach 里用。
+     */
+    public static final class GetCurrent implements Action {
+
+        @Override
+        public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
+            com.llk.hexextra.pattern.for_each.FrameForEach each = findEach(continuation);
+            if (each == null) {
+                throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
+            }
+            return new OperationResult(
+                    CastingImages.withStack(image.withUsedOp(), image.getStack().appended(each.current())),
                     List.<OperatorSideEffect>of(),
                     continuation,
                     HexEvalSounds.NORMAL_EXECUTE.get());

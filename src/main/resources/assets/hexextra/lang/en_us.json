@@ -47,5 +47,7 @@
   "hexcasting.action.hexextra:for_down": "For's Strategy, Type II",
   "hexcasting.action.hexextra:get_index": "Index's Strategy",
   "hexcasting.action.hexextra:get_remaining": "Countdown's Strategy",
-  "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop"
+  "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop",
+  "hexcasting.action.hexextra:for_each": "Each's Strategy",
+  "hexcasting.action.hexextra:get_current": "Current's Strategy"
 }

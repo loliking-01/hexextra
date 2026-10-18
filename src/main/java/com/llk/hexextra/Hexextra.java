@@ -49,6 +49,7 @@ public class Hexextra {
         // 注意顺序:必须在 registerAll 之前完成,否则注册表已经交给事件总线了。
         HexextraIotaTypes.init();
         ForLoopFeature.init();
+        com.llk.hexextra.pattern.for_each.ForEachFeature.init();
         IfElseFeature.init();
         SwitchFeature.init();
 
