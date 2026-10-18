@@ -44,7 +44,7 @@
   "hexextra.page.overload.last_n_list": "若栈顶那 n 个都是条件链,把它们一次性串成一条——等价于连续做加法。$(br2)否则保持原行为:打包成一个列表。",
   "hexextra.page.switch": "switch 表由一条条 case 拼成。$(br2)一条 case 是「常量 → 命中时执行的代码块」的配对,用 $(action)凯斯之策略/$ 造出来;再用 $(action)加法之馏化/$ 把若干条 case 拼成一张表,或往已有表里追加。$(br2)表的匹配类型由$(italic)第一条 case/$决定,之后塞入类型不符的 case 会当场报错。",
   "hexextra.page.case": "$(br2)将一个常量Iota与一个咒术列表对应，创建一个CaseIota，所谓的常量Iota，必须是数字、布尔值、Null或者图案，若不是，则会遭遇事故",
-  "hexcasting.action.hexextra:for_down": "倒序佛尔之策略",
+  "hexcasting.action.hexextra:for_down": "佛尔循环之策略二型",
   "hexcasting.action.hexextra:get_index": "因德克斯之策略",
   "hexcasting.action.hexextra:get_remaining": "剩余之策略",
   "hexextra.mishap.no_enclosing_loop": "这枚图案只能在循环里用"
