@@ -36,6 +36,27 @@ public final class BetterSpellbookClient {
     private BetterSpellbookClient() {
     }
 
+    /**
+     * 物品染色:标签颜色取自<b>当前页 iota 类型定义的颜色</b>。
+     *
+     * <p>咒法学原版是 {@code makeIotaStorageColorizer(stack -> iota 的颜色)},
+     * 然后按<b>物品实例</b>绑进 {@code BiConsumer<Item, ItemColor>} ✗
+     * 所以我们的物品同样是"没有颜色处理器"状态。
+     *
+     * <p>{@code ItemColor} 返回的是 ARGB,没有 iota 时返回白色(不改变贴图)。
+     */
+    public static net.minecraft.client.color.item.ItemColor makeColorizer() {
+        return at.petrak.hexcasting.client.RegisterClientStuff.makeIotaStorageColorizer(stack -> {
+            if (stack.getItem() instanceof ItemSpellbook book) {
+                Iota current = book.readIota(stack);
+                if (current != null) {
+                    return current.getType().color();
+                }
+            }
+            return 0xFFFFFFFF;
+        });
+    }
+
     /** 在客户端初始化阶段调用一次。 */
     public static void registerModelProperties() {
         Item ourItem = BetterSpellbookFeature.ITEM.get();

@@ -59,6 +59,9 @@ public class Hexextra {
 
         // 强化法术书需要自己的模型谓词注册(见 BetterSpellbookClient 的注释)
         if (net.neoforged.fml.loading.FMLEnvironment.dist == net.neoforged.api.distmarker.Dist.CLIENT) {
+            modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Item event) ->
+                    event.register(com.llk.hexextra.item.betterspellbook.BetterSpellbookClient.makeColorizer(),
+                            com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.ITEM.get()));
             modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) ->
                     com.llk.hexextra.item.betterspellbook.BetterSpellbookClient.registerModelProperties());
         }
