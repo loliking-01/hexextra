@@ -49,7 +49,7 @@ import java.util.List;
  * @param code      要重复执行的代码块(一串待求值的 iota)
  * @param remaining 还需要执行几轮;减到 0 时本帧不再压任何帧,循环自然结束
  */
-public record FrameForLoop(TreeList<Iota> code, int remaining) implements ContinuationFrame {
+public record FrameForLoop(TreeList<Iota> code, int total, int remaining, boolean reverse) implements ContinuationFrame {
 
     /**
      * VM 每从续延栈顶弹出本帧一次,就调用一次本方法推进计算。
@@ -77,7 +77,7 @@ public record FrameForLoop(TreeList<Iota> code, int remaining) implements Contin
         // FrameEvaluate 的第二个参数 true 表示这是一次元求值(meta-eval),
         // 与「赫尔墨斯之书」和 Thoth 用的是同一条路径。
         SpellContinuation next = continuation
-                .pushFrame(new FrameForLoop(this.code, this.remaining - 1))
+                .pushFrame(new FrameForLoop(this.code, this.total, this.remaining - 1, this.reverse))
                 .pushFrame(new FrameEvaluate(this.code, true));
 
         // 关键:这里不修改 stack,只把算力计数 +1。
@@ -198,13 +198,17 @@ public record FrameForLoop(TreeList<Iota> code, int remaining) implements Contin
         /** 存档(NBT / JSON)用的编码器。 */
         private final MapCodec<FrameForLoop> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 TreeList.codecOf(IotaType.TYPED_CODEC).fieldOf("code").forGetter(FrameForLoop::code),
-                Codec.INT.fieldOf("remaining").forGetter(FrameForLoop::remaining)
+                Codec.INT.fieldOf("total").forGetter(FrameForLoop::total),
+                Codec.INT.fieldOf("remaining").forGetter(FrameForLoop::remaining),
+                Codec.BOOL.fieldOf("reverse").forGetter(FrameForLoop::reverse)
         ).apply(inst, FrameForLoop::new));
 
         /** 网络同步用的编码器(客户端要靠它还原服务端的施法过程以做渲染)。 */
         private final StreamCodec<RegistryFriendlyByteBuf, FrameForLoop> streamCodec = StreamCodec.composite(
                 IotaType.TYPED_STREAM_CODEC.apply(TreeList.streamCodecOp()), FrameForLoop::code,
+                ByteBufCodecs.VAR_INT, FrameForLoop::total,
                 ByteBufCodecs.VAR_INT, FrameForLoop::remaining,
+                ByteBufCodecs.BOOL, FrameForLoop::reverse,
                 FrameForLoop::new
         );
 

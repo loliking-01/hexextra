@@ -95,7 +95,7 @@ public class OpForLoop implements Action {
                 block -> block);
 
         // 把循环帧挂到续延上。之后 VM 每弹一次这个帧就跑一轮。
-        SpellContinuation withLoop = continuation.pushFrame(new FrameForLoop(code, iterations));
+        SpellContinuation withLoop = continuation.pushFrame(new FrameForLoop(code, iterations, iterations, false));
 
         // 本操作符自身不扣媒质(用户定:循环本身不收费,媒质由循环体里的操作符各自结算),
         // 所以这里没有任何 OperatorSideEffect。
