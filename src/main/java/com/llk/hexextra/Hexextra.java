@@ -57,6 +57,12 @@ public class Hexextra {
         // ---- 把注册表挂到模组事件总线 ----
         HexextraRegistries.registerAll(modEventBus);
 
+        // 强化法术书需要自己的模型谓词注册(见 BetterSpellbookClient 的注释)
+        if (net.neoforged.fml.loading.FMLEnvironment.dist == net.neoforged.api.distmarker.Dist.CLIENT) {
+            modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) ->
+                    com.llk.hexextra.item.betterspellbook.BetterSpellbookClient.registerModelProperties());
+        }
+
         // 让强化法术书出现在创造模式「工具与实用物品」页(咒法学法术书也在那一页附近)
         modEventBus.addListener((net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent event) -> {
             if (event.getTabKey() == net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES) {

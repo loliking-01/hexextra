@@ -8,6 +8,7 @@
     "MixinOpLastNToList"
   ],
   "client": [
+    "MixinShiftScrollListener"
   ],
   "injectors": {
     "defaultRequire": 1
