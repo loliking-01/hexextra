@@ -50,7 +50,7 @@
   "hexextra.mishap.no_enclosing_loop": "这枚图案只能在循环里用",
   "hexcasting.action.hexextra:for_each": "群体遍历之策略",
   "hexcasting.action.hexextra:get_current": "当前元素之策略",
-  "hexextra.entry.for_each": "简易遍历",
+  "hexextra.entry.for_each": "HexExtra遍历循环",
   "hexextra.page.for_down": "与佛尔循环之策略一样,只是「取当前次数」反着记:第一轮给 n-1,最后一轮给 0。代码块的执行顺序不变。",
   "hexextra.page.get_index": "当前是第几轮,从 0 数起。",
   "hexextra.page.get_remaining": "这一轮之后还剩几轮。在 foreach 里则是还剩几个元素没遍历。",

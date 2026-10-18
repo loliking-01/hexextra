@@ -73,8 +73,8 @@ public final class LoopGetters {
                 throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
             }
             int index = loop.reverse()
-                    ? loop.remaining() - 1        // 倒着记:n-1 → 0
-                    : loop.total() - loop.remaining();  // 正着记:0 → n-1
+                    ? loop.remaining() - 1                     // 倒着记:n-1 → 0
+                    : loop.total() - loop.remaining();         // 正着记:0 → n-1
             return new OperationResult(
                     CastingImages.withStack(image.withUsedOp(), image.getStack().appended(new DoubleIota(index))),
                     List.<OperatorSideEffect>of(),
@@ -94,7 +94,7 @@ public final class LoopGetters {
             FrameForLoop loop = findLoop(continuation);
             int remaining;
             if (loop != null) {
-                remaining = loop.remaining() - 1;            // 本轮之后还剩几轮
+                remaining = loop.remaining();                 // 帧里存的就是「本轮之后还剩几轮」
             } else {
                 com.llk.hexextra.pattern.for_each.FrameForEach each = findEach(continuation);
                 if (each == null) {
