@@ -49,5 +49,10 @@
   "hexcasting.action.hexextra:get_remaining": "Countdown's Strategy",
   "hexextra.mishap.no_enclosing_loop": "This pattern only works inside a loop",
   "hexcasting.action.hexextra:for_each": "Each's Strategy",
-  "hexcasting.action.hexextra:get_current": "Current's Strategy"
+  "hexcasting.action.hexextra:get_current": "Current's Strategy",
+  "hexextra.page.for_down": "Identical to $(action)For's Strategy/$, except the index counts down: the first pass reports n-1, the last reports 0. The evaluatable iota still runs in the same order.",
+  "hexextra.page.get_index": "The current pass number, counting from 0. In a reversed for loop it counts n-1 down to 0. Loop-only; using it outside a loop is an error.",
+  "hexextra.page.get_remaining": "How many passes are left after this one. In a foreach, how many elements are still untouched. Loop-only.",
+  "hexextra.page.for_each": "Runs the evaluatable iota once per element of the list.$(br2)Unlike Thoth, the element is not pushed onto the stack. Draw $(action)Current's Strategy/$ inside the evaluatable iota to read it.",
+  "hexextra.page.get_current": "The element being processed right now. Only works inside $(action)Each's Strategy/$."
 }

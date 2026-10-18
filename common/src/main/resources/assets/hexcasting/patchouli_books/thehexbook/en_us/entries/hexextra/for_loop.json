@@ -17,6 +17,46 @@
     {
       "type": "patchouli:text",
       "text": "hexextra.page.for_loop.rule"
+    },
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:for_down",
+      "input": "num, evaluatable",
+      "output": "",
+      "text": "hexextra.page.for_down",
+      "patterns": [ { "startdir": "NORTH_EAST", "signature": "edwqqawdeewaq" } ]
+    },
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:get_index",
+      "input": "",
+      "output": "num",
+      "text": "hexextra.page.get_index",
+      "patterns": [ { "startdir": "NORTH_WEST", "signature": "qaweedwaqqwdedd" } ]
+    },
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:get_remaining",
+      "input": "",
+      "output": "num",
+      "text": "hexextra.page.get_remaining",
+      "patterns": [ { "startdir": "SOUTH_WEST", "signature": "aaqaweedwaqqwdedd" } ]
+    },
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:for_each",
+      "input": "list, evaluatable",
+      "output": "",
+      "text": "hexextra.page.for_each",
+      "patterns": [ { "startdir": "NORTH_EAST", "signature": "qqaweedwaqqwdee" } ]
+    },
+    {
+      "type": "hexcasting:manual_pattern",
+      "header": "hexcasting.action.hexextra:get_current",
+      "input": "",
+      "output": "any",
+      "text": "hexextra.page.get_current",
+      "patterns": [ { "startdir": "SOUTH_WEST", "signature": "aaqaweedwaqqwde" } ]
     }
   ]
 }
