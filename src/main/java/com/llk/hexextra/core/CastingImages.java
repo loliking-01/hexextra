@@ -38,4 +38,6 @@ public final class CastingImages {
                 image.getOpsConsumed(),
                 image.getComponents());
     }
+
+    //这也开一个类？我推荐用kt写图案（而不是java） 因为它允许 image.copy(stack = stack) 或者用 com/llk/hexextra/helper/HexExtraHelpers.kt 这种写法 来直接加方法  在java侧调用也不难
 }
