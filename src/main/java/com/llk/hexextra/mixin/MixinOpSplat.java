@@ -46,7 +46,7 @@ public class MixinOpSplat {
      * @param env  施法环境(本注入用不到,但必须与原方法签名一致才能注进去)
      * @param cir  返回值回调;设置它并由此取消原方法
      */
-    @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "execute", at = @At("HEAD"), cancellable = true, remap = false)
     private void hexextra$splatIfElseChain(List<? extends Iota> args,
                                            CastingEnvironment env,
                                            CallbackInfoReturnable<List<Iota>> cir) {

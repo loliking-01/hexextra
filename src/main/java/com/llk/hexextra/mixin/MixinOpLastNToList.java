@@ -47,7 +47,7 @@ public class MixinOpLastNToList {
      * @param continuation 当前续延
      * @param cir          返回值回调;只有真的接管时才设置它
      */
-    @Inject(method = "operate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "operate", at = @At("HEAD"), cancellable = true, remap = false)
     private void hexextra$lastNListOfChains(CastingEnvironment env,
                                             CastingImage image,
                                             SpellContinuation continuation,
