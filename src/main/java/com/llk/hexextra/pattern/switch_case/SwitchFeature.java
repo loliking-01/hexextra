@@ -48,8 +48,6 @@ public final class SwitchFeature {
     /** 「造一条 case」的注册项。名称键:{@code hexcasting.action.hexextra:case}。 */
     public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> CASE =
             HexextraRegistries.ACTIONS.register("case", () -> {
-               // Hexextra.LOGGER.info("hexextra: 操作符图案 {} 已登记( {} 个角度 )",
-                   //     CASE_PATTERN_ANGLES, CASE_PATTERN_ANGLES.length());
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase());
@@ -63,7 +61,6 @@ public final class SwitchFeature {
      */
     public static final DeferredHolder<Arithmetic, Arithmetic> ARITHMETIC =
             HexextraRegistries.ARITHMETICS.register("switch", () -> {
-              //  Hexextra.LOGGER.info("hexextra: 算术 hexextra:switch 已登记(add/index/abs/remove_from/replace)");
                 return new SwitchArithmetic();
             });
 
@@ -133,9 +130,6 @@ public final class SwitchFeature {
             throw new IllegalStateException("hexextra: case 不该是可执行的 —— 原料与成品的界限被破坏了");
         }
 
-      /* Hexextra.LOGGER.info("hexextra: switch / case 编解码与派发表自检通过;悬停显示 = {}"
-                shown.replace("\n", " ⏎ ")); */
 
-        //为什么是在这里做检查？为什么不是在Iota的反序列化时直接返回Null或者垃圾什么的？
     }
 }

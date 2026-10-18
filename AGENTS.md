@@ -43,8 +43,12 @@
 
 ## 规则 3:用 Java 完整替代 Kotlin 能力,并写中文注释
 
-- 咒法学本体是 Kotlin 写的。本项目要求**全部使用 Java 实现**,
-  并且必须**完整、正确地替代 Kotlin 所实现的能力**,不能因为语言差异而丢功能或走样。
+- 咒法学本体是 Kotlin 写的。本项目**以 Java 为主**:
+  玩法逻辑(图案、iota、算术、帧、报错、注册)一律用 Java 写,
+- **Kotlin 仅用于"工具扩展"**:即给 Java 侧补一些 Java 写起来啰嗦的东西,
+  典型是给 `CastingImage` 这类 Kotlin data class 加扩展函数(Java 侧 `image.copy(...)`
+  要按位置传 7 个参数,Kotlin 侧可 `copy(stack = stack)` 只改一个 —— 少写位置参数就少一处出错)。
+  这类代码放 `com.llk.hexextra.helper` 包下,**不要在 Kotlin 里写玩法逻辑**。
 - 每个功能都要写**中文注释**,说明它**实际起什么作用**,
   而不是把代码逐字翻译成中文。
 - 遇到 Kotlin 专有构造时,用 Java 等价写法落地,并在注释里点明对应关系:

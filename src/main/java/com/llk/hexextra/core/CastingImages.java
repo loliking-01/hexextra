@@ -27,17 +27,16 @@ public final class CastingImages {
 
     /**
      * 只替换栈,其余字段(括号状态、转义/空跑标志、算力计数、附加组件)原样保留。
+     *
+     * <p><b>实现委托给 Kotlin 扩展</b> {@code HexExtraHelpersKt.withStack}:那边可以写
+     * {@code copy(stack = stack)} 用具名参数只改一个字段。若在这里用位置参数手抄 7 个值,
+     * 就必须把 {@code escapeNext} 与 {@code simulateNext} 这两个相邻 boolean 摆对 ——
+     * 摆反了编译器不报错,只会静默地把"转义"当成"空跑"。
+     *
+     * <p>所以:实现只留 Kotlin 那一份,这里只做一层 Java 友好的门面。
      */
     public static CastingImage withStack(CastingImage image, TreeList<Iota> stack) {
-        return image.copy(
-                stack,
-                image.getParenCount(),
-                image.getParenthesized(),
-                image.getEscapeNext(),
-                image.getSimulateNext(),
-                image.getOpsConsumed(),
-                image.getComponents());
+        return com.llk.hexextra.helper.HexExtraHelpersKt.withStack(image, stack);
     }
 
-    //这也开一个类？我推荐用kt写图案（而不是java） 因为它允许 image.copy(stack = stack) 或者用 com/llk/hexextra/helper/HexExtraHelpers.kt 这种写法 来直接加方法  在java侧调用也不难
 }

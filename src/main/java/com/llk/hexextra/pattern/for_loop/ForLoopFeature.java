@@ -40,7 +40,6 @@ public final class ForLoopFeature {
      */
     public static final DeferredHolder<ContinuationFrame.Type<?>, ContinuationFrame.Type<FrameForLoop>> FRAME_TYPE =
             HexextraRegistries.CONTINUATION_TYPES.register("for_loop", () -> {
-               // Hexextra.LOGGER.info("hexextra: 续延帧类型 hexextra:for_loop 已登记");
                 return FrameForLoop.TYPE;
             });
 
@@ -52,8 +51,6 @@ public final class ForLoopFeature {
      */
     public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> ACTION =
             HexextraRegistries.ACTIONS.register("for_loop", () -> {
-               /* Hexextra.LOGGER.info("hexextra: 操作符图案 {} 已登记( {} 个角度 )",
-                        PATTERN_ANGLES, PATTERN_ANGLES.length());*/
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpForLoop());
