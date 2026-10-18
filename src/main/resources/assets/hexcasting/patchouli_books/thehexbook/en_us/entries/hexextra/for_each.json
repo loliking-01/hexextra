@@ -1,0 +1,26 @@
+{
+    "name":  "hexextra.entry.for_each",
+    "category":  "hexcasting:hexextra",
+    "icon":  "minecraft:dropper",
+    "sortnum":  3,
+    "advancement":  "hexcasting:root",
+    "read_by_default":  true,
+    "pages":  [
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:for_each",
+                      "anchor":  "hexextra:for_each",
+                      "text":  "hexextra.page.for_each",
+                      "input":  "list, evaluatable",
+                      "output":  ""
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:get_current",
+                      "anchor":  "hexextra:get_current",
+                      "text":  "hexextra.page.get_current",
+                      "input":  "",
+                      "output":  "any"
+                  }
+              ]
+}

@@ -17,6 +17,30 @@
                   {
                       "type":  "patchouli:text",
                       "text":  "hexextra.page.for_loop.rule"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:for_down",
+                      "anchor":  "hexextra:for_down",
+                      "text":  "hexextra.page.for_down",
+                      "input":  "num, evaluatable",
+                      "output":  ""
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:get_index",
+                      "anchor":  "hexextra:get_index",
+                      "text":  "hexextra.page.get_index",
+                      "input":  "",
+                      "output":  "num"
+                  },
+                  {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:get_remaining",
+                      "anchor":  "hexextra:get_remaining",
+                      "text":  "hexextra.page.get_remaining",
+                      "input":  "",
+                      "output":  "num"
                   }
               ]
 }
