@@ -8,8 +8,6 @@ import at.petrak.hexcasting.api.casting.eval.vm.CastingImage;
 import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation;
 import at.petrak.hexcasting.api.casting.iota.DoubleIota;
 import at.petrak.hexcasting.api.casting.iota.Iota;
-import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota;
-import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
 import com.llk.hexextra.core.CastingImages;
 
@@ -44,19 +42,20 @@ public final class LoopGetters {
     private record DepthArg(int depth, List<Iota> rest) {
     }
 
+    /**
+     * 取层数:栈顶是数字就"当成层数消费掉",否则<b>默认 0(当前层)且不动栈</b>。
+     *
+     * <p>可省略参数:不压层数时行为与旧版一致,想取外层时才在栈顶压一个数字。
+     */
     private static DepthArg popDepth(CastingImage image) {
         List<Iota> stack = image.getStack();
-        if (stack.isEmpty()) {
-            throw new MishapNotEnoughArgs(1, 0);
+        if (!stack.isEmpty() && stack.get(stack.size() - 1) instanceof DoubleIota number) {
+            // 负数当 0 处理(等价于"当前层")
+            int depth = Math.max(0, (int) Math.floor(number.getDouble()));
+            List<Iota> rest = new ArrayList<>(stack.subList(0, stack.size() - 1));
+            return new DepthArg(depth, rest);
         }
-        Iota top = stack.get(stack.size() - 1);
-        if (!(top instanceof DoubleIota number)) {
-            throw MishapInvalidIota.of(top, 0, "double");
-        }
-        // 负数当 0 处理(等价于"当前层")
-        int depth = Math.max(0, (int) Math.floor(number.getDouble()));
-        List<Iota> rest = new ArrayList<>(stack.subList(0, stack.size() - 1));
-        return new DepthArg(depth, rest);
+        return new DepthArg(0, stack);
     }
 
     /** 沿续延链找第 {@code depth} 层的 for 循环帧;找不到返回 null。 */
