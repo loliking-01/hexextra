@@ -29,12 +29,21 @@ public class BetterSpellbookRecipe extends CustomRecipe {
     /** 中间那一格在 3×3 输入里的下标。 */
     private static final int CENTER = 4;
 
+    /**
+     * 唯一实例。
+     *
+     * <p>{@link MapCodec#unit}/{@link StreamCodec#unit} 都是"不编码内容、直接往返一个定值",
+     * 但它们<b>要求编出来的就是那个定的对象本身</b> —— 如果每次 new 一个新实例,
+     * 服务端发包做相等性校验时会抛
+     * "Can't encode X, expected Y",客户端直接断开。
+     */
+    public static final BetterSpellbookRecipe INSTANCE = new BetterSpellbookRecipe();
+
     /** 配方序列化器。1.21 的配方用 MapCodec + StreamCodec,不需要写 JSON 解析代码。 */
-    public static final MapCodec<BetterSpellbookRecipe> MAP_CODEC =
-            MapCodec.unit(BetterSpellbookRecipe::new);
+    public static final MapCodec<BetterSpellbookRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BetterSpellbookRecipe> STREAM_CODEC =
-            StreamCodec.unit(new BetterSpellbookRecipe());
+            StreamCodec.unit(INSTANCE);
 
     public BetterSpellbookRecipe() {
         super(net.minecraft.world.item.crafting.CraftingBookCategory.MISC);
