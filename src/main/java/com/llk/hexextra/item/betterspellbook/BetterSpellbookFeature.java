@@ -58,6 +58,23 @@ public final class BetterSpellbookFeature {
                         }
                     });
 
+    /** 封印配方的序列化器。 */
+    public static final DeferredHolder<
+            net.minecraft.world.item.crafting.RecipeSerializer<?>,
+            net.minecraft.world.item.crafting.RecipeSerializer<SealBetterSpellbookRecipe>> SEAL_SERIALIZER =
+            HexextraRegistries.RECIPE_SERIALIZERS.register("seal_betterspellbook",
+                    () -> new net.minecraft.world.item.crafting.RecipeSerializer<SealBetterSpellbookRecipe>() {
+                        @Override
+                        public MapCodec<SealBetterSpellbookRecipe> codec() {
+                            return SealBetterSpellbookRecipe.MAP_CODEC;
+                        }
+
+                        @Override
+                        public StreamCodec<RegistryFriendlyByteBuf, SealBetterSpellbookRecipe> streamCodec() {
+                            return SealBetterSpellbookRecipe.STREAM_CODEC;
+                        }
+                    });
+
     private BetterSpellbookFeature() {
     }
 
