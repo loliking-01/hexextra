@@ -46,6 +46,18 @@ public final class LoopGetters {
         return null;
     }
 
+    /** 沿续延链找最内层的 foreach 帧;找不到返回 null。 */
+    private static com.llk.hexextra.pattern.for_each.FrameForEach findEach(SpellContinuation continuation) {
+        SpellContinuation cursor = continuation;
+        while (cursor instanceof SpellContinuation.NotDone notDone) {
+            if (notDone.getFrame() instanceof com.llk.hexextra.pattern.for_each.FrameForEach each) {
+                return each;
+            }
+            cursor = notDone.getNext();
+        }
+        return null;
+    }
+
     /** 把数字压回栈上。0.11.4 的 stack 是 List,不能像 0.12.0 那样用 TreeList.appended。 */
     private static OperationResult push(SpellContinuation continuation, CastingImage image, int value) {
         List<Iota> newStack = new ArrayList<>(image.getStack());
@@ -78,11 +90,35 @@ public final class LoopGetters {
 
         @Override
         public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
+            // 一个图案兼容两种循环:先找 for,再找 foreach
             FrameForLoop loop = findLoop(continuation);
-            if (loop == null) {
+            if (loop != null) {
+                return push(continuation, image, loop.remaining());
+            }
+            com.llk.hexextra.pattern.for_each.FrameForEach each = findEach(continuation);
+            if (each == null) {
                 throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
             }
-            return push(continuation, image, loop.remaining());
+            return push(continuation, image, each.pending().size());
+        }
+    }
+
+    /** 「取当前元素」—— 只在 foreach 里有效。 */
+    public static final class GetCurrent implements Action {
+
+        @Override
+        public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
+            com.llk.hexextra.pattern.for_each.FrameForEach each = findEach(continuation);
+            if (each == null) {
+                throw new com.llk.hexextra.core.HexextraMishaps.NoEnclosingLoop();
+            }
+            List<Iota> newStack = new ArrayList<>(image.getStack());
+            newStack.add(each.current());
+            return new OperationResult(
+                    CastingImages.withStack(image.withUsedOp(), newStack),
+                    List.<OperatorSideEffect>of(),
+                    continuation,
+                    HexEvalSounds.NORMAL_EXECUTE);
         }
     }
 

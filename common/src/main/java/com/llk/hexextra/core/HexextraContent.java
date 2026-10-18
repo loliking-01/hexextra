@@ -14,6 +14,7 @@ import com.llk.hexextra.pattern.if_else.FrameIfElse;
 import com.llk.hexextra.pattern.if_else.IfElseArithmetic;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
 import com.llk.hexextra.pattern.if_else.IfElseSpecialHandlers;
+import com.llk.hexextra.pattern.for_each.FrameForEach;
 import com.llk.hexextra.pattern.for_loop.LoopGetters;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
@@ -71,6 +72,14 @@ public final class HexextraContent {
     public static final String GET_REMAINING_PATTERN_ANGLES = "aaqaweedwaqqwdedd";
     public static final HexDir GET_REMAINING_START_DIR = HexDir.SOUTH_WEST;
 
+    /** foreach 自身的图案。 */
+    public static final String FOR_EACH_PATTERN_ANGLES = "qqaweedwaqqwdee";
+    public static final HexDir FOR_EACH_START_DIR = HexDir.NORTH_EAST;
+
+    /** 取当前元素。 */
+    public static final String GET_CURRENT_PATTERN_ANGLES = "aaqaweedwaqqwde";
+    public static final HexDir GET_CURRENT_START_DIR = HexDir.SOUTH_WEST;
+
     /** 「伊芙艾儿丝之策略」:2 参,造一条条件链。 */
     public static final String IF_CHAIN_PATTERN_ANGLES = "aedaqda";
 
@@ -125,6 +134,7 @@ public final class HexextraContent {
     public static Iterable<Entry<ContinuationFrame.Type<?>>> frameTypes() {
         return java.util.List.of(
                 new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE),
+                new Entry<>(id("for_each"), FrameForEach.TYPE),
                 new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE));
     }
 
@@ -181,7 +191,13 @@ public final class HexextraContent {
                         new LoopGetters.GetIndex())),
                 new Entry<>(id("get_remaining"), new ActionRegistryEntry(
                         HexPattern.fromAngles(GET_REMAINING_PATTERN_ANGLES, GET_REMAINING_START_DIR),
-                        new LoopGetters.GetRemaining())));
+                        new LoopGetters.GetRemaining())),
+                new Entry<>(id("for_each"), new ActionRegistryEntry(
+                        HexPattern.fromAngles(FOR_EACH_PATTERN_ANGLES, FOR_EACH_START_DIR),
+                        new com.llk.hexextra.pattern.for_each.OpForEach())),
+                new Entry<>(id("get_current"), new ActionRegistryEntry(
+                        HexPattern.fromAngles(GET_CURRENT_PATTERN_ANGLES, GET_CURRENT_START_DIR),
+                        new LoopGetters.GetCurrent())));
     }
 
     // =======================================================================
