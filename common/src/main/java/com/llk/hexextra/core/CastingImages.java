@@ -29,12 +29,6 @@ public final class CastingImages {
      * 只替换栈,其余字段(括号状态、转义标志、算力计数、附加数据)原样保留。
      */
     public static CastingImage withStack(CastingImage image, List<Iota> stack) {
-        return image.copy(
-                stack,
-                image.getParenCount(),
-                image.getParenthesized(),
-                image.getEscapeNext(),
-                image.getOpsConsumed(),
-                image.getUserData());
+        return com.llk.hexextra.helper.HexExtraHelpersKt.withStack(image, stack);
     }
 }

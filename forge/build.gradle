@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
@@ -6,10 +7,13 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
+        // Kotlin 仅用于工具扩展(见 AGENTS.md 规则 3);Forge 模块是 legacy buildscript 脚本,插件挂这里
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.0"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 base { archivesName = "$modID-${minecraftVersion}forge" }
 
@@ -73,3 +77,10 @@ processResources { from project(':common').sourceSets.main.resources }
 
 // Forge 侧必须 reobf,否则运行时类名对不上
 jar.finalizedBy('reobfJar')
+
+// common 里的 Kotlin 源码:compileJava 的 source(...) 只管 .java,这里单独接上
+compileKotlin { source(project(':common').sourceSets.main.allSource) }
+
+kotlin {
+    jvmToolchain(17)
+}

@@ -1,6 +1,7 @@
 plugins {
     // 只依赖原版 Minecraft,不含任何加载器 —— 保证这里的代码天然双端
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 minecraft {
@@ -13,4 +14,8 @@ dependencies {
     // 咒法学是 Kotlin 写的,ContinuationFrame.breakDownwards 返回 kotlin.Pair
     // common 只编原版,所以要自己声明 kotlin 标准库(compileOnly 即可)
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinStdlibVersion"
+}
+
+kotlin {
+    jvmToolchain(17)
 }

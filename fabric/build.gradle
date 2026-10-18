@@ -1,4 +1,5 @@
 plugins {
+    id 'org.jetbrains.kotlin.jvm'
     id 'fabric-loom' version '1.9+'
 }
 
@@ -34,3 +35,10 @@ dependencies {
 compileJava { source(project(':common').sourceSets.main.allSource) }
 
 processResources { from project(':common').sourceSets.main.resources }
+
+// common 里的 Kotlin 源码:compileJava 的 source(...) 只管 .java,这里单独接上
+compileKotlin { source(project(':common').sourceSets.main.allSource) }
+
+kotlin {
+    jvmToolchain(17)
+}

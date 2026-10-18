@@ -5,6 +5,10 @@ pluginManagement {
         maven { name = 'Sponge Snapshots'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url 'https://maven.minecraftforge.net' }
     }
+    plugins {
+        // Kotlin 仅用于工具扩展(见 AGENTS.md 规则 3)
+        id 'org.jetbrains.kotlin.jvm' version '2.3.0'
+    }
 }
 
 rootProject.name = 'hexextra'
