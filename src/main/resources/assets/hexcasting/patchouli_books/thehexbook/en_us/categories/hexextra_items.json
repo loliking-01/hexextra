@@ -1,0 +1,7 @@
+{
+  "name": "hexextra.category.items",
+  "icon": "hexextra:betterspellbook",
+  "description": "hexextra.category.items.desc",
+  "parent": "hexcasting:items",
+  "sortnum": 20
+}

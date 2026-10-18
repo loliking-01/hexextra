@@ -55,5 +55,11 @@
   "hexextra.page.get_remaining": "How many passes are left after this one. In a foreach, how many elements are still untouched. Loop-only.",
   "hexextra.page.for_each": "Runs the evaluatable iota once per element of the list.$(br2)Unlike Thoth, the element is not pushed onto the stack. Draw $(action)Current's Strategy/$ inside the evaluatable iota to read it.",
   "hexextra.page.get_current": "The element being processed right now. Only works inside $(action)Each's Strategy/$.",
-  "item.hexextra.betterspellbook": "Greater Spellbook"
+  "item.hexextra.betterspellbook": "Greater Spellbook",
+  "hexextra.category.items": "HexExtra Items",
+  "hexextra.category.items.desc": "Items added by this mod.",
+  "hexextra.entry.spell_storage": "HexExtra Spell Storage",
+  "hexextra.page.spell_storage.intro": "The Greater Spellbook. It works exactly like a Hex Casting spellbook -- same pages, same sealing, same casting. The only difference is where the pages live: a vanilla spellbook keeps them in the item itself, the Greater Spellbook keeps them in a <b>file inside the world save</b>.",
+  "hexextra.page.spell_storage.craft": "Craft it by surrounding a spellbook with eight charged amethyst.$(br2)The spells in the original book are copied over in full.",
+  "hexextra.page.spell_storage.storage": "Every Greater Spellbook carries a UUID, and its pages are stored under that UUID in the world save file $(thing)hexextra_spellbooks.dat/$.$(br2)$(italic)This means a duplicated item shares the same pages -- a feature, not a bug./$"
 }
