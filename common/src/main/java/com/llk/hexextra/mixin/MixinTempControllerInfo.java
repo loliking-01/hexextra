@@ -19,8 +19,12 @@ public class MixinTempControllerInfo {
 
     @Inject(method = "setEarlyExit", at = @At("HEAD"), cancellable = true, require = 0, remap = false)
     private void hexextra$swallowEarlyExit(boolean earlyExit, CallbackInfo ci) {
-        if (TryCatchExitGuard.consume()) {
-            ci.cancel();
+        try {
+            if (TryCatchExitGuard.consume()) {
+                ci.cancel();
+            }
+        } catch (Throwable ignored) {
+            // 兜底:这里出错也不该崩,最多是这次循环提前退出。
         }
     }
 }

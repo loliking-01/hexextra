@@ -35,9 +35,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(CastingVM.class)
 public class MixinCastingVM {
 
+    /** 本项目的日志器(common 模块里没有共用日志器,就地建一个)。 */
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger("hexextra");
+
     @Inject(method = "executeInner", at = @At("RETURN"), cancellable = true, require = 0, remap = false)
     private void hexextra$catchMishap(Iota iota, ServerLevel world, SpellContinuation continuation,
                                       CallbackInfoReturnable<CastResult> cir) {
+        try {
+            hexextra$tryRewrite(cir);
+        } catch (Throwable thrown) {
+            // 兜底:try_catch 的功能性失败绝不能把整个游戏带崩。
+            // 最坏情况是这次报错没被接住(和没装本模组一样),而不是客户端退出。
+            // 但仍然写日志 —— 否则这类问题无从排查。
+            LOGGER.error("hexextra: try_catch 捕获失败,已跳过", thrown);
+        }
+    }
+
+    private void hexextra$tryRewrite(CallbackInfoReturnable<CastResult> cir) {
         CastResult result = cir.getReturnValue();
         if (result == null) {
             return;
@@ -61,7 +75,20 @@ public class MixinCastingVM {
 
         Mishap mishap = doMishap.getMishap();
         CastingVM self = (CastingVM) (Object) this;
-        Iota errorIota = new ExceptionIota(mishap.errorMessageWithName(self.getEnv(), doMishap.getErrorCtx()));
+
+        // 取"玩家会看到的文字"。0.11.4 里 errorMessageWithName 会用到 Mishap.Context
+        // 的名字,而有些 DoMishap 的上下文是 (null, null) —— 那种情况可能抛异常。
+        // 这里兜住:取不到就退回报错的类名,绝不能因为包装文字而崩掉整个游戏。
+        net.minecraft.network.chat.Component message;
+        try {
+            message = mishap.errorMessageWithName(self.getEnv(), doMishap.getErrorCtx());
+        } catch (RuntimeException ex) {
+            message = net.minecraft.network.chat.Component.literal(mishap.getClass().getSimpleName());
+        }
+        if (message == null) {
+            message = net.minecraft.network.chat.Component.literal(mishap.getClass().getSimpleName());
+        }
+        Iota errorIota = new ExceptionIota(message);
 
         cir.setReturnValue(frame.enterCatch(result.getContinuation(), self, errorIota));
     }
