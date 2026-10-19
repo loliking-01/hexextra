@@ -55,5 +55,6 @@
   "hexextra.page.get_remaining": "How many passes are left after this one. In a foreach, how many elements are still untouched. Loop-only.",
   "hexextra.page.for_each": "Runs the evaluatable iota once per element of the list.$(br2)Unlike Thoth, the element is not pushed onto the stack. Draw $(action)Current's Strategy/$ inside the evaluatable iota to read it.",
   "hexextra.page.get_current": "The element being processed right now. Only works inside $(action)Each's Strategy/$.",
-  "hexextra.page.for_loop.intro": "This group runs the same piece of code over and over.$(br2)The three reader patterns (index / remaining / current) look at the <b>innermost</b> loop by default. To read an outer one, push a number below it telling how many levels to go out: 0 is the current loop, 1 is the one outside it, and so on. With no number they use the current loop.$(br2)If the depth exceeds the actual nesting, they report \"Not inside that many loops\"."
+  "hexextra.page.for_loop.intro": "This group runs the same piece of code over and over.$(br2)The three reader patterns (index / remaining / current) look at the <b>innermost</b> loop by default. To read an outer one, push a number below it telling how many levels to go out: 0 is the current loop, 1 is the one outside it, and so on. With no number they use the current loop.$(br2)If the depth exceeds the actual nesting, they report \"Not inside that many loops\".",
+  "item.hexextra.betterspellbook": "Greater Spellbook"
 }

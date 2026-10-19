@@ -51,7 +51,25 @@ public final class HexextraFabric implements ModInitializer {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());
         }
 
-        LOGGER.info("hexextra: 注册完成 —— iota 类型 3、续延帧 2、算术 2、图案 4");
+        // 强化法术书
+        net.minecraft.world.item.Item betterSpellbook =
+                com.llk.hexextra.item.betterspellbook.BetterSpellbookItems.get();
+        Registry.register(net.minecraft.core.registries.BuiltInRegistries.ITEM,
+                new net.minecraft.resources.ResourceLocation("hexextra", "betterspellbook"),
+                betterSpellbook);
+        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
+                .modifyEntriesEvent(net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES)
+                .register(entries -> entries.accept(betterSpellbook));
+
+        // 配方序列化器
+        Registry.register(net.minecraft.core.registries.BuiltInRegistries.RECIPE_SERIALIZER,
+                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.BETTER_SPELLBOOK_RECIPE_ID,
+                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.BETTER_SPELLBOOK_SERIALIZER);
+        Registry.register(net.minecraft.core.registries.BuiltInRegistries.RECIPE_SERIALIZER,
+                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.SEAL_RECIPE_ID,
+                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.SEAL_SERIALIZER);
+
+        LOGGER.info("hexextra: 注册完成 —— iota 类型 3、续延帧 2、算术 2、图案 4、物品 1、配方 2");
 
         // ---- 自检:把注册表的实际内容打出来 ----
         // 帕秋莉手册报 "Missing key ... hexextra:case" 说明客户端查不到我们的动作,
