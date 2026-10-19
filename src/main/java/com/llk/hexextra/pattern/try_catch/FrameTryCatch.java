@@ -17,6 +17,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import kotlin.Pair;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -32,30 +33,29 @@ import java.util.Optional;
  *
  * <h2>阶段</h2>
  * <pre>
- * stage 0:刚进来  → 压出 try 块,自己进入 stage 1
- * stage 1:try 正常跑完 → 有 finally 就跑 finally,否则结束
- * stage 2:try 抛了 → 压出 catch 块,自己进入 stage 3
- * stage 3:catch 跑完 → 有 finally 就跑 finally,否则结束
- * stage 4:finally 跑完 → 结束
+ * stage 0:刚进来        → 压出 try 块,自己进入 stage 1
+ * stage 1:try 正常跑完  → 有 finally 就跑 finally(进入 4),否则结束
+ * stage 2:try 抛了      → 压出 catch 块,自己进入 stage 3   ← Mixin 改写进来
+ * stage 3:catch 跑完    → 有 finally 就跑 finally,否则结束
+ * stage 4:finally 跑完  → 结束(如果带着 catch 的错就抛出去)
  * </pre>
  *
- * <p>注意 stage 2 不是本帧自己走到的 —— 是本帧还挂在续延上时,内层某一步抛了
- * {@code Mishap},由 {@code MixinCastingVM} 在 {@code executeInner} 的出口
- * 改写结果、把本帧换成 stage 2 并带上异常值。所以本帧必须能<b>从任意深度的续延里被找到</b>
- * (见 {@link #findNearest})。
- *
- *
- * <h2>finally 里抛错会怎样</h2>
- * finally 自己是一个普通代码块(stage 4 的帧只负责"跑完就结束"),所以它抛错时:
- * <ul>
- *   <li><b>不会被自己接住</b> —— {@link #findNearest} 明确排除 stage 4,否则会无限重入;</li>
- *   <li><b>会被外层的 try 接住</b> —— 沿着续延往上找,外层 stage 0/1 的帧照样命中;</li>
- *   <li>如果没有外层 try,异常照常冒泡,法术以 <b>finally 的那个错</b> 结束
- *       (它会覆盖 catch 里的错,与 Java 的语义一致)。</li>
- * </ul>
+ * <h2>⚠ 进入 catch 前必须把旧帧拆掉</h2>
+ * 报错发生时续延是 {@code [本帧@1, FrameEvaluate(try 块), ...外层]}。
+ * 如果只在最上面压一个「进入 catch」的新帧,旧的本帧仍然留在下面 ——
+ * catch 跑完后控制权又回到它 ✗ 它重跑 finally ✗ finally 再次抛错 ✗
+ * 又被接住 ✗ **无限循环**,而且每轮往栈上留一个值,最终撞上「栈的大小上限」。
+ * 所以 {@link #enterCatch} 里先用 {@link #dropAbove} 把这一层整个拆掉。
  *
  * <h2>代价不回滚</h2>
- * try 块里已经花掉的媒质、已经改掉的方块都不会被撤销 —— 本帧只负责"别让法术整个中断"。
+ * try 块里已经花掉的媒质、已经改动的方块都不会被撤销 —— 本帧只负责"别让法术整个中断"。
+ *
+ * <h2>finally 里抛错会怎样</h2>
+ * <ul>
+ *   <li><b>不会被自己接住</b> —— {@link #findNearest} 明确排除 stage 4,否则会无限重入;</li>
+ *   <li><b>会被外层的 try 接住</b> —— 沿续延往上找,外层 stage 0/1/3 的帧照样命中;</li>
+ *   <li>没有外层 try 时异常照常冒泡,法术以 finally 的那个错结束(覆盖 catch 的错,与 Java 一致)。</li>
+ * </ul>
  *
  * @param stage     阶段,见上
  * @param exception 捕获到的异常 iota;只有 stage >= 2 时非 null
@@ -68,7 +68,20 @@ public record FrameTryCatch(
         @Nullable Iota exception
 ) implements ContinuationFrame {
 
-    /** 在续延里找最近的、处于 stage 0/1(也就是"try 还开着")的本帧。 */
+    /** 诊断开关:排查时临时打开。 */
+    private static final boolean TRACE = false;
+
+    // =======================================================================
+    // 在续延里查找
+    // =======================================================================
+
+    /**
+     * 找最近的、处于「可以接住报错」状态的本帧:
+     * stage 0/1 = try 还开着(跳进 catch),stage 3 = catch 正在跑(跳进 finally)。
+     *
+     * <p>stage 4 被<b>故意排除</b>:finally 自己抛错时不能再回到自己的 catch,
+     * 否则就是无限循环。
+     */
     @Nullable
     public static FrameTryCatch findNearest(SpellContinuation continuation) {
         SpellContinuation current = continuation;
@@ -82,7 +95,7 @@ public record FrameTryCatch(
         return null;
     }
 
-    /** 在续延里找最近的、处于 catch 阶段的本帧(供 get_exception 用)。 */
+    /** 找最近的、处于 catch 阶段(stage 2/3)且有异常值的本帧(供 get_exception 用)。 */
     @Nullable
     public static FrameTryCatch findInCatch(SpellContinuation continuation) {
         SpellContinuation current = continuation;
@@ -96,15 +109,32 @@ public record FrameTryCatch(
         return null;
     }
 
-    /** 诊断开关:排查卡死时临时打开,日志会记录每一阶段的进出。 */
-    public static final boolean TRACE = false;
+    /**
+     * 把续延里「本帧及其上方」全部丢掉,只留它下面的部分。
+     *
+     * <p>try 块已被判定失败,它上面那些求值帧(以及本帧自己)都不该再恢复。
+     */
+    private SpellContinuation dropAbove(SpellContinuation continuation) {
+        SpellContinuation current = continuation;
+        while (current instanceof SpellContinuation.NotDone notDone) {
+            if (notDone.getFrame() == this) {
+                return notDone.getNext();
+            }
+            current = notDone.getNext();
+        }
+        // 理论上不会发生(调用方就是从续延里找到的本帧);保底原样返回
+        return continuation;
+    }
+
+    // =======================================================================
+    // 执行
+    // =======================================================================
 
     @Override
     public CastResult evaluate(SpellContinuation continuation, ServerLevel level, CastingVM vm) {
         if (TRACE) {
-            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] evaluate stage={} 栈深={} 续延={}",
-                    this.stage, vm.getImage().getStack().size(),
-                    continuation.getClass().getSimpleName());
+            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] evaluate stage={} 栈深={}",
+                    this.stage, vm.getImage().getStack().size());
         }
         return switch (this.stage) {
             case 0 -> this.run(continuation, vm, this.tryBody, 1, null);
@@ -118,24 +148,7 @@ public record FrameTryCatch(
         };
     }
 
-    /** finally 跑完后,把 catch 里那次错抛出去。 */
-    private CastResult rethrow(SpellContinuation continuation, CastingVM vm, Iota error) {
-        Component message = error instanceof ExceptionIota ex
-                ? ex.getMessage()
-                : error.display();
-
-        return new CastResult(
-                new ListIota(TreeList.empty()),
-                continuation,
-                vm.getImage().withUsedOp(),
-                List.of(new OperatorSideEffect.DoMishap(
-                        new com.llk.hexextra.core.HexextraMishaps.Rethrown(message),
-                        new at.petrak.hexcasting.api.casting.mishaps.Mishap.Context(null, null))),
-                ResolvedPatternType.ERRORED,
-                HexEvalSounds.MISHAP.get());
-    }
-
-    /** 压出一个代码块,跑完后回到本帧的指定阶段。 */
+    /** 压出一个代码块,跑完后回到本帧的指定阶段。返回的帧不再保留已经开跑的块。 */
     private CastResult run(SpellContinuation continuation, CastingVM vm,
                            TreeList<Iota> body, int nextStage, @Nullable Iota ex) {
         SpellContinuation next = continuation
@@ -155,20 +168,41 @@ public record FrameTryCatch(
         return this.cast(continuation, vm, TreeList.empty());
     }
 
-    /** try 块抛错时由 Mixin 调用:换成"进入 catch"的新结果。 */
+    /**
+     * try 块(或 catch 块)抛错时由 Mixin 调用:换成"进入 catch / finally"的新结果。
+     *
+     * <p><b>关键</b>:先用 {@link #dropAbove} 把本帧与它上方的求值帧拆掉,
+     * 否则 catch 跑完后会回到旧帧,形成无限循环。
+     */
     public CastResult enterCatch(SpellContinuation continuation, CastingVM vm, Iota errorIota) {
-        // catch 块自己也抛了错(stage 3):finally 仍然要跑,跑完再抛出去
-        if (this.stage == 3) {
-            TryCatchExitGuard.request();
-            return this.finish(continuation, vm, errorIota);
-        }
         // 告诉 VM:这次报错不应让循环退出 —— 否则 catch 帧求值不到
         TryCatchExitGuard.request();
 
-        // 进入 catch:try 已经跑完,不必再留着它
-        SpellContinuation next = continuation.pushFrame(
+        SpellContinuation base = this.dropAbove(continuation);
+
+        // catch 自己又抛了:finally 仍然要跑,跑完再把这次的错抛出去
+        if (this.stage == 3) {
+            return this.finish(base, vm, errorIota);
+        }
+
+        SpellContinuation next = base.pushFrame(
                 new FrameTryCatch(TreeList.empty(), this.catchBody, this.finallyBody, 2, errorIota));
         return this.cast(next, vm, TreeList.empty());
+    }
+
+    /** finally 跑完后,把 catch 里那次错抛出去。 */
+    private CastResult rethrow(SpellContinuation continuation, CastingVM vm, Iota error) {
+        Component message = error instanceof ExceptionIota ex ? ex.getMessage() : error.display();
+
+        return new CastResult(
+                new ListIota(TreeList.empty()),
+                continuation,
+                vm.getImage().withUsedOp(),
+                List.of(new OperatorSideEffect.DoMishap(
+                        new com.llk.hexextra.core.HexextraMishaps.Rethrown(message),
+                        new at.petrak.hexcasting.api.casting.mishaps.Mishap.Context(null, null))),
+                ResolvedPatternType.ERRORED,
+                HexEvalSounds.MISHAP.get());
     }
 
     /** halt 打到本帧:照常往外传(try 不是循环,没有"跳出自己"的语义)。 */
@@ -192,14 +226,6 @@ public record FrameTryCatch(
     }
 
     private CastResult cast(SpellContinuation continuation, CastingVM vm, TreeList<Iota> block) {
-        {
-            int total = 0;
-            for (Iota i : vm.getImage().getStack()) {
-                total += i.size();
-            }
-            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] cast 栈深={} 合计size={} stage={}",
-                    vm.getImage().getStack().size(), total, this.stage);
-        }
         return new CastResult(
                 new ListIota(block),
                 continuation,
