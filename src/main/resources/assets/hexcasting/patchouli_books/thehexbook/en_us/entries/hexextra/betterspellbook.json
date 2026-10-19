@@ -1,24 +1,24 @@
 {
   "name": "hexextra.entry.spell_storage",
   "category": "hexcasting:hexextra_items",
-  "icon": "hexextra:betterspellbook",
+  "icon": "hexcasting:spellbook",
   "sortnum": 0,
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "hexextra:betterspellbook",
+      "item": "hexcasting:spellbook",
       "title": "hexextra.entry.spell_storage",
       "text": "hexextra.page.spell_storage.intro"
     },
     {
       "type": "patchouli:text",
-      "text": "hexextra.page.spell_storage.craft"
+      "text": "hexextra.page.spell_storage.storage"
     },
     {
       "type": "patchouli:text",
-      "text": "hexextra.page.spell_storage.storage"
+      "text": "hexextra.page.spell_storage.commands"
     }
   ]
 }
