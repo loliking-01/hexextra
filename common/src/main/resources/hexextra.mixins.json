@@ -5,7 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MixinOpSplat",
-    "MixinOpLastNToList"
+    "MixinOpLastNToList",
+    "MixinMsgShiftScrollC2S"
+  ],
+  "client": [
+    "MixinShiftScrollListener"
   ],
   "injectors": {
     "defaultRequire": 1
