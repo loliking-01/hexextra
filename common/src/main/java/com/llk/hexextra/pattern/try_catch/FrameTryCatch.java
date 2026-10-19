@@ -62,7 +62,7 @@ public record FrameTryCatch(
         SpellContinuation current = continuation;
         while (current instanceof SpellContinuation.NotDone notDone) {
             if (notDone.getFrame() instanceof FrameTryCatch frame
-                    && (frame.stage() == 0 || frame.stage() == 1)) {
+                    && (frame.stage() == 0 || frame.stage() == 1 || frame.stage() == 3)) {
                 return frame;
             }
             current = notDone.getNext();
@@ -91,8 +91,28 @@ public record FrameTryCatch(
             case 1 -> this.finish(continuation, vm, null);
             case 2 -> this.run(continuation, vm, this.catchBody, 3, this.exception);
             case 3 -> this.finish(continuation, vm, this.exception);
+            case 4 -> this.exception != null
+                    ? this.rethrow(continuation, vm, this.exception)
+                    : this.cast(continuation, vm, TreeList.empty());
             default -> this.cast(continuation, vm, TreeList.empty());
         };
+    }
+
+    /** finally 跑完后,把 catch 里那次错抛出去。 */
+    private CastResult rethrow(SpellContinuation continuation, CastingVM vm, Iota error) {
+        net.minecraft.network.chat.Component message = error instanceof ExceptionIota ex
+                ? ex.getMessage()
+                : error.display();
+
+        return new CastResult(
+                new ListIota(TreeList.empty()),
+                continuation,
+                vm.getImage().withUsedOp(),
+                List.of(new OperatorSideEffect.DoMishap(
+                        new com.llk.hexextra.core.HexextraMishaps.Rethrown(message),
+                        new at.petrak.hexcasting.api.casting.mishaps.Mishap.Context(null, null))),
+                ResolvedPatternType.ERRORED,
+                HexEvalSounds.MISHAP);
     }
 
     /** 压出一个代码块,跑完后回到本帧的指定阶段。 */
@@ -117,6 +137,11 @@ public record FrameTryCatch(
 
     /** try 块抛错时由 Mixin 调用:换成"进入 catch"的新结果。 */
     public CastResult enterCatch(SpellContinuation continuation, CastingVM vm, Iota errorIota) {
+        // catch 块自己也抛了错(stage 3):finally 仍然要跑,跑完再抛出去
+        if (this.stage == 3) {
+            TryCatchExitGuard.request();
+            return this.finish(continuation, vm, errorIota);
+        }
         TryCatchExitGuard.request();
 
         SpellContinuation next = continuation.pushFrame(

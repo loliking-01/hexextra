@@ -430,4 +430,32 @@ public final class HexextraMishaps {
             return Component.translatable("hexextra.mishap.no_active_exception");
         }
     }
+
+    /**
+     * catch 块自己也抛了错:finally 跑完之后用它把那次错抛出法术。
+     *
+     * <p>Mishap 对象不能安全存进续延(要序列化),所以这里只保住它的<b>文字</b> ✓
+     */
+    public static final class Rethrown extends Mishap {
+
+        private final Component message;
+
+        public Rethrown(Component message) {
+            this.message = message;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return this.message;
+        }
+    }
 }
