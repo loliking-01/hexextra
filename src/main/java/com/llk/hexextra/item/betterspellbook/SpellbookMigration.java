@@ -37,8 +37,15 @@ public final class SpellbookMigration {
         if (stack.isEmpty() || !stack.is(HexItems.SPELLBOOK.get())) {
             return;
         }
-        // 已经有身份:说明之前写完就落过盘,不用管
+        var server0 = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
+        if (server0 == null) {
+            return;
+        }
+
+        // 已经有身份:文件里可能才是最新的(比如物品组件被别的模组清过),
+        // 所以这里做一次"从文件回填",把组件补回来。
         if (SpellbookPersistence.getBookId(stack) != null) {
+            SpellbookPersistence.pull(stack, server0);
             return;
         }
         // 空书不值得建条目(没有任何内容可丢)
