@@ -61,5 +61,14 @@
   "hexextra.entry.spell_storage": "法术书改动",
   "hexextra.page.spell_storage.intro": "本模组把<b>法术书的书页</b>从物品本身挪到了世界存档里的文件。$(br2)书写、翻页、封印、命名、施法都照旧 —— 只是内容不再跟着物品走,而是跟着一个 UUID 走。",
   "hexextra.page.spell_storage.storage": "每本法术书都带一个 UUID。书页按 UUID 存在 $(thing)hexextra_spellbooks.dat/$ 里,访问记录存在另一个文件 $(thing)hexextra_spellbook_access.dat/$ 里。$(br2)$(italic)注意:物品上仍保留一份书写时的副本用于显示。若卸载本模组,书只能读到最后一次写入时的内容。/$",
-  "hexextra.page.spell_storage.commands": "$(br2)管理员(op)可用两条指令:$(br)$(thing)/hexextra spellbook access <玩家>/$ 查看某玩家写过哪些书;$(br)$(thing)/hexextra spellbook recover <玩家> <uuid>/$ 按记录恢复一本(内容为快照,新 UUID)。"
+  "hexextra.page.spell_storage.commands": "$(br2)管理员(op)可用两条指令:$(br)$(thing)/hexextra spellbook access <玩家>/$ 查看某玩家写过哪些书;$(br)$(thing)/hexextra spellbook recover <玩家> <uuid>/$ 按记录恢复一本(内容为快照,新 UUID)。",
+  "hexcasting.action.hexextra:try_catch": "崔凯之策略",
+  "hexcasting.action.hexextra:get_exception": "艾若儿之精思",
+  "hexextra.mishap.try_catch_blocks": "这里需要一个含 2 或 3 个代码块的列表(依次是 try、catch、可选 finally),实际给了 %s 个",
+  "hexextra.mishap.no_active_exception": "这里不在任何 catch 块里,没有可以取出的异常",
+  "hexextra.entry.try_catch": "崔凯之策略",
+  "hexextra.page.try_catch.intro": "法术里某一段出了错,通常整个法术就当场中断、只剩一段红字。$(br2)$(thing)崔凯之策略/$ 让那段报错不再中断法术,而是把它交给另一段代码去处理 —— 就像别的语言里的 try / catch。",
+  "hexextra.page.try_catch": "$(br2)接受$(thing)一个列表/$,里面放$(thing)2 个或 3 个/$代码块,依次是 try、catch、可选的 finally。$(br2)图案画下就$(italic)直接开始执行/$ try 块,不需要再用别的图案去跑它。",
+  "hexextra.page.try_catch.rule": "$(br2)$(thing)先跑 try/$。正常结束时跳过 catch;有 finally 就跑 finally。$(br2)try 里抛错时,$(italic)代价不会回滚/$ —— 已经花掉的媒质、改动的方块都保留 —— 但法术不会中断,而是接着跑 catch,再跑 finally。$(br2)catch 里可以用 $(action)艾若儿之精思/$ 取到那次报错。",
+  "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。"
 }

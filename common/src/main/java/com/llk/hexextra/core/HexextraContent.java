@@ -139,7 +139,8 @@ public final class HexextraContent {
         return java.util.List.of(
                 new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE),
                 new Entry<>(hexId("for_each"), FrameForEach.TYPE),
-                new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE));
+                new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE),
+                new Entry<>(hexId("try_catch"), com.llk.hexextra.pattern.try_catch.FrameTryCatch.TYPE));
     }
 
     /** {@code hexextra:if_else} —— 给已有图案补上条件链的算子。 */
@@ -190,7 +191,13 @@ public final class HexextraContent {
                         new com.llk.hexextra.pattern.for_each.OpForEach())),
                 new Entry<>(hexId("get_current"), new ActionRegistryEntry(
                         HexPattern.fromAngles(GET_CURRENT_PATTERN_ANGLES, GET_CURRENT_START_DIR),
-                        new LoopGetters.GetCurrent())));
+                        new LoopGetters.GetCurrent())),
+                new Entry<>(hexId("try_catch"), new ActionRegistryEntry(
+                        HexPattern.fromAngles("deaqqqwdeweweweweead", HexDir.SOUTH_EAST),
+                        new com.llk.hexextra.pattern.try_catch.OpTryCatch())),
+                new Entry<>(hexId("get_exception"), new ActionRegistryEntry(
+                        HexPattern.fromAngles("deqdeaqq", HexDir.NORTH_EAST),
+                        new com.llk.hexextra.pattern.try_catch.OpGetException())));
     }
 
     // =======================================================================
