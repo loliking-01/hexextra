@@ -85,8 +85,16 @@ public record FrameTryCatch(
         return null;
     }
 
+    /** 诊断开关:排查卡死时临时打开,日志会记录每一阶段的进出。 */
+    public static final boolean TRACE = true;
+
     @Override
     public CastResult evaluate(SpellContinuation continuation, ServerLevel level, CastingVM vm) {
+        if (TRACE) {
+            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] evaluate stage={} 栈深={} 续延={}",
+                    this.stage, vm.getImage().getStack().size(),
+                    continuation.getClass().getSimpleName());
+        }
         return switch (this.stage) {
             case 0 -> this.run(continuation, vm, this.tryBody, 1, null);
             case 1 -> this.finish(continuation, vm, null);

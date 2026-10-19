@@ -33,6 +33,8 @@ public final class OpTryCatch implements Action {
     @Override
     public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
         TreeList<Iota> stack = image.getStack();
+        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 被调用,栈深={} 栈顶={}",
+                stack.size(), stack.isEmpty() ? "<空>" : stack.last().getClass().getSimpleName());
         if (stack.isEmpty()) {
             throw new HexextraMishaps.TryCatchBlocks(0);
         }
@@ -43,6 +45,7 @@ public final class OpTryCatch implements Action {
         }
 
         TreeList<Iota> blocks = list.getList();
+        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] 代码块个数={}", blocks.size());
         if (blocks.size() < 2 || blocks.size() > 3) {
             throw new HexextraMishaps.TryCatchBlocks(blocks.size());
         }
