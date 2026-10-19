@@ -4,7 +4,7 @@ license = "MIT"
 
 [[mods]]
 modId = "hexextra"
-version = "0.0.1-alpha"
+version = "0.0.2-alpha"
 displayName = "hexextra"
 authors = "I_am_a_lolikong"
 description = "为咒法学开发的新功能"
