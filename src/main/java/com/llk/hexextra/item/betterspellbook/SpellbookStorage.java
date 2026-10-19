@@ -49,7 +49,7 @@ public class SpellbookStorage extends SavedData {
      * @param source 记录来源:{@code WRITTEN} = 通过书写图案写入(精确)
      */
     public record AccessRecord(UUID bookId, UUID playerId, String playerName,
-                               long gameTime, String source) {
+                               long gameTime, String source, int count) {
     }
 
     public SpellbookStorage() {
@@ -112,9 +112,28 @@ public class SpellbookStorage extends SavedData {
     // 访问记录
     // =======================================================================
 
-    /** 追加一条访问记录;超过上限时丢弃最旧的。 */
-    public void recordAccess(AccessRecord record) {
-        this.accessLog.add(record);
+    /**
+     * 记录一次访问。
+     *
+     * <p><b>同一本书 + 同一个玩家只保留一条</b> —— 反复书写不会刷屏,
+     * 只把「最近访问时间」推进到这次,并把访问次数加一。
+     *
+     * <p>这样记录表的 2000 条上限留给<b>真正不同的书</b>,
+     * 而不是被同一本书的重复记录占满。
+     */
+    public void recordAccess(AccessRecord incoming) {
+        for (int i = 0; i < this.accessLog.size(); i++) {
+            AccessRecord existing = this.accessLog.get(i);
+            if (existing.bookId().equals(incoming.bookId())
+                    && existing.playerId().equals(incoming.playerId())) {
+                this.accessLog.set(i, new AccessRecord(
+                        existing.bookId(), existing.playerId(), incoming.playerName(),
+                        incoming.gameTime(), incoming.source(), existing.count() + 1));
+                this.setDirty();
+                return;
+            }
+        }
+        this.accessLog.add(incoming);
         while (this.accessLog.size() > MAX_LOG) {
             this.accessLog.remove(0);
         }
@@ -158,7 +177,8 @@ public class SpellbookStorage extends SavedData {
             }
             out.accessLog.add(new AccessRecord(
                     e.getUUID("book"), e.getUUID("player"),
-                    e.getString("name"), e.getLong("time"), e.getString("source")));
+                    e.getString("name"), e.getLong("time"), e.getString("source"),
+                    e.contains("count") ? e.getInt("count") : 1));
         }
         return out;
     }
@@ -182,6 +202,7 @@ public class SpellbookStorage extends SavedData {
             e.putString("name", r.playerName());
             e.putLong("time", r.gameTime());
             e.putString("source", r.source());
+            e.putInt("count", r.count());
             log.add(e);
         }
         tag.put("access_log", log);

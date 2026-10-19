@@ -78,8 +78,8 @@ public final class BetterSpellbookCommands {
 
         for (SpellbookStorage.AccessRecord r : latest) {
             int pageCount = countPages(server, r.bookId());
-            String line = String.format("  %s  [%s]  %d 页  第 %d tick",
-                    r.bookId(), r.source(), pageCount, r.gameTime());
+            String line = String.format("  %s  [%s]  %d 页  %d 次  tick %d",
+                    r.bookId(), r.source(), pageCount, r.count(), r.gameTime());
             source.sendSuccess(() -> Component.literal(line), false);
             source.sendSuccess(() -> Component.literal(
                     "    恢复: /hexextra spellbook recover " + player.getGameProfile().getName() + " " + r.bookId()), false);

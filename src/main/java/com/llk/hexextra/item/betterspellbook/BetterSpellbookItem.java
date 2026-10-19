@@ -223,7 +223,7 @@ public class BetterSpellbookItem extends ItemSpellbook {
                 writer.getUUID(),
                 writer.getGameProfile().getName(),
                 server.overworld().getGameTime(),
-                "WRITTEN"));
+                "WRITTEN", 1));
     }
 
     /**
