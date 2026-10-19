@@ -1,0 +1,7 @@
+{
+  "name": "hexextra.category.items",
+  "icon": "minecraft:knowledge_book",
+  "description": "hexextra.category.items.desc",
+  "parent": "hexcasting:items",
+  "sortnum": 20
+}

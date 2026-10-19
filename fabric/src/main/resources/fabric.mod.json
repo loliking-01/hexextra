@@ -9,6 +9,9 @@
   "environment": "*",
   "mixins": [ "hexextra.mixins.json" ],
   "entrypoints": {
+    "client": [
+      "com.llk.hexextra.fabric.HexextraFabricClient"
+    ],
     "main": [
       "com.llk.hexextra.fabric.HexextraFabric"
     ]
