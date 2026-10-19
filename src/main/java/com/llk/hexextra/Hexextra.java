@@ -57,6 +57,11 @@ public class Hexextra {
         // ---- 把注册表挂到模组事件总线 ----
         HexextraRegistries.registerAll(modEventBus);
 
+        // 管理指令(仅 op):/hexextra spellbook access|recover
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(
+                (net.neoforged.neoforge.event.RegisterCommandsEvent event) ->
+                        com.llk.hexextra.item.betterspellbook.BetterSpellbookCommands.register(event.getDispatcher()));
+
         // 强化法术书需要自己的模型谓词注册(见 BetterSpellbookClient 的注释)
         if (net.neoforged.fml.loading.FMLEnvironment.dist == net.neoforged.api.distmarker.Dist.CLIENT) {
             modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Item event) ->

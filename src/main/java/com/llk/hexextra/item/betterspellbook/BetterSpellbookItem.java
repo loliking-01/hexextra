@@ -162,6 +162,10 @@ public class BetterSpellbookItem extends ItemSpellbook {
         }
 
         SpellbookStorage.get(server).set(id, out);
+
+        // 只有经由「书写之策略」写入时 WriterContext 才非空,
+        // 所以这里不会把合成/恢复也记成"访问"。
+        recordWrite(stack, id, server);
     }
 
     /** 从存档文件把四个组件读回物品(只在服务端有意义)。 */
@@ -200,6 +204,43 @@ public class BetterSpellbookItem extends ItemSpellbook {
         // 新书分配全新 UUID,然后把内容立即落盘
         target.set(BOOK_ID, UUID.randomUUID());
         flush(target, server);
+    }
+
+    /**
+     * 记录"谁通过书写图案写了这本书"。
+     *
+     * <p>玩家来自 {@link com.llk.hexextra.core.WriterContext},由
+     * {@code MixinOpWriteSpell} 在 {@code OpWrite$Spell.cast} 时放入 ——
+     * 因为 {@code writeDatum} 的签名里没有施法者。
+     */
+    private static void recordWrite(ItemStack stack, UUID id, MinecraftServer server) {
+        var writer = com.llk.hexextra.core.WriterContext.get();
+        if (writer == null) {
+            return;
+        }
+        SpellbookStorage.get(server).recordAccess(new SpellbookStorage.AccessRecord(
+                id,
+                writer.getUUID(),
+                writer.getGameProfile().getName(),
+                server.overworld().getGameTime(),
+                "WRITTEN"));
+    }
+
+    /**
+     * 用一份存档数据造一本<b>新的</b>强化法术书(快照恢复)。
+     *
+     * <p>刻意分配<b>新 UUID</b>:恢复出来的书与原书互不影响 ✗
+     * 这样管理指令不会变成"无限复制同一本书"。
+     */
+    public static ItemStack createSnapshot(CompoundTag data, MinecraftServer server) {
+        ItemStack stack = new ItemStack(com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.ITEM.get());
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGES.get(), stack, data, "pages");
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), stack, data, "page_names");
+        decodeComponent(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), stack, data, "page_seals");
+        decodeComponent(HexDataComponents.ITEM_VARIANT.get(), stack, data, "variant");
+        stack.set(BOOK_ID, UUID.randomUUID());
+        flush(stack, server);
+        return stack;
     }
 
     private static <T> void copyComponent(DataComponentType<T> type, ItemStack source, ItemStack target) {

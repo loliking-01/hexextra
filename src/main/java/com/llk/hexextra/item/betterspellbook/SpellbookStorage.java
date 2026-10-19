@@ -8,7 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,29 +20,37 @@ import java.util.UUID;
  * <h2>为什么用 {@link SavedData}</h2>
  * 参考 Sophisticated Backpacks 的 {@code BackpackStorage}:整个世界一个
  * {@code world/data/hexextra_spellbooks.dat},里面是 {@code UUID → 书页数据} 的映射。
- * 这样既满足"数据不在物品组件里",又不用自己处理目录创建、文件命名、并发写入 ——
- * 原版 {@code DimensionDataStorage} 已经把这些都做掉了。
  *
  * <h2>为什么键要用 UUID 而不是物品</h2>
  * 物品栈本身没有身份(可以复制、可以拆叠),而存档里的"一份书页"必须有个稳定标识。
- * 所以每本强化法术书在合成时分配一个 UUID,存进物品组件;读取时拿这个 UUID 来这里查。
+ * 所以每本强化法术书分配一个 UUID 存进物品组件;读取时拿这个 UUID 来这里查。
  *
- * <h2>共享是特性</h2>
- * 玩家复制物品会得到两个 UUID 相同的强化法术书 —— 它们共享同一份书页。
- * 这是刻意保留的行为,不做去重。
- *
- * <h2>服务器权威</h2>
- * 本类只在服务端存在。客户端拿到的书页来自物品组件里的缓存副本
- * (见 {@link BetterSpellbookItem}),因为咒法学法术书界面的翻页逻辑全是
- * {@code ItemSpellbook} 的静态方法,只能读组件,改不了。
+ * <h2>访问记录</h2>
+ * 除书页数据外,本类还维护一张「谁碰过哪本书」的记录表 ——
+ * 由书写图案写入时精确记录({@code WRITTEN}),供管理指令查询与恢复。
  */
 public class SpellbookStorage extends SavedData {
 
     /** 存档文件名(不含 .dat)。 */
     public static final String DATA_NAME = "hexextra_spellbooks";
 
-    /** UUID → 该书页面的完整 NBT(结构与咒法学原版 HEXCASTING_DATA 一致)。 */
+    /** 访问记录上限,防止无限增长。 */
+    private static final int MAX_LOG = 2000;
+
+    /** UUID → 该书页面的完整 NBT。 */
     private final Map<UUID, Tag> books = new HashMap<>();
+
+    /** 访问记录(按发生顺序追加)。 */
+    private final List<AccessRecord> accessLog = new ArrayList<>();
+
+    /**
+     * 一条访问记录。
+     *
+     * @param source 记录来源:{@code WRITTEN} = 通过书写图案写入(精确)
+     */
+    public record AccessRecord(UUID bookId, UUID playerId, String playerName,
+                               long gameTime, String source) {
+    }
 
     public SpellbookStorage() {
     }
@@ -99,6 +109,31 @@ public class SpellbookStorage extends SavedData {
     }
 
     // =======================================================================
+    // 访问记录
+    // =======================================================================
+
+    /** 追加一条访问记录;超过上限时丢弃最旧的。 */
+    public void recordAccess(AccessRecord record) {
+        this.accessLog.add(record);
+        while (this.accessLog.size() > MAX_LOG) {
+            this.accessLog.remove(0);
+        }
+        this.setDirty();
+    }
+
+    /** 某个玩家碰过的全部书(按时间顺序)。 */
+    public List<AccessRecord> recordsFor(UUID playerId) {
+        return this.accessLog.stream()
+                .filter(r -> r.playerId().equals(playerId))
+                .toList();
+    }
+
+    /** 全部记录(给管理指令用)。 */
+    public List<AccessRecord> allRecords() {
+        return List.copyOf(this.accessLog);
+    }
+
+    // =======================================================================
     // 序列化
     // =======================================================================
 
@@ -114,6 +149,17 @@ public class SpellbookStorage extends SavedData {
             Tag pages = entry.get("pages");
             out.books.put(id, pages);
         }
+
+        ListTag log = tag.getList("access_log", Tag.TAG_COMPOUND);
+        for (int i = 0; i < log.size(); i++) {
+            CompoundTag e = log.getCompound(i);
+            if (!e.hasUUID("book") || !e.hasUUID("player")) {
+                continue;
+            }
+            out.accessLog.add(new AccessRecord(
+                    e.getUUID("book"), e.getUUID("player"),
+                    e.getString("name"), e.getLong("time"), e.getString("source")));
+        }
         return out;
     }
 
@@ -127,6 +173,18 @@ public class SpellbookStorage extends SavedData {
             list.add(entry);
         }
         tag.put("books", list);
+
+        ListTag log = new ListTag();
+        for (AccessRecord r : this.accessLog) {
+            CompoundTag e = new CompoundTag();
+            e.putUUID("book", r.bookId());
+            e.putUUID("player", r.playerId());
+            e.putString("name", r.playerName());
+            e.putLong("time", r.gameTime());
+            e.putString("source", r.source());
+            log.add(e);
+        }
+        tag.put("access_log", log);
         return tag;
     }
 }
