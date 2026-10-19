@@ -140,7 +140,7 @@ public final class SpellbookPersistence {
                 id,
                 writer.getUUID(),
                 writer.getGameProfile().getName(),
-                server.overworld().getGameTime(),
+                System.currentTimeMillis(),
                 "WRITTEN",
                 1));
     }

@@ -40,11 +40,11 @@ public class SpellbookAccessLog extends SavedData {
     /**
      * 一条访问记录。
      *
-     * @param source 记录来源:{@code WRITTEN} = 通过书写图案写入(精确)
+     * @param accessTimeMillis 记录时刻,<b>系统时间</b>(epoch 毫秒),显示时按服务器时区格式化
      * @param count  累计次数(去重后只增这个数字)
      */
     public record AccessRecord(UUID bookId, UUID playerId, String playerName,
-                               long gameTime, String source, int count) {
+                               long accessTimeMillis, String source, int count) {
     }
 
     private final List<AccessRecord> entries = new ArrayList<>();
@@ -77,7 +77,7 @@ public class SpellbookAccessLog extends SavedData {
                     && existing.playerId().equals(incoming.playerId())) {
                 this.entries.set(i, new AccessRecord(
                         existing.bookId(), existing.playerId(), incoming.playerName(),
-                        incoming.gameTime(), incoming.source(), existing.count() + 1));
+                        incoming.accessTimeMillis(), incoming.source(), existing.count() + 1));
                 this.setDirty();
                 return;
             }
@@ -129,7 +129,7 @@ public class SpellbookAccessLog extends SavedData {
             e.putUUID("book", r.bookId());
             e.putUUID("player", r.playerId());
             e.putString("name", r.playerName());
-            e.putLong("time", r.gameTime());
+            e.putLong("time", r.accessTimeMillis());
             e.putString("source", r.source());
             e.putInt("count", r.count());
             list.add(e);

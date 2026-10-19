@@ -30,6 +30,11 @@ import java.util.UUID;
  */
 public final class BetterSpellbookCommands {
 
+    /** 记录时间的显示格式:2026-10-19 23:15:42。时区取服务器本地。 */
+    private static final java.time.format.DateTimeFormatter TIME_FORMAT =
+            java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    .withZone(java.time.ZoneId.systemDefault());
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("hexextra")
                 .requires(source -> source.hasPermission(4))
@@ -66,7 +71,7 @@ public final class BetterSpellbookCommands {
         // 去重在「记录写入时」就已经做过了(同一本书 + 同一个玩家只保留一条,
         // 重复书写只推进时间),所以这里直接按时间倒序列出即可。
         var latest = records.stream()
-                .sorted(Comparator.comparingLong(SpellbookAccessLog.AccessRecord::gameTime).reversed())
+                .sorted(Comparator.comparingLong(SpellbookAccessLog.AccessRecord::accessTimeMillis).reversed())
                 .toList();
 
         source.sendSuccess(() -> Component.literal(
@@ -74,8 +79,9 @@ public final class BetterSpellbookCommands {
 
         for (SpellbookAccessLog.AccessRecord r : latest) {
             int pageCount = countPages(server, r.bookId());
-            String line = String.format("  %s  [%s]  %d 页  %d 次  tick %d",
-                    r.bookId(), r.source(), pageCount, r.count(), r.gameTime());
+            String line = String.format("  %s  [%s]  %d 页  %d 次  %s",
+                    r.bookId(), r.source(), pageCount, r.count(),
+                    TIME_FORMAT.format(java.time.Instant.ofEpochMilli(r.accessTimeMillis())));
             source.sendSuccess(() -> Component.literal(line), false);
             String command = "/hexextra spellbook recover "
                     + player.getGameProfile().getName() + " " + r.bookId();

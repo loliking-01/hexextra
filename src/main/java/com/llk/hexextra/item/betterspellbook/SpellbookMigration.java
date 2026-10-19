@@ -64,7 +64,7 @@ public final class SpellbookMigration {
                 id,
                 MIGRATION_PLAYER_ID,
                 "MIGRATION",
-                server.overworld().getGameTime(),
+                System.currentTimeMillis(),
                 "MIGRATED",
                 1));
     }
