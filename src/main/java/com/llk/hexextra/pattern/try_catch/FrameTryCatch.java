@@ -90,7 +90,7 @@ public record FrameTryCatch(
         return switch (this.stage) {
             case 0 -> this.run(continuation, vm, this.tryBody, 1, null);
             case 1 -> this.finish(continuation, vm, null);
-            case 2 -> this.run(continuation, vm, this.catchBody, 3, null);
+            case 2 -> this.run(continuation, vm, this.catchBody, 3, this.exception);
             case 3 -> this.finish(continuation, vm, this.exception);
             default -> this.cast(continuation, vm, TreeList.empty());
         };
