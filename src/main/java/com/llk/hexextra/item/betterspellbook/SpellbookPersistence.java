@@ -104,7 +104,7 @@ public final class SpellbookPersistence {
         }
         decode(HexDataComponents.SPELLBOOK_PAGES.get(), stack, data, "pages");
         decode(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), stack, data, "page_names");
-        decode(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), stack, data, "page_seals");
+        // 快照不带封印:恢复出来的书应当可以继续写
         decode(HexDataComponents.ITEM_VARIANT.get(), stack, data, "variant");
     }
 
@@ -113,7 +113,7 @@ public final class SpellbookPersistence {
         ItemStack stack = new ItemStack(HexItems.SPELLBOOK.get());
         decode(HexDataComponents.SPELLBOOK_PAGES.get(), stack, data, "pages");
         decode(HexDataComponents.SPELLBOOK_PAGE_NAMES.get(), stack, data, "page_names");
-        decode(HexDataComponents.SPELLBOOK_PAGE_SEALS.get(), stack, data, "page_seals");
+        // 快照不带封印:恢复出来的书应当可以继续写
         decode(HexDataComponents.ITEM_VARIANT.get(), stack, data, "variant");
         stack.set(BOOK_ID, UUID.randomUUID());
         flush(stack, server);
