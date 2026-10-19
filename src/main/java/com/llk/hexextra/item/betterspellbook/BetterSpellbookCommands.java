@@ -75,7 +75,7 @@ public final class BetterSpellbookCommands {
                 .toList();
 
         source.sendSuccess(() -> Component.literal(
-                "=== " + player.getGameProfile().getName() + " 的强化法术书记录(共 " + latest.size() + " 本)==="), false);
+                "=== " + player.getGameProfile().getName() + " 的法术书记录(共 " + latest.size() + " 本)==="), false);
 
         for (SpellbookAccessLog.AccessRecord r : latest) {
             int pageCount = countPages(server, r.bookId());
