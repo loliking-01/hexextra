@@ -21,9 +21,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "at.petrak.hexcasting.common.casting.actions.rw.OpWrite$Spell")
 public class MixinOpWriteSpell {
 
+    /**
+     * 设置"当前书写者"。
+     *
+     * <h2>为什么排除假玩家</h2>
+     * 假玩家(Carpet 之类的 {@code player_123}、NeoForge 的 {@link FakePlayer})
+     * 往往没有真实连接、UUID 也是随机生成的 ✗ 如果照单全收,
+     * 访问记录里会堆满这些条目 ✗ 真正的玩家记录反而被挤掉
+     * (记录表上限只有 2000 条)。
+     *
+     * <p>两个判据一起用:
+     * <ul>
+     *   <li>{@code instanceof FakePlayer} —— NeoForge 的标准假玩家类型;</li>
+     *   <li>{@code connection == null} —— 没有网络连接的一定不是真人。</li>
+     * </ul>
+     */
     @Inject(method = "cast", at = @At("HEAD"), remap = false)
     private void hexextra$beforeWrite(CastingEnvironment env, CallbackInfo ci) {
-        if (env.getCastingEntity() instanceof ServerPlayer player) {
+        if (env.getCastingEntity() instanceof ServerPlayer player
+                && !(player instanceof net.neoforged.neoforge.common.util.FakePlayer)
+                && player.connection != null) {
             WriterContext.set(player);
         }
     }
