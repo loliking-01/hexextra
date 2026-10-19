@@ -86,7 +86,7 @@ public record FrameTryCatch(
     }
 
     /** 诊断开关:排查卡死时临时打开,日志会记录每一阶段的进出。 */
-    public static final boolean TRACE = true;
+    public static final boolean TRACE = false;
 
     @Override
     public CastResult evaluate(SpellContinuation continuation, ServerLevel level, CastingVM vm) {
