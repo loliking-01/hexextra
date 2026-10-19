@@ -55,7 +55,6 @@
   "hexextra.page.get_remaining": "这一轮之后还剩几轮。在 foreach 里则是还剩几个元素没遍历。只能在循环里用。",
   "hexextra.page.for_each": "把可执行 iota 对列表里的每个元素各跑一遍。$(br2)与托特不同:元素不会自动压栈。要在循环体里画 $(action)卡润特之精思/$ 才拿得到。",
   "hexextra.page.get_current": "当前正在处理的元素。只能在 $(action)佛尔易池循环之策略/$ 里用。",
-  "item.hexextra.betterspellbook": "轻量法术书",
   "hexextra.category.items": "HexExtra 物品",
   "hexextra.category.items.desc": "本模组新增的物品。",
   "hexextra.entry.spell_storage": "HexExtra 法术存储",

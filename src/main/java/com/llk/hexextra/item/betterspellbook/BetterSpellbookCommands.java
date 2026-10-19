@@ -113,7 +113,7 @@ public final class BetterSpellbookCommands {
             return 0;
         }
 
-        ItemStack book = BetterSpellbookItem.createSnapshot(tag, server);
+        ItemStack book = SpellbookPersistence.createSnapshot(tag, server);
         player.getInventory().placeItemBackInInventory(book);
 
         source.sendSuccess(() -> Component.literal(

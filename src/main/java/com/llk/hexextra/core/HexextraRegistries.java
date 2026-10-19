@@ -84,14 +84,6 @@ public final class HexextraRegistries {
     public static final DeferredRegister<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPES =
             DeferredRegister.create(net.minecraft.core.registries.Registries.DATA_COMPONENT_TYPE, Hexextra.MODID);
 
-    /** 物品。 */
-    public static final DeferredRegister<net.minecraft.world.item.Item> ITEMS =
-            DeferredRegister.create(net.minecraft.core.registries.Registries.ITEM, Hexextra.MODID);
-
-    /** 配方序列化器。 */
-    public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPE_SERIALIZERS =
-            DeferredRegister.create(net.minecraft.core.registries.Registries.RECIPE_SERIALIZER, Hexextra.MODID);
-
     public static void registerAll(IEventBus modEventBus) {
         ACTIONS.register(modEventBus);
         CONTINUATION_TYPES.register(modEventBus);
@@ -99,7 +91,5 @@ public final class HexextraRegistries {
         ARITHMETICS.register(modEventBus);
         SPECIAL_HANDLERS.register(modEventBus);
         DATA_COMPONENT_TYPES.register(modEventBus);
-        ITEMS.register(modEventBus);
-        RECIPE_SERIALIZERS.register(modEventBus);
     }
 }

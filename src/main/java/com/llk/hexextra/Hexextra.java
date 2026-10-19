@@ -50,11 +50,14 @@ public class Hexextra {
         HexextraIotaTypes.init();
         ForLoopFeature.init();
         com.llk.hexextra.pattern.for_each.ForEachFeature.init();
-        com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.init();
         IfElseFeature.init();
         SwitchFeature.init();
 
         // ---- 把注册表挂到模组事件总线 ----
+        // 法术书的 UUID 组件(书页存在文件里,物品上只留这个)
+        HexextraRegistries.DATA_COMPONENT_TYPES.register("book_id",
+                () -> com.llk.hexextra.item.betterspellbook.SpellbookPersistence.BOOK_ID);
+
         HexextraRegistries.registerAll(modEventBus);
 
         // 把玩家身上已有的法术书纳入文件存储(首次加载 / 每次登录)
@@ -76,21 +79,7 @@ public class Hexextra {
                 (net.neoforged.neoforge.event.RegisterCommandsEvent event) ->
                         com.llk.hexextra.item.betterspellbook.BetterSpellbookCommands.register(event.getDispatcher()));
 
-        // 强化法术书需要自己的模型谓词注册(见 BetterSpellbookClient 的注释)
-        if (net.neoforged.fml.loading.FMLEnvironment.dist == net.neoforged.api.distmarker.Dist.CLIENT) {
-            modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Item event) ->
-                    event.register(com.llk.hexextra.item.betterspellbook.BetterSpellbookClient.makeColorizer(),
-                            com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.ITEM.get()));
-            modEventBus.addListener((net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) ->
-                    com.llk.hexextra.item.betterspellbook.BetterSpellbookClient.registerModelProperties());
-        }
 
-        // 让强化法术书出现在创造模式「工具与实用物品」页(咒法学法术书也在那一页附近)
-        modEventBus.addListener((net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent event) -> {
-            if (event.getTabKey() == net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES) {
-                event.accept(com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.ITEM.get());
-            }
-        });
 
         // ---- 启动自检 ----
         // 算术引擎是懒构建的,若某个图案的算子 arity 写错,会在玩家第一次施法时才炸,

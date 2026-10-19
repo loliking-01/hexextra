@@ -2,7 +2,7 @@ package com.llk.hexextra.mixin;
 
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.common.items.storage.ItemSpellbook;
-import com.llk.hexextra.item.betterspellbook.BetterSpellbookItem;
+import com.llk.hexextra.item.betterspellbook.SpellbookPersistence;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -35,7 +35,7 @@ public class MixinItemSpellbook {
     private void hexextra$persist(ItemStack stack, Iota iota, CallbackInfo ci) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            BetterSpellbookItem.flush(stack, server);
+            SpellbookPersistence.flush(stack, server);
         }
     }
 }

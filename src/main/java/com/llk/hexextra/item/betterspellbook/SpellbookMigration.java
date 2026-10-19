@@ -38,7 +38,7 @@ public final class SpellbookMigration {
             return;
         }
         // 已经有身份:说明之前写完就落过盘,不用管
-        if (BetterSpellbookItem.getBookId(stack) != null) {
+        if (SpellbookPersistence.getBookId(stack) != null) {
             return;
         }
         // 空书不值得建条目(没有任何内容可丢)
@@ -51,8 +51,8 @@ public final class SpellbookMigration {
             return;
         }
 
-        var id = BetterSpellbookItem.getOrCreateBookId(stack);
-        BetterSpellbookItem.flush(stack, server);
+        var id = SpellbookPersistence.getOrCreateBookId(stack);
+        SpellbookPersistence.flush(stack, server);
         SpellbookAccessLog.get(server).recordAccess(new SpellbookAccessLog.AccessRecord(
                 id,
                 MIGRATION_PLAYER_ID,
