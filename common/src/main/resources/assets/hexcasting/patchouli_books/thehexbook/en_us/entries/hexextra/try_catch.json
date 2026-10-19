@@ -1,6 +1,6 @@
 {
   "name": "hexextra.entry.try_catch",
-  "category": "hexcasting:hexextra_patterns",
+  "category": "hexcasting:hexextra",
   "icon": "minecraft:shield",
   "sortnum": 10,
   "advancement": "hexcasting:root",
