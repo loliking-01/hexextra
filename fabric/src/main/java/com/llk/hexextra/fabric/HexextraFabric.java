@@ -51,23 +51,13 @@ public final class HexextraFabric implements ModInitializer {
             Registry.register(HexActions.REGISTRY, entry.id(), entry.value());
         }
 
-        // 强化法术书
-        net.minecraft.world.item.Item betterSpellbook =
-                com.llk.hexextra.item.betterspellbook.BetterSpellbookItems.get();
-        Registry.register(net.minecraft.core.registries.BuiltInRegistries.ITEM,
-                new net.minecraft.resources.ResourceLocation("hexextra", "betterspellbook"),
-                betterSpellbook);
-        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
-                .modifyEntriesEvent(net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES)
-                .register(entries -> entries.accept(betterSpellbook));
-
-        // 配方序列化器
-        Registry.register(net.minecraft.core.registries.BuiltInRegistries.RECIPE_SERIALIZER,
-                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.BETTER_SPELLBOOK_RECIPE_ID,
-                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.BETTER_SPELLBOOK_SERIALIZER);
-        Registry.register(net.minecraft.core.registries.BuiltInRegistries.RECIPE_SERIALIZER,
-                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.SEAL_RECIPE_ID,
-                com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.SEAL_SERIALIZER);
+        // 管理指令(仅 op)与法术书迁移
+        net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT.register(
+                (dispatcher, registry, environment) ->
+                        com.llk.hexextra.item.betterspellbook.SpellbookCommands.register(dispatcher));
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
+                (handler, sender, server) ->
+                        com.llk.hexextra.item.betterspellbook.SpellbookMigration.convertPlayer(handler.getPlayer()));
 
         LOGGER.info("hexextra: 注册完成 —— iota 类型 3、续延帧 2、算术 2、图案 4、物品 1、配方 2");
 

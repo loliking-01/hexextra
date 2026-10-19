@@ -71,26 +71,6 @@ public final class HexextraForge {
     private static final DeferredRegister<ActionRegistryEntry> ACTIONS =
             DeferredRegister.create(HexRegistries.ACTION, MOD_ID);
 
-    /** 物品表。 */
-    private static final DeferredRegister<net.minecraft.world.item.Item> ITEMS =
-            DeferredRegister.create(net.minecraftforge.registries.ForgeRegistries.ITEMS, MOD_ID);
-
-    /** 强化法术书。 */
-    public static final net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.Item> BETTER_SPELLBOOK =
-            ITEMS.register("betterspellbook", com.llk.hexextra.item.betterspellbook.BetterSpellbookItems::get);
-
-    /** 配方序列化器表。 */
-    private static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPE_SERIALIZERS =
-            DeferredRegister.create(net.minecraftforge.registries.ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
-
-    public static final net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.crafting.RecipeSerializer<?>> BETTER_SPELLBOOK_RECIPE =
-            RECIPE_SERIALIZERS.register("betterspellbook",
-                    () -> com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.BETTER_SPELLBOOK_SERIALIZER);
-
-    public static final net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.crafting.RecipeSerializer<?>> SEAL_RECIPE =
-            RECIPE_SERIALIZERS.register("seal_betterspellbook",
-                    () -> com.llk.hexextra.item.betterspellbook.BetterSpellbookFeature.SEAL_SERIALIZER);
-
     /**
      * 无参构造 —— Forge 1.20.1 的 {@code @Mod} 类必须提供它。
      *
@@ -121,16 +101,22 @@ public final class HexextraForge {
         ARITHMETICS.register(modEventBus);
         SPECIAL_HANDLERS.register(modEventBus);
         ACTIONS.register(modEventBus);
-        ITEMS.register(modEventBus);
-        RECIPE_SERIALIZERS.register(modEventBus);
-
-        // 创造模式「工具与实用物品」页。
-        // 类名与 NeoForge 一样,但 getTabKey() 才是 ResourceKey;accept 收的是 Supplier。
-        modEventBus.addListener((net.minecraftforge.event.BuildCreativeModeTabContentsEvent event) -> {
-            if (event.getTabKey() == net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES) {
-                event.accept(BETTER_SPELLBOOK);
-            }
-        });
+        // 管理指令(仅 op)与法术书迁移
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.event.RegisterCommandsEvent event) ->
+                        com.llk.hexextra.item.betterspellbook.SpellbookCommands.register(event.getDispatcher()));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) -> {
+                    if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+                        com.llk.hexextra.item.betterspellbook.SpellbookMigration.convertPlayer(player);
+                    }
+                });
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.event.server.ServerStartedEvent event) -> {
+                    for (var player : event.getServer().getPlayerList().getPlayers()) {
+                        com.llk.hexextra.item.betterspellbook.SpellbookMigration.convertPlayer(player);
+                    }
+                });
 
         LOGGER.info("hexextra: DeferredRegister 已挂上事件总线 —— iota 类型 3、续延帧 2、算术 2、图案 4");
     }

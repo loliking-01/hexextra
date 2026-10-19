@@ -6,10 +6,8 @@
   "mixins": [
     "MixinOpSplat",
     "MixinOpLastNToList",
-    "MixinMsgShiftScrollC2S"
-  ],
-  "client": [
-    "MixinShiftScrollListener"
+    "MixinOpWriteSpell",
+    "MixinItemSpellbook"
   ],
   "injectors": {
     "defaultRequire": 1

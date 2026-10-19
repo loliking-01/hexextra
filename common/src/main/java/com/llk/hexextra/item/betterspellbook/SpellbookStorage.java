@@ -12,25 +12,13 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 强化法术书的「物理文件」存储(0.11.4 版)。
+ * 强化法术书的「物理文件」存储:<b>只存书页数据</b>。
  *
- * <h2>与 1.21.1 版的差异</h2>
- * <ul>
- *   <li>0.11.4 的 {@link SavedData#save(CompoundTag)} 是<b>单参数</b>(1.21.1 多一个
- *       {@code HolderLookup.Provider});</li>
- *   <li>0.11.4 的法术书把书页放在<b>物品 NBT</b> 里,键名有公开常量
- *       ({@code ItemSpellbook.TAG_PAGES} 等),所以本类<b>原样拷贝那几个 tag</b> 即可,
- *       不必关心它们的具体结构。</li>
- * </ul>
- *
- * <h2>为什么用 SavedData</h2>
- * 与参考实现(Sophisticated Backpacks 的 {@code BackpackStorage})一致:
- * 整个世界一个 {@code world/data/hexextra_spellbooks.dat},里面是 {@code UUID → 书页数据}。
- * 文件命名、目录创建、并发写入都交给 {@link net.minecraft.world.level.storage.DimensionDataStorage}。
+ * <p>访问记录在另一个 {@link SpellbookAccessLog} 里(独立的 .dat),
+ * 免得频繁写记录时把整份书页也一起重写。
  */
 public class SpellbookStorage extends SavedData {
 
-    /** 存档文件名(不含 .dat)。 */
     public static final String DATA_NAME = "hexextra_spellbooks";
 
     /** UUID → 该书那几个 NBT tag 的集合。 */
@@ -39,7 +27,6 @@ public class SpellbookStorage extends SavedData {
     public SpellbookStorage() {
     }
 
-    /** 从服务端主世界取存储。所有维度共用同一份。 */
     public static SpellbookStorage get(MinecraftServer server) {
         ServerLevel overworld = server.overworld();
         return overworld.getDataStorage().computeIfAbsent(
@@ -48,11 +35,6 @@ public class SpellbookStorage extends SavedData {
                 DATA_NAME);
     }
 
-    // =======================================================================
-    // 读写
-    // =======================================================================
-
-    /** 拿某本书的数据;没有就新建一份空的并写回。 */
     public CompoundTag getOrCreate(UUID id) {
         CompoundTag existing = this.books.get(id);
         if (existing != null) {
@@ -64,12 +46,10 @@ public class SpellbookStorage extends SavedData {
         return fresh;
     }
 
-    /** 拿某本书的数据;没有就返回 null。 */
     public CompoundTag get(UUID id) {
         return this.books.get(id);
     }
 
-    /** 覆盖写入某本书的数据。 */
     public void set(UUID id, CompoundTag tag) {
         this.books.put(id, tag);
         this.setDirty();
@@ -81,9 +61,9 @@ public class SpellbookStorage extends SavedData {
         }
     }
 
-    // =======================================================================
-    // 序列化(0.11.4 单参数)
-    // =======================================================================
+    public boolean has(UUID id) {
+        return this.books.containsKey(id);
+    }
 
     public static SpellbookStorage load(CompoundTag tag) {
         SpellbookStorage out = new SpellbookStorage();
