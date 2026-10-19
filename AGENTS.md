@@ -185,6 +185,29 @@ pattern/                   图案类功能
 
 ---
 
+## 规则 9:跨 loader 的 common 代码不要用 Kotlin data class 的 copy(...)
+
+在 `hexextra1.20.1` 这种**一个 jar 被 Forge 与 Fabric 同时加载**的工程里,
+`common` 模块里**禁止**用 Kotlin 的具名/默认参数形式调用 `copy(...)`
+(例如 `image.copy(stack = newStack)`)。
+
+**原因**:Kotlin 会为 `copy(...)` 生成一个**合成方法** `copy$default`。
+Fabric 的 loom 在重映射模组依赖时**跳过合成方法** —— 它的描述符里仍然写着
+编译期的 MC 类名(如 `CompoundTag`),而运行时咒法学用的是另一套映射
+(如 `class_2487`)。于是调用时直接 `NoSuchMethodError`,整个服务端崩掉。
+
+**症状**:只在 Fabric 崩,Forge 与 1.21.1 都正常,而且崩溃点在**别人的库**里,
+看起来像是上游的问题。
+
+需要"复制一个 Kotlin data class、只改一个字段"时:
+
+- 用 **Java** 调它的**公开构造函数**或**全参数方法**(真实方法,会被正常重映射);
+- 或者用一个 Java 工具方法包起来,例如 `CastingImages.withStack(image, stack)`。
+
+**注意**:这条只约束 `common`。`hexextra`(1.21.1)是单 loader ✗ 不存在重映射,
+那边用 Kotlin 助手是安全的 ✓
+
+---
 ## 项目速览
 
 | 项 | 值 |
