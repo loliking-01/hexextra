@@ -94,16 +94,29 @@ public final class SpellbookPersistence {
         }
     }
 
-    /** 用一份存档数据造一本新的原版法术书(快照恢复),分配新 UUID。 */
+    /**
+     * 用一份存档数据造一本新的原版法术书(快照恢复),分配新 UUID。
+     *
+     * <h2>为什么不带封印</h2>
+     * 0.11.4 的封印是<b>按页</b>存的({@code sealed_pages: {"1": true}}),
+     * 而 {@code isSealed} 看的是<b>当前页</b>,快照里没有 {@code page_idx} 时默认第 1 页。
+     * 于是只要原书第 1 页是封的,恢复出来就整本显示"已封印"——
+     * 玩家拿到的应该是一本<b>可以继续写</b>的书,所以这里显式不带封印。
+     * 需要的话再拿蜂蜜块封一次即可。
+     */
     public static ItemStack createSnapshot(CompoundTag data, MinecraftServer server) {
         ItemStack stack = new ItemStack(HexItems.SPELLBOOK);
         CompoundTag itemTag = stack.getOrCreateTag();
         for (String key : PERSISTED) {
+            if (ItemSpellbookTagNames.SEALED.equals(key)) {
+                continue;
+            }
             Tag value = data.get(key);
             if (value != null) {
                 itemTag.put(key, value.copy());
             }
         }
+        itemTag.remove(ItemSpellbookTagNames.SEALED);
         itemTag.putUUID(TAG_BOOK_ID, UUID.randomUUID());
         flush(stack, server);
         return stack;
