@@ -383,4 +383,51 @@ public final class HexextraMishaps {
             return Component.translatable("hexextra.mishap.no_enclosing_loop");
         }
     }
+
+    // =======================================================================
+    // try_catch 相关的报错
+    // =======================================================================
+
+    /** try_catch 拿到的列表里代码块个数不是 2 或 3。 */
+    public static final class TryCatchBlocks extends Mishap {
+
+        private final int count;
+
+        public TryCatchBlocks(int count) {
+            this.count = count;
+        }
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        /** 本报错不动栈。 */
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.try_catch_blocks", this.count);
+        }
+    }
+
+    /** get_exception 不在任何 catch 块里。 */
+    public static final class NoActiveException extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.no_active_exception");
+        }
+    }
 }
