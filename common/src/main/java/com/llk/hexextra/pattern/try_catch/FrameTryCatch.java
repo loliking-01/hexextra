@@ -129,7 +129,7 @@ public record FrameTryCatch(
     private CastResult run(SpellContinuation continuation, CastingVM vm,
                            TreeList<Iota> body, int nextStage, @Nullable Iota ex) {
         SpellContinuation next = continuation
-                .pushFrame(new FrameTryCatch(this.tryBody, this.catchBody, this.finallyBody, nextStage, ex))
+                .pushFrame(new FrameTryCatch(TreeList.empty(), this.catchBody, this.finallyBody, nextStage, ex))
                 .pushFrame(new FrameEvaluate(new SpellList.LList(body), true));
         return this.cast(next, vm, body);
     }
@@ -138,7 +138,7 @@ public record FrameTryCatch(
     private CastResult finish(SpellContinuation continuation, CastingVM vm, @Nullable Iota ex) {
         if (this.finallyBody != null) {
             SpellContinuation next = continuation
-                    .pushFrame(new FrameTryCatch(this.tryBody, this.catchBody, null, 4, ex))
+                    .pushFrame(new FrameTryCatch(TreeList.empty(), TreeList.empty(), null, 4, ex))
                     .pushFrame(new FrameEvaluate(new SpellList.LList(this.finallyBody), true));
             return this.cast(next, vm, this.finallyBody);
         }
@@ -154,8 +154,9 @@ public record FrameTryCatch(
         }
         TryCatchExitGuard.request();
 
+        // 进入 catch:try 已经跑完,不必再留着它
         SpellContinuation next = continuation.pushFrame(
-                new FrameTryCatch(this.tryBody, this.catchBody, this.finallyBody, 2, errorIota));
+                new FrameTryCatch(TreeList.empty(), this.catchBody, this.finallyBody, 2, errorIota));
         return this.cast(next, vm, TreeList.empty());
     }
 
