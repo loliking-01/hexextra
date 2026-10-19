@@ -49,21 +49,6 @@ public class BetterSpellbookItem extends ItemSpellbook {
     // 写入:组件缓存 + 落盘
     // =======================================================================
 
-    /**
-     * 写书页。原版逻辑照常跑(写进组件,客户端立刻能看见),然后整本书覆盖到存档文件。
-     *
-     * <p>{@code IotaHolderItem} 的签名里没有 {@code Level},所以这里从
-     * {@link ServerLifecycleHooks} 取当前服务端;客户端调用时它返回 null,正好跳过落盘。
-     */
-    @Override
-    public void writeDatum(ItemStack stack, Iota iota) {
-        super.writeDatum(stack, iota);
-
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null) {
-            flush(stack, server);
-        }
-    }
 
     // =======================================================================
     // UUID
