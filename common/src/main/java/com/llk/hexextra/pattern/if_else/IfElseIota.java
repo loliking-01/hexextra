@@ -180,7 +180,7 @@ public class IfElseIota extends Iota {
     // 工具
     // =======================================================================
 
-    static ListTag serializeBlock(TreeList<Iota> block) {
+    public static ListTag serializeBlock(TreeList<Iota> block) {
         var out = new ListTag();
         for (Iota iota : block) {
             out.add(IotaType.serialize(iota));
@@ -188,7 +188,7 @@ public class IfElseIota extends Iota {
         return out;
     }
 
-    static TreeList<Iota> deserializeBlock(@Nullable Tag tag, ServerLevel world) {
+    public static TreeList<Iota> deserializeBlock(@Nullable Tag tag, ServerLevel world) {
         if (tag == null) {
             return TreeList.empty();
         }
