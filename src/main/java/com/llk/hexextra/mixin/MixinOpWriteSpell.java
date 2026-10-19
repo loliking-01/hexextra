@@ -41,7 +41,8 @@ public class MixinOpWriteSpell {
         if (env.getCastingEntity() instanceof ServerPlayer player
                 && !(player instanceof net.neoforged.neoforge.common.util.FakePlayer)
                 && player.connection != null) {
-            WriterContext.set(player);
+            // 记下当前 tick,残留值最多活一个 tick 就失效
+            WriterContext.set(player, player.serverLevel().getGameTime());
         }
     }
 

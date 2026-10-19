@@ -214,7 +214,7 @@ public class BetterSpellbookItem extends ItemSpellbook {
      * 因为 {@code writeDatum} 的签名里没有施法者。
      */
     private static void recordWrite(ItemStack stack, UUID id, MinecraftServer server) {
-        var writer = com.llk.hexextra.core.WriterContext.get();
+        var writer = com.llk.hexextra.core.WriterContext.get(server);
         if (writer == null) {
             return;
         }
