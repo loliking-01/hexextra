@@ -18,6 +18,17 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public final class HexextraIotaTypes {
 
     /**
+     * try_catch 的「异常」iota。
+     *
+     * <p>注册名 {@code exception} → 完整 id 为 {@code hexextra:exception}。
+     */
+    public static final DeferredHolder<IotaType<?>, IotaType<com.llk.hexextra.pattern.try_catch.ExceptionIota>> EXCEPTION =
+            HexextraRegistries.IOTA_TYPES.register("exception", () -> {
+                com.llk.hexextra.Hexextra.LOGGER.info("hexextra: iota 类型 hexextra:exception 已登记");
+                return com.llk.hexextra.pattern.try_catch.ExceptionIota.TYPE;
+            });
+
+    /**
      * if / elseif / else 条件链。
      *
      * <p>注册名 {@code if_else} → 完整 id 为 {@code hexextra:if_else}。
