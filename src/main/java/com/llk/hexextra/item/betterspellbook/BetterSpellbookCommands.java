@@ -7,6 +7,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -76,8 +77,14 @@ public final class BetterSpellbookCommands {
             String line = String.format("  %s  [%s]  %d 页  %d 次  tick %d",
                     r.bookId(), r.source(), pageCount, r.count(), r.gameTime());
             source.sendSuccess(() -> Component.literal(line), false);
-            source.sendSuccess(() -> Component.literal(
-                    "    恢复: /hexextra spellbook recover " + player.getGameProfile().getName() + " " + r.bookId()), false);
+            String command = "/hexextra spellbook recover "
+                    + player.getGameProfile().getName() + " " + r.bookId();
+            // 可点击复制:玩家不用手打这一长串 UUID
+            source.sendSuccess(() -> Component.literal("    [复制] " + command)
+                    .withStyle(style -> style
+                            .withColor(0x55FFFF)
+                            .withUnderlined(true)
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, command))), false);
         }
         return latest.size();
     }
