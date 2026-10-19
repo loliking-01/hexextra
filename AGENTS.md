@@ -147,6 +147,27 @@ item/                      物品类功能
 
 ---
 
+## 规则 8:不要硬编码别人的组件 id / 注册名,用属性调用
+
+引用咒法学(或任何其它模组)的数据组件、注册名、NBT 键时,**不要**写字面量 ——
+比如 `"hexcasting:spellbook_pages"`、`"pages"`、`new ResourceLocation("hexcasting", ...)`。
+
+一律通过对方**公开的常量或持有者**取:
+
+| 要拿什么 | 怎么拿 |
+|---|---|
+| 1.21.1 的数据组件 | `HexDataComponents.SPELLBOOK_PAGES.get()` |
+| 0.11.4 的 NBT 键 | `ItemSpellbook.TAG_PAGES` 这类公开常量 |
+| 注册表对象 | 对应的 `DeferredHolder` / `RegistryObject` |
+
+**理由**:字面量在对方改名、或我们迁移版本时**不会报错** ✗ 只会静默失效
+(读不到 / 写不进 / 注册不上),排查成本极高;而引用常量时对方改了名会**编译失败**,
+问题当场暴露。
+
+对方的常量可以在一处集中转发(例如 `ItemSpellbookTagNames`),好处是升级时只改一个文件。
+
+---
+
 ## 项目速览
 
 | 项 | 值 |
