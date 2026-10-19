@@ -3,7 +3,7 @@
   "id": "hexextra",
   "version": "0.0.1-alpha",
   "name": "hexextra",
-  "description": "为咒法学开发的新功能",
+  "description": "Hex Casting addon: extra patterns and a file-backed spellbook.",
   "authors": [ "I_am_a_lolikong" ],
   "license": "MIT",
   "environment": "*",

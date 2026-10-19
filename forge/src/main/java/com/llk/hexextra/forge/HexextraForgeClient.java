@@ -6,7 +6,9 @@ import com.llk.hexextra.HexextraCommon;
 import com.llk.hexextra.item.betterspellbook.BetterSpellbookItems;
 import com.llk.hexextra.item.betterspellbook.BetterSpellbookRendering;
 import net.minecraft.world.item.Item;
+import at.petrak.hexcasting.client.RegisterClientStuff;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -29,6 +31,13 @@ public final class HexextraForgeClient {
             IClientXplatAbstractions.INSTANCE.registerItemProperty(item, ItemFocus.VARIANT_PRED,
                     (stack, level, entity, seed) -> BetterSpellbookRendering.variant(stack));
         });
+    }
+
+    /** 物品染色:标签颜色取当前页 iota 类型定义的颜色。 */
+    @SubscribeEvent
+    public static void onRegisterColors(RegisterColorHandlersEvent.Item event) {
+        event.register(RegisterClientStuff.makeIotaStorageColorizer(BetterSpellbookRendering::tintColor),
+                BetterSpellbookItems.get());
     }
 
     private HexextraForgeClient() {
