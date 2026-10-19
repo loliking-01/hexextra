@@ -192,6 +192,14 @@ public record FrameTryCatch(
     }
 
     private CastResult cast(SpellContinuation continuation, CastingVM vm, TreeList<Iota> block) {
+        {
+            int total = 0;
+            for (Iota i : vm.getImage().getStack()) {
+                total += i.size();
+            }
+            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] cast 栈深={} 合计size={} stage={}",
+                    vm.getImage().getStack().size(), total, this.stage);
+        }
         return new CastResult(
                 new ListIota(block),
                 continuation,

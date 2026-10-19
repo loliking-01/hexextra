@@ -33,6 +33,8 @@ public final class OpTryCatch implements Action {
     @Override
     public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
         TreeList<Iota> stack = image.getStack();
+        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 前栈: {} 项,合计 size={}",
+                stack.size(), totalSize(stack));
         com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 被调用,栈深={} 栈顶={}",
                 stack.size(), stack.isEmpty() ? "<空>" : stack.last().getClass().getSimpleName());
         if (stack.isEmpty()) {
@@ -57,11 +59,24 @@ public final class OpTryCatch implements Action {
         // 弹出那个列表
         CastingImage next = CastingImages.withStack(image, stack.dropRight(1));
 
+        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 后栈: {} 项,合计 size={};try={} catch={} finally={}",
+                next.getStack().size(), totalSize(next.getStack()),
+                tryBody.size(), catchBody.size(), finallyBody == null ? 0 : finallyBody.size());
+
         return new OperationResult(
                 next,
                 List.of(),
                 continuation.pushFrame(new FrameTryCatch(tryBody, catchBody, finallyBody, 0, null)),
                 HexEvalSounds.NORMAL_EXECUTE.get());
+    }
+
+    /** 栈上所有 iota 的 size() 之和 —— 就是咒法学判「超出栈的大小上限」的口径。 */
+    private static int totalSize(java.util.List<Iota> stack) {
+        int total = 0;
+        for (Iota iota : stack) {
+            total += iota.size();
+        }
+        return total;
     }
 
     /** 把一个元素当成代码块取出来;不是列表就当空块(和其它控制流图案同一口径)。 */
