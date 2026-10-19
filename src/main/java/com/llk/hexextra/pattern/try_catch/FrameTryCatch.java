@@ -126,6 +126,9 @@ public record FrameTryCatch(
 
     /** try 块抛错时由 Mixin 调用:换成"进入 catch"的新结果。 */
     public CastResult enterCatch(SpellContinuation continuation, CastingVM vm, Iota errorIota) {
+        // 告诉 VM:这次报错不应让循环退出 —— 否则 catch 帧求值不到
+        TryCatchExitGuard.request();
+
         SpellContinuation next = continuation.pushFrame(
                 new FrameTryCatch(this.tryBody, this.catchBody, this.finallyBody, 2, errorIota));
         return this.cast(next, vm, TreeList.empty());

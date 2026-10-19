@@ -7,7 +7,9 @@
     "MixinOpSplat",
     "MixinOpLastNToList",
     "MixinOpWriteSpell",
-    "MixinItemSpellbook"
+    "MixinItemSpellbook",
+    "MixinCastingVM",
+    "MixinTempControllerInfo"
   ],
   "injectors": {
     "defaultRequire": 1
