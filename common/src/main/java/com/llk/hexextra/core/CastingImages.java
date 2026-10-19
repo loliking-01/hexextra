@@ -6,29 +6,32 @@ import at.petrak.hexcasting.api.casting.iota.Iota;
 import java.util.List;
 
 /**
- * 施法状态的复制助手。
+ * {@link CastingImage} 的 Java 侧小工具。
  *
- * <h2>为什么值得单独抽出来</h2>
- * {@code CastingImage} 是 Kotlin 的 data class,Kotlin 侧写 {@code image.copy(stack = newStack)}
- * 靠具名参数;Java 没有这个语法,只能把 <b>6 个位置参数</b>挨个传一遍:
- * <pre>
- *   stack, parenCount, parenthesized, escapeNext, opsConsumed, userData
- * </pre>
+ * <h2>⚠ 为什么这里是「直接构造」而不是 Kotlin 的 copy(...)</h2>
+ * Kotlin data class 的 {@code copy(...)} 在字节码里会生成一个<b>合成方法</b>
+ * {@code copy$default}(带 {@code int mask} + {@code Object marker} 两个额外参数)。
+ * Fabric 的 loom 在重映射模组依赖时<b>不会处理这类合成方法</b> ✗ 于是它的描述符里
+ * 仍然带着 Mojmap 的 {@code CompoundTag},而运行时的咒法学用的是另一套映射 ——
+ * 调用时直接 {@code NoSuchMethodError},整个服务端崩掉。
  *
- * <p>0.11.4 的字段里只有一个 {@code escapeNext} 是 boolean(0.12.0 才多出一个相邻的
- * {@code simulateNext},那里对调的风险更大),但仍然没必要在每个用到的地方抄一遍 ——
- * 本工程一度在 {@code FrameIfElse}、{@code IfElseSpecialHandlers}、{@code SwitchIota}
- * 三处各写了一份完全相同的私有实现,任何一处将来漏改都会造成行为不一致。
+ * <p>构造函数 {@link CastingImage#CastingImage(List, int, List, boolean, long, net.minecraft.nbt.CompoundTag)}
+ * 是<b>真实方法</b> ✗ 会被正常重映射 ✓ 所以这里按「原样复制其余五个字段 + 换掉栈」
+ * 的方式重建一个实例,绕开那个合成方法。
  */
 public final class CastingImages {
 
-    private CastingImages() {
+    /** 用新的栈重建一个 {@link CastingImage},其余字段保持原样。 */
+    public static CastingImage withStack(CastingImage image, List<Iota> stack) {
+        return new CastingImage(
+                stack,
+                image.getParenCount(),
+                image.getParenthesized(),
+                image.getEscapeNext(),
+                image.getOpsConsumed(),
+                image.getUserData());
     }
 
-    /**
-     * 只替换栈,其余字段(括号状态、转义标志、算力计数、附加数据)原样保留。
-     */
-    public static CastingImage withStack(CastingImage image, List<Iota> stack) {
-        return com.llk.hexextra.helper.HexExtraHelpersKt.withStack(image, stack);
+    private CastingImages() {
     }
 }
