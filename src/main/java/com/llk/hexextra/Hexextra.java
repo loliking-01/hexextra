@@ -57,6 +57,20 @@ public class Hexextra {
         // ---- 把注册表挂到模组事件总线 ----
         HexextraRegistries.registerAll(modEventBus);
 
+        // 把玩家身上已有的法术书纳入文件存储(首次加载 / 每次登录)
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(
+                (net.neoforged.neoforge.event.server.ServerStartedEvent event) -> {
+                    for (var player : event.getServer().getPlayerList().getPlayers()) {
+                        com.llk.hexextra.item.betterspellbook.SpellbookMigration.convertPlayer(player);
+                    }
+                });
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(
+                (net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) -> {
+                    if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+                        com.llk.hexextra.item.betterspellbook.SpellbookMigration.convertPlayer(player);
+                    }
+                });
+
         // 管理指令(仅 op):/hexextra spellbook access|recover
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(
                 (net.neoforged.neoforge.event.RegisterCommandsEvent event) ->
