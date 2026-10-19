@@ -57,8 +57,8 @@
   "hexextra.page.get_current": "当前正在处理的元素。只能在 $(action)佛尔易池循环之策略/$ 里用。",
   "hexextra.page.for_loop.intro": "这是一组用来反复执行同一段代码的图案。$(br2)三枚取值图案(当前次数 / 剩余次数 / 当前元素)默认读的是<b>最内层</b>的那一层。想读外面一层,就在它下面压一个数字表示往外数第几层:0 是当前层,1 是外面一层,依次类推。不压数字时默认取当前层。$(br2)层数超出实际嵌套时,会报「这里没有这么多层循环」。",
   "hexextra.category.items": "HexExtra 物品",
-  "hexextra.category.items.desc": "本模组对物品的改动。",
-  "hexextra.entry.spell_storage": "法术书文件存储",
+  "hexextra.category.items.desc": "HexExtra新增的物品或对物品的改动。",
+  "hexextra.entry.spell_storage": "法术书改动",
   "hexextra.page.spell_storage.intro": "本模组把<b>法术书的书页</b>从物品本身挪到了世界存档里的文件。$(br2)书写、翻页、封印、命名、施法都照旧 —— 只是内容不再跟着物品走,而是跟着一个 UUID 走。",
   "hexextra.page.spell_storage.storage": "每本法术书都带一个 UUID。书页按 UUID 存在 $(thing)hexextra_spellbooks.dat/$ 里,访问记录存在另一个文件 $(thing)hexextra_spellbook_access.dat/$ 里。$(br2)$(italic)注意:物品上仍保留一份书写时的副本用于显示。若卸载本模组,书只能读到最后一次写入时的内容。/$",
   "hexextra.page.spell_storage.commands": "$(br2)管理员(op)可用两条指令:$(br)$(thing)/hexextra spellbook access <玩家>/$ 查看某玩家写过哪些书;$(br)$(thing)/hexextra spellbook recover <玩家> <uuid>/$ 按记录恢复一本(内容为快照,新 UUID)。"
