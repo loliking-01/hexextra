@@ -50,6 +50,7 @@ public class Hexextra {
         HexextraIotaTypes.init();
         ForLoopFeature.init();
         com.llk.hexextra.pattern.for_each.ForEachFeature.init();
+        com.llk.hexextra.pattern.try_catch.TryCatchFeature.init();
         IfElseFeature.init();
         SwitchFeature.init();
 

@@ -62,5 +62,9 @@
   "hexextra.page.spell_storage.storage": "Every spellbook carries a UUID. Its pages live in $(thing)hexextra_spellbooks.dat/$, and the access log lives in $(thing)hexextra_spellbook_access.dat/$.$(br2)$(italic)Note: the item keeps a copy of the pages from the last write, for display. If you uninstall this mod, a book can only show its last written contents./$",
   "hexextra.page.for_loop.intro": "This group runs the same piece of code over and over.$(br2)The three reader patterns (index / remaining / current) look at the <b>innermost</b> loop by default. To read an outer one, push a number below it telling how many levels to go out: 0 is the current loop, 1 is the one outside it, and so on. With no number they use the current loop.$(br2)If the depth exceeds the actual nesting, they report \"Not inside that many loops\".",
   "hexextra.page.spell_storage.commands": "$(br2)Operators have two commands:$(br)$(thing)/hexextra spellbook access <player>/$ lists the books a player has written;$(br)$(thing)/hexextra spellbook recover <player> <uuid>/$ restores one as a snapshot with a fresh UUID.",
-  "iota.hexextra.exception": "Exception"
+  "iota.hexextra.exception": "Exception",
+  "hexcasting.action.hexextra:try_catch": "Try-Catch Strategy",
+  "hexcasting.action.hexextra:get_exception": "Exception Purification",
+  "hexextra.mishap.try_catch_blocks": "Expected a list of 2 or 3 code blocks (try, catch, optional finally), got %s",
+  "hexextra.mishap.no_active_exception": "Not inside a catch block, so there is no exception to retrieve"
 }

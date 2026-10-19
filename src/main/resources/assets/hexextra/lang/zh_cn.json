@@ -62,5 +62,9 @@
   "hexextra.page.spell_storage.storage": "每本法术书都带一个 UUID。书页按 UUID 存在 $(thing)hexextra_spellbooks.dat/$ 里,访问记录存在另一个文件 $(thing)hexextra_spellbook_access.dat/$ 里。$(br2)$(italic)注意:物品上仍保留一份书写时的副本用于显示。若卸载本模组,书只能读到最后一次写入时的内容。/$",
   "hexextra.page.for_loop.intro": "这是一组用来反复执行同一段代码的图案。$(br2)三枚取值图案(当前次数 / 剩余次数 / 当前元素)默认读的是<b>最内层</b>的那一层。想读外面一层,就在它下面压一个数字表示往外数第几层:0 是当前层,1 是外面一层,依次类推。不压数字时默认取当前层。$(br2)层数超出实际嵌套时,会报「这里没有这么多层循环」。",
   "hexextra.page.spell_storage.commands": "$(br2)管理员(op)可用两条指令:$(br)$(thing)/hexextra spellbook access <玩家>/$ 查看某玩家写过哪些书;$(br)$(thing)/hexextra spellbook recover <玩家> <uuid>/$ 按记录恢复一本(内容为快照,新 UUID)。",
-  "iota.hexextra.exception": "异常"
+  "iota.hexextra.exception": "异常",
+  "hexcasting.action.hexextra:try_catch": "崔凯之策略",
+  "hexcasting.action.hexextra:get_exception": "艾若儿之精思",
+  "hexextra.mishap.try_catch_blocks": "这里需要一个含 2 或 3 个代码块的列表(依次是 try、catch、可选 finally),实际给了 %s 个",
+  "hexextra.mishap.no_active_exception": "这里不在任何 catch 块里,没有可以取出的异常"
 }
