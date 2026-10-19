@@ -106,6 +106,10 @@ public final class HexextraContent {
     public static final ResourceLocation CASE_IOTA_ID = id("case");
 
     /** {@code hexextra:if_else} —— 条件链的类型。 */
+    /** 异常 iota 的注册 id。 */
+    public static final net.minecraft.resources.ResourceLocation EXCEPTION_IOTA_ID =
+            new net.minecraft.resources.ResourceLocation("hexextra", "exception");
+
     public static final ResourceLocation IF_ELSE_IOTA_ID = id("if_else");
 
     /** 所有 iota 类型(id → 实例)。 */
@@ -113,7 +117,8 @@ public final class HexextraContent {
         return java.util.List.of(
                 new Entry<>(SWITCH_IOTA_ID, SwitchIota.TYPE),
                 new Entry<>(CASE_IOTA_ID, CaseIota.TYPE),
-                new Entry<>(IF_ELSE_IOTA_ID, IfElseIota.TYPE));
+                new Entry<>(IF_ELSE_IOTA_ID, IfElseIota.TYPE),
+      new Entry<>(EXCEPTION_IOTA_ID, com.llk.hexextra.pattern.try_catch.ExceptionIota.TYPE));
     }
 
     // =======================================================================
