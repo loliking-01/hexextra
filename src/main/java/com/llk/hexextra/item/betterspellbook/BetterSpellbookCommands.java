@@ -53,8 +53,8 @@ public final class BetterSpellbookCommands {
 
     private static int access(CommandSourceStack source, ServerPlayer player) {
         var server = source.getServer();
-        List<SpellbookStorage.AccessRecord> records =
-                SpellbookStorage.get(server).recordsFor(player.getUUID());
+        List<SpellbookAccessLog.AccessRecord> records =
+                SpellbookAccessLog.get(server).recordsFor(player.getUUID());
 
         if (records.isEmpty()) {
             source.sendSuccess(() -> Component.literal(
@@ -65,13 +65,13 @@ public final class BetterSpellbookCommands {
         // 去重在「记录写入时」就已经做过了(同一本书 + 同一个玩家只保留一条,
         // 重复书写只推进时间),所以这里直接按时间倒序列出即可。
         var latest = records.stream()
-                .sorted(Comparator.comparingLong(SpellbookStorage.AccessRecord::gameTime).reversed())
+                .sorted(Comparator.comparingLong(SpellbookAccessLog.AccessRecord::gameTime).reversed())
                 .toList();
 
         source.sendSuccess(() -> Component.literal(
                 "=== " + player.getGameProfile().getName() + " 的强化法术书记录(共 " + latest.size() + " 本)==="), false);
 
-        for (SpellbookStorage.AccessRecord r : latest) {
+        for (SpellbookAccessLog.AccessRecord r : latest) {
             int pageCount = countPages(server, r.bookId());
             String line = String.format("  %s  [%s]  %d 页  %d 次  tick %d",
                     r.bookId(), r.source(), pageCount, r.count(), r.gameTime());

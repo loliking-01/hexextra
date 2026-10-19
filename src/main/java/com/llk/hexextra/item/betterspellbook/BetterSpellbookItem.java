@@ -218,7 +218,7 @@ public class BetterSpellbookItem extends ItemSpellbook {
         if (writer == null) {
             return;
         }
-        SpellbookStorage.get(server).recordAccess(new SpellbookStorage.AccessRecord(
+        SpellbookAccessLog.get(server).recordAccess(new SpellbookAccessLog.AccessRecord(
                 id,
                 writer.getUUID(),
                 writer.getGameProfile().getName(),
