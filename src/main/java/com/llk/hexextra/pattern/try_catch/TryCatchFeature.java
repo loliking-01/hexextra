@@ -50,6 +50,16 @@ public final class TryCatchFeature {
                         new OpTryCatch());
             });
 
+    /** 取当前异常的图案(仅 catch 内有效)。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> GET_EXCEPTION =
+            HexextraRegistries.ACTIONS.register("get_exception", () -> {
+                Hexextra.LOGGER.info("hexextra: 操作符图案 {} 已登记( {} 个角度 )",
+                        GET_EXCEPTION_ANGLES, GET_EXCEPTION_ANGLES.length());
+                return new ActionRegistryEntry(
+                        HexPattern.fromAngleString(GET_EXCEPTION_ANGLES, GET_EXCEPTION_START_DIR),
+                        new OpGetException());
+            });
+
     /** 触发本类的静态初始化。 */
     public static void init() {
         // 故意为空:静态字段的初始化就是全部工作。

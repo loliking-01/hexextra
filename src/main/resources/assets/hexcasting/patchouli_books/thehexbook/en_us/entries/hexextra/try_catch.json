@@ -1,0 +1,34 @@
+{
+  "name": "hexextra.entry.try_catch",
+  "category": "hexcasting:hexextra_patterns",
+  "icon": "minecraft:shield",
+  "sortnum": 10,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "hexextra.page.try_catch.intro"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexextra:try_catch",
+      "anchor": "hexextra:try_catch",
+      "text": "hexextra.page.try_catch",
+      "input": "list",
+      "output": "evaluatable"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexextra.page.try_catch.rule"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexextra:get_exception",
+      "anchor": "hexextra:get_exception",
+      "text": "hexextra.page.get_exception",
+      "input": "",
+      "output": "any"
+    }
+  ]
+}
