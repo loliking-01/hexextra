@@ -29,15 +29,6 @@ public final class HexextraIotaTypes {
             });
 
     /**
-     * try / catch / finally 的三段结构。
-     *
-     * <p>注册名 {@code try_catch} → 完整 id 为 {@code hexextra:try_catch}。
-     */
-    public static final DeferredHolder<IotaType<?>, IotaType<com.llk.hexextra.pattern.try_catch.TryCatchIota>> TRY_CATCH =
-            HexextraRegistries.IOTA_TYPES.register("try_catch", () -> {
-                com.llk.hexextra.Hexextra.LOGGER.info("hexextra: iota 类型 hexextra:try_catch 已登记");
-                return com.llk.hexextra.pattern.try_catch.TryCatchIota.TYPE;
-            });
 
     /**
      * if / elseif / else 条件链。
