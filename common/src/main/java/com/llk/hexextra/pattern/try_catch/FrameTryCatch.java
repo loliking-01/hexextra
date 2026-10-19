@@ -41,6 +41,16 @@ import java.util.List;
  * 由 {@code MixinCastingVM} 在 {@code executeInner} 出口改写结果、把本帧换成 stage 2。
  * 所以本帧必须能从任意深度的续延里被找到(见 {@link #findNearest})。
  *
+ *
+ * <h2>finally 里抛错会怎样</h2>
+ * finally 自己是一个普通代码块(stage 4 的帧只负责"跑完就结束"),所以它抛错时:
+ * <ul>
+ *   <li><b>不会被自己接住</b> —— {@link #findNearest} 明确排除 stage 4,否则会无限重入;</li>
+ *   <li><b>会被外层的 try 接住</b> —— 沿着续延往上找,外层 stage 0/1 的帧照样命中;</li>
+ *   <li>如果没有外层 try,异常照常冒泡,法术以 <b>finally 的那个错</b> 结束
+ *       (它会覆盖 catch 里的错,与 Java 的语义一致)。</li>
+ * </ul>
+ *
  * <h2>代价不回滚</h2>
  * try 块里已经花掉的媒质、已经改动的方块都不会被撤销 —— 本帧只负责"别让法术整个中断"。
  *
