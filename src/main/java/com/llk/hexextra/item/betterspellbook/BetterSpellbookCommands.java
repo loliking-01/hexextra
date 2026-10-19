@@ -62,14 +62,9 @@ public final class BetterSpellbookCommands {
             return 0;
         }
 
-        // 同一本书可能被写了很多次,按书去重,只留最后一次
+        // 去重在「记录写入时」就已经做过了(同一本书 + 同一个玩家只保留一条,
+        // 重复书写只推进时间),所以这里直接按时间倒序列出即可。
         var latest = records.stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        SpellbookStorage.AccessRecord::bookId,
-                        r -> r,
-                        (a, b) -> a.gameTime() >= b.gameTime() ? a : b,
-                        java.util.LinkedHashMap::new))
-                .values().stream()
                 .sorted(Comparator.comparingLong(SpellbookStorage.AccessRecord::gameTime).reversed())
                 .toList();
 
