@@ -132,10 +132,6 @@ public final class SwitchArithmetic implements Arithmetic {
     }
     /** 合并两张表:类型一致、至多一边有 default,case 直接拼接。 */
     private static SwitchIota merge(SwitchIota a, SwitchIota b) {
-        if (a.getMatchType() != b.getMatchType()) {
-            throw new HexextraMishaps.SwitchTypeMismatch(
-                    a.getMatchType().translationKey(), b.getMatchType().translationKey());
-        }
         if (a.getDefaultBody() != null && b.getDefaultBody() != null) {
             throw new HexextraMishaps.SwitchAlreadyHasDefault();
         }

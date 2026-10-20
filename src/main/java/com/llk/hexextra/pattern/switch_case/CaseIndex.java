@@ -90,6 +90,11 @@ public final class CaseIndex {
         for (int i = 0; i < cases.size(); i++) {
             Iota value = cases.get(i).getValue();
 
+            // null 是"万能键":它不决定表的类型,也不该被具体类型的校验拦下。
+            // 在已确定类型的表里它永远匹配不到(受控值不可能是 null),所以直接跳过。
+            if (value instanceof at.petrak.hexcasting.api.casting.iota.NullIota) {
+                continue;
+            }
             if (!type.accepts(value)) {
                 // 类型不符在这里就拦下 —— 照 Java 的定位,这类错误该在建造期发现,
                 // 而不是等到执行时"默默不命中"
