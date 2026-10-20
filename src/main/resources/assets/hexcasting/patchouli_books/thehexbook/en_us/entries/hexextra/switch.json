@@ -11,6 +11,14 @@
                       "text":  "hexextra.page.switch"
                   },
                   {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:switch",
+                      "anchor":  "hexextra:switch",
+                      "text":  "hexextra.page.switch",
+                      "input":  "any, list",
+                      "output":  "evaluatable"
+                  },
+                  {
                       "type":  "patchouli:text",
                       "text":  "hexextra.page.switch.rule"
                   },
