@@ -70,5 +70,6 @@
   "hexextra.page.try_catch": "$(br2)Takes $(thing)a single list/$ holding $(thing)2 or 3/$ code blocks: try, catch, and an optional finally. Produces executable code.",
   "hexextra.page.try_catch.rule": "$(br2)Runs $(thing)try/$ first. If it finishes normally, catch is skipped and finally (if any) runs.$(br2)If try fails, $(italic)costs are NOT rolled back/$ -- spent media and changed blocks stay -- but the spell keeps going: catch runs, then finally.$(br2)Inside catch, $(action)Exception Purification/$ retrieves the failure.",
   "hexextra.page.get_exception": "$(br2)Only valid $(thing)inside a catch block/$: pushes the current failure onto the stack. Its display is $(italic)identical/$ to the red message Hex Casting would normally show.$(br2)Using it outside any catch block is a mishap.",
-  "hexcasting.action.hexextra:switch": "Switch Strategy"
+  "hexcasting.action.hexextra:switch": "Switch Strategy",
+  "hexextra.page.switch.null_key": "$(br2)A $(thing)null key/$ is special: it does $(italic)not/$ decide the table's type, so a table built only from null keys is \"undetermined\" and can later take keys of any type. Inside a typed table it simply matches the null value."
 }
