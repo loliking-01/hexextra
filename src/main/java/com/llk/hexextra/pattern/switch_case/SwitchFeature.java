@@ -100,6 +100,20 @@ public final class SwitchFeature {
             throw new IllegalStateException("hexextra: switch 的 NBT 编解码往返结果不一致 —— 存档会静默损坏");
         }
 
+        // ---- 2.5) null 键的表必须能和具体类型的表合并 ----
+        // 复现玩家报的 bug:先用 null 键造一张表,再和数值表合并,然后建索引
+        SwitchIota nullTable = SwitchIota.fromCases(
+                List.of(new SwitchIota.Case(new at.petrak.hexcasting.api.casting.iota.NullIota(), body)), null);
+        if (nullTable.getMatchType() != null) {
+            throw new IllegalStateException("hexextra: 只用 null 键造出的表应当处于未定类型");
+        }
+        SwitchIota mixedTable = new SwitchIota(
+                SwitchIota.MatchType.NUMBER,
+                List.of(new SwitchIota.Case(new at.petrak.hexcasting.api.casting.iota.NullIota(), body),
+                        new SwitchIota.Case(new DoubleIota(3.0), body)),
+                null);
+        mixedTable.index();   // ← 若 null 分支被类型校验拦下,这里会抛
+
         // ---- 3) 悬停显示 ----
         String shown = table.display().getString();
         if (shown.isEmpty() || !shown.contains("\n")) {

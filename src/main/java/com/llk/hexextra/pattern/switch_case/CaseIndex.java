@@ -136,7 +136,6 @@ public final class CaseIndex {
         return switch (this.type) {
             case NUMBER -> (value instanceof DoubleIota d) ? numberKey(d.getDouble()) : null;
             case BOOLEAN -> (value instanceof BooleanIota b) ? b.getBool() : null;
-            case NULL -> (value instanceof NullIota) ? NULL_KEY : null;
             case PATTERN -> (value instanceof PatternIota p) ? p.getPattern().getSignature() : null;
         };
     }

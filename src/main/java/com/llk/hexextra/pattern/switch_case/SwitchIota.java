@@ -128,7 +128,6 @@ public class SwitchIota extends Iota {
     public enum MatchType {
         NUMBER,
         BOOLEAN,
-        NULL,
         PATTERN;
 
         /** 用于本地化提示的类型名键,例如 {@code hexextra.switch.type.number}。 */
@@ -141,7 +140,6 @@ public class SwitchIota extends Iota {
             return switch (this) {
                 case NUMBER -> iota instanceof DoubleIota;
                 case BOOLEAN -> iota instanceof BooleanIota;
-                case NULL -> iota instanceof NullIota;
                 case PATTERN -> iota instanceof PatternIota;
             };
         }
@@ -152,6 +150,11 @@ public class SwitchIota extends Iota {
          * @return 四种常量之一对应的类型;样例不是常量(列表/实体/向量等)时返回 {@code null}
          */
         public static @Nullable MatchType of(Iota sample) {
+            // null 不是一种"类型":它作为键时可以进任何类型的表。
+            // 这里返回 null 表示「未定」,而不是某个 NULL 类型。
+            if (sample instanceof NullIota) {
+                return null;
+            }
             for (MatchType type : values()) {
                 if (type.accepts(sample)) {
                     return type;
