@@ -1,13 +1,15 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
 license = "MIT"
+issueTrackerURL = "https://github.com/loliking-01/hexextra/issues"
 
 [[mods]]
 modId = "hexextra"
 version = "0.0.2-alpha"
 displayName = "hexextra"
+displayURL = "https://modrinth.com/mod/hexextra"
 authors = "I_am_a_lolikong"
-description = "为咒法学开发的新功能"
+description = '''为咒法学开发的新功能'''
 
 [[dependencies.hexextra]]
 modId = "forge"
@@ -23,6 +25,7 @@ versionRange = "[1.20.1,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
+# 咒法学(Hex Casting)—— 本附属模组的核心前置
 [[dependencies.hexextra]]
 modId = "hexcasting"
 mandatory = true
