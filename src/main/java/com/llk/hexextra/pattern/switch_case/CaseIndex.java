@@ -79,7 +79,7 @@ public final class CaseIndex {
      * @throws HexextraMishaps.CaseTypeMismatch 某个 case 的类型与声明的类型不符
      * @throws HexextraMishaps.DuplicateCase    某个常量出现了不止一次
      */
-    public static CaseIndex build(SwitchIota.MatchType type, List<CaseIota> cases) {
+    public static CaseIndex build(SwitchIota.MatchType type, List<SwitchIota.Case> cases) {
         CaseIndex index = new CaseIndex(type);
 
         for (int i = 0; i < cases.size(); i++) {

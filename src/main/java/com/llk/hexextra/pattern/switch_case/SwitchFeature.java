@@ -22,7 +22,7 @@ import java.util.List;
  * switch(多路等值分派)功能的注册入口。
  *
  * <h2>只需要一个图案</h2>
- * {@code case}({@code dawwaqw},2 参:常量 + 代码块)→ 产出 {@link CaseIota}。
+ * {@code switch}({@code dawwaqw},2 参:常量 + 代码块)→ 产出一张<b>只有一条分支的 switch</b>。
  *
  * <p>一开始还设计过一个 1 参图案用来"声明表的匹配类型",后来取消了:
  * 它和 {@code case} 都产出 {@code SwitchIota},只差 case 条数,玩家从类型上分不清
@@ -81,25 +81,17 @@ public final class SwitchFeature {
      * 编解码器字段写歪的后果就是玩家的法术书内容悄悄变成乱码,当场毫无提示。
      *
      * <p>这里尤其值得验的三处:一个<b>枚举</b>(匹配类型)、一个<b>可空字段</b>(default)、
-     * 以及<b>两层嵌套</b>(表里装 case)。另外顺手断言 case 确实<b>不</b>可执行 ——
-     * 那是"原料与成品"这条界限的关键,一旦被误改成可执行,区分就白做了。
+     * 以及<b>两层嵌套</b>(表里装分支)。
      */
     public static void checkCodecRoundTrip() {
         TreeList<Iota> body = TreeList.from(List.of(new BooleanIota(true)));
         TreeList<Iota> elseBody = TreeList.from(List.of(new DoubleIota(0.0)));
 
-        // ---- 1) 单条 case 的往返 ----
-        CaseIota oneCase = new CaseIota(new DoubleIota(1.0), body);
-        Tag caseTag = IotaType.TYPED_CODEC.encodeStart(NbtOps.INSTANCE, oneCase).getOrThrow();
-        Iota caseBack = IotaType.TYPED_CODEC.parse(NbtOps.INSTANCE, caseTag).getOrThrow();
-        if (!(caseBack instanceof CaseIota) || !caseBack.equals(oneCase)) {
-            throw new IllegalStateException("hexextra: case 的 NBT 编解码往返结果不一致 —— 存档会静默损坏");
-        }
-
         // ---- 2) 整张表的往返(含 default)----
         SwitchIota table = new SwitchIota(
                 SwitchIota.MatchType.NUMBER,
-                List.of(oneCase, new CaseIota(new DoubleIota(2.0), body)),
+                List.of(new SwitchIota.Case(new DoubleIota(1.0), body),
+                        new SwitchIota.Case(new DoubleIota(2.0), body)),
                 elseBody);
 
         Tag tableTag = IotaType.TYPED_CODEC.encodeStart(NbtOps.INSTANCE, table).getOrThrow();
@@ -125,10 +117,6 @@ public final class SwitchFeature {
             throw new IllegalStateException("hexextra: switch 派发表自检失败,不该命中 99.0");
         }
 
-        // ---- 5) case 必须是"原料":不可执行 ----
-        if (oneCase.executable()) {
-            throw new IllegalStateException("hexextra: case 不该是可执行的 —— 原料与成品的界限被破坏了");
-        }
 
 
     }

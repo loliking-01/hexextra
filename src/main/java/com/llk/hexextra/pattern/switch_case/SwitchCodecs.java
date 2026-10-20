@@ -13,17 +13,17 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 /**
- * switch 家族({@link SwitchIota} 表 与 {@link CaseIota} 一条 case)的全部编解码器,
+ * switch 家族({@link SwitchIota} 表 与 {@link SwitchIota.Case} 一条 case)的全部编解码器,
  * 集中在一个<b>中立</b>的持有类里。
  *
- * <h2>⚠ 为什么不能放在 {@link SwitchIota} 或 {@link CaseIota} 里</h2>
+ * <h2>⚠ 为什么不能放在 {@link SwitchIota} 或 {@link SwitchIota.Case} 里</h2>
  * 这是本项目踩过一次、代价是<b>整个服务端起不来</b>的坑(见 {@code IfElseCodecs} 的注释):
  * 若内层类型的静态字段引用了外层类的静态字段,就会形成循环静态初始化 ——
  * 「嵌套类初始化不触发外部类初始化」这条规则救不了你,因为循环正是那条跨层引用造成的。
  *
  * <p>这里之所以两个类互相需要(表要 case 的编解码器,case 的编解码器又要知道自己属于谁)
  * 却没出问题,是因为本类<b>只用方法引用与构造器引用</b>去指它们
- * (如 {@code CaseIota::getValue}、{@code CaseIota::new}),从不读它们的静态字段 ——
+ * (如 {@code SwitchIota.Case::getValue}、{@code SwitchIota.Case::new}),从不读它们的静态字段 ——
  * 方法引用只触发类的<b>加载</b>,不触发<b>初始化</b>,所以不会回环。
  *
  * <p><b>改动本类时务必守住这条:</b>不要在这里出现 {@code XxxIota.TYPE} 或 {@code XxxIota.SOMETHING}。
@@ -44,30 +44,20 @@ public final class SwitchCodecs {
      * 「必须是常量」这条规则在<b>建造时</b>检查并报错,这样玩家拿到的是能看懂的提示,
      * 而不是"存档里有条数据解不开"。
      */
-    private static final MapCodec<CaseIota> CASE_FIELDS = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            IotaType.TYPED_CODEC.fieldOf("value").forGetter(CaseIota::getValue),
-            CODE_BLOCK.fieldOf("body").forGetter(CaseIota::getBody)
-    ).apply(inst, CaseIota::new));
+    private static final MapCodec<SwitchIota.Case> CASE_FIELDS = RecordCodecBuilder.mapCodec(inst -> inst.group(
+            IotaType.TYPED_CODEC.fieldOf("value").forGetter(SwitchIota.Case::getValue),
+            CODE_BLOCK.fieldOf("body").forGetter(SwitchIota.Case::getBody)
+    ).apply(inst, SwitchIota.Case::new));
 
     /** 一条 case 的 NBT 编解码器(表里以列表形式内嵌它时用这个)。 */
-    public static final Codec<CaseIota> CASE_CODEC = CASE_FIELDS.codec();
+    public static final Codec<SwitchIota.Case> CASE_CODEC = CASE_FIELDS.codec();
 
-    /**
-     * 一条 case <b>独立作为 iota</b> 时的编解码器。
-     *
-     * <p>为什么要单列一个:{@code IotaType.codec()} 要求返回 {@link MapCodec},
-     * 而 {@code RecordCodecBuilder.create(...)} 给的是 {@link Codec} ——
-     * 两者不能自动互转。所以这里保留 mapCodec 形式给类型注册用,再由它
-     * {@code .codec()} 派生出列表内嵌所需的那一份。
-     */
-    public static final MapCodec<CaseIota> CASE_MAP_CODEC = CASE_FIELDS;
-
-    /** 一条 case 的网络编解码器。 */
-    public static final StreamCodec<RegistryFriendlyByteBuf, CaseIota> CASE_STREAM_CODEC =
+        /** 一条 case 的网络编解码器。 */
+    public static final StreamCodec<RegistryFriendlyByteBuf, SwitchIota.Case> CASE_STREAM_CODEC =
             StreamCodec.composite(
-                    IotaType.TYPED_STREAM_CODEC, CaseIota::getValue,
-                    CODE_BLOCK_STREAM, CaseIota::getBody,
-                    CaseIota::new);
+                    IotaType.TYPED_STREAM_CODEC, SwitchIota.Case::getValue,
+                    CODE_BLOCK_STREAM, SwitchIota.Case::getBody,
+                    SwitchIota.Case::new);
 
     /**
      * 匹配类型的 NBT 编解码器。

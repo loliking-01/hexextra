@@ -72,6 +72,45 @@ import java.util.Optional;
 public class SwitchIota extends Iota {
 
     /**
+     * 一条分支:匹配用常量 + 命中时执行的代码块。
+     *
+     * <h2>为什么是内部 record 而不是独立的 iota 类型</h2>
+     * 它只是 switch 表的一部分,永远不会单独出现在栈上 —— 所以不该是一个 iota。
+     * 早先它确实是独立类型({@code hexextra:case}),但那样"造一条分支"与"造一张表"
+     * 会产出两种类型,玩家分不清手里的是半成品还是成品;现在统一成 switch 本身:
+     * 「斯维奇之策略」造出的是<b>只有一条分支的 switch</b>,可以直接执行。
+     */
+    public record Case(Iota value, TreeList<Iota> body) {
+
+        /** 匹配用的常量。 */
+        public Iota getValue() {
+            return this.value;
+        }
+
+        /** 命中时执行的代码块。 */
+        public TreeList<Iota> getBody() {
+            return this.body;
+        }
+
+        /** 这条分支要求的匹配类型;常量类型不支持时为 null。 */
+        public @Nullable SwitchIota.MatchType matchType() {
+            return SwitchIota.MatchType.of(this.value);
+        }
+
+        /** 悬停显示:{@code case 值 -> {代码块}}。 */
+        public net.minecraft.network.chat.Component display() {
+            net.minecraft.network.chat.MutableComponent out = net.minecraft.network.chat.Component.empty();
+            out.append(net.minecraft.network.chat.Component.literal("case ").withStyle(net.minecraft.ChatFormatting.GOLD));
+            out.append(this.value.display());
+            out.append(net.minecraft.network.chat.Component.literal(" -> {").withStyle(net.minecraft.ChatFormatting.GOLD));
+            out.append(new ListIota(this.body).display());
+            out.append(net.minecraft.network.chat.Component.literal("}").withStyle(net.minecraft.ChatFormatting.GOLD));
+            return out;
+        }
+    }
+
+
+    /**
      * 一条 switch 匹配什么类型 —— 在<b>建造期</b>用一个样例常量的类型声明下来。
      *
      * <h2>为什么要显式声明类型</h2>
@@ -123,7 +162,7 @@ public class SwitchIota extends Iota {
     }
 
     private final MatchType matchType;
-    private final List<CaseIota> cases;
+    private final List<Case> cases;
     @Nullable
     private final TreeList<Iota> defaultBody;
 
@@ -147,7 +186,7 @@ public class SwitchIota extends Iota {
      * @param cases       case 表,可为空;每个 case 的类型必须与 {@code matchType} 一致
      * @param defaultBody default 代码块;null 表示没有
      */
-    public SwitchIota(MatchType matchType, List<CaseIota> cases, @Nullable TreeList<Iota> defaultBody) {
+    public SwitchIota(MatchType matchType, List<Case> cases, @Nullable TreeList<Iota> defaultBody) {
         super(HexextraIotaTypes.SWITCH::get);
         this.matchType = matchType;
         this.cases = List.copyOf(cases);
@@ -162,14 +201,14 @@ public class SwitchIota extends Iota {
     /**
      * 由若干条 case 建一张表 —— 类型从<b>第一条 case</b> 推出。
      *
-     * <p>之所以能推:case 的匹配类型完全由它那个常量的类型决定(见 {@link CaseIota#matchType()})。
+     * <p>之所以能推:case 的匹配类型完全由它那个常量的类型决定(见 {@link SwitchIota.Case#matchType()})。
      * 后续 case 若类型不一致,会在建表时被 {@link CaseIndex#build} 拦下并报错。
      *
      * @throws IllegalArgumentException case 列表为空 —— 没有第一条就无法确定类型。
      *         正常玩法走不到这里:表要么由 case 拼出来,要么由 remove_from 从已有表删空
      *         (后者保留原类型,不走这个工厂)。
      */
-    public static SwitchIota fromCases(List<CaseIota> cases, @Nullable TreeList<Iota> defaultBody) {
+    public static SwitchIota fromCases(List<Case> cases, @Nullable TreeList<Iota> defaultBody) {
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("hexextra: 空 case 列表无法推出 switch 的匹配类型");
         }
@@ -182,7 +221,7 @@ public class SwitchIota extends Iota {
     }
 
     /** case 表(不可变)。 */
-    public List<CaseIota> getCases() {
+    public List<Case> getCases() {
         return this.cases;
     }
 
@@ -359,7 +398,7 @@ public class SwitchIota extends Iota {
         out.append(Component.translatable(this.matchType.translationKey()).withStyle(ChatFormatting.AQUA));
         out.append(Component.literal(">{").withStyle(ChatFormatting.GOLD));
 
-        for (CaseIota c : this.cases) {
+        for (SwitchIota.Case c : this.cases) {
             out.append(Component.literal("\n"));
             out.append(Component.literal("case ").withStyle(ChatFormatting.GOLD));
             // 匹配值用它自己的 display,于是数值/布尔/图案各自显示成本来的样子
@@ -392,7 +431,7 @@ public class SwitchIota extends Iota {
     @Override
     public int size() {
         int total = 1;
-        for (CaseIota c : this.cases) {
+        for (SwitchIota.Case c : this.cases) {
             total += c.getValue().size();
             total += sizeOf(c.getBody());
         }
@@ -414,7 +453,7 @@ public class SwitchIota extends Iota {
     @Override
     public int depth() {
         int maxChild = 0;
-        for (CaseIota c : this.cases) {
+        for (SwitchIota.Case c : this.cases) {
             maxChild = Math.max(maxChild, c.getValue().depth());
             maxChild = Math.max(maxChild, depthOf(c.getBody()));
         }
@@ -441,7 +480,7 @@ public class SwitchIota extends Iota {
     @Override
     public @Nullable Iterable<Iota> subIotas() {
         List<Iota> out = new ArrayList<>();
-        for (CaseIota c : this.cases) {
+        for (SwitchIota.Case c : this.cases) {
             out.add(c.getValue());
             c.getBody().forEach(out::add);
         }

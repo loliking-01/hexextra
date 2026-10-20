@@ -2,7 +2,6 @@ package com.llk.hexextra.core;
 
 import at.petrak.hexcasting.api.casting.iota.IotaType;
 import com.llk.hexextra.pattern.if_else.IfElseIota;
-import com.llk.hexextra.pattern.switch_case.CaseIota;
 import com.llk.hexextra.pattern.switch_case.SwitchIota;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -53,17 +52,9 @@ public final class HexextraIotaTypes {
             });
 
     /**
-     * switch 的一条 case(造表的原料,不可执行)。
      *
-     * <p>注册名 {@code case} → 完整 id 为 {@code hexextra:case}。
-     * 注意这与同名操作符({@code hexcasting.action.hexextra:case})分属两张不同的注册表,
      * 互不冲突。
      */
-    public static final DeferredHolder<IotaType<?>, IotaType<CaseIota>> CASE =
-            HexextraRegistries.IOTA_TYPES.register("case", () -> {
-                com.llk.hexextra.Hexextra.LOGGER.info("hexextra: iota 类型 hexextra:case 已登记");
-                return CaseIota.TYPE;
-            });
 
     private HexextraIotaTypes() {
     }

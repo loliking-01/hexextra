@@ -53,6 +53,6 @@ public final class OpCreateCase implements ConstMediaAction {
             throw new HexextraMishaps.CaseNotConstant(value);
         }
 
-        return List.of(new CaseIota(value, body));
+        return List.of(SwitchIota.fromCases(List.of(new SwitchIota.Case(value, body)), null));
     }
 }
