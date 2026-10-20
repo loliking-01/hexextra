@@ -249,12 +249,10 @@ public final class SwitchArithmetic implements Arithmetic {
             }
             SwitchIota.Case replacement = replacementTable.getCases().get(0);
             SwitchIota.MatchType replacementType = replacement.matchType();
-            if (replacementType == null) {
-                throw new HexextraMishaps.CaseNotConstant(replacement.getValue());
-            }
-            if (replacementType != source.getMatchType()) {
+            SwitchIota.MatchType sourceType = source.getMatchType();
+            if (replacementType != null && sourceType != null && replacementType != sourceType) {
                 throw new HexextraMishaps.CaseTypeMismatch(
-                        source.getMatchType().translationKey(), replacement.getValue());
+                        sourceType.translationKey(), replacement.getValue());
             }
 
             List<SwitchIota.Case> out = new ArrayList<>(cases);
