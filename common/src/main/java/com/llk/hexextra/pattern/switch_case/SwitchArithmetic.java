@@ -24,7 +24,7 @@ import java.util.List;
  * <h2>两种东西,两套语义</h2>
  * <ul>
  *   <li>{@link SwitchIota}(表)是<b>成品</b>:可执行、有类型、可有 default;</li>
- *   <li>{@link CaseIota}(一条 case)是<b>原料</b>:只有「常量 + 代码块」,不可执行。</li>
+ *   <li>{@link SwitchIota.Case}(一条 case)是<b>原料</b>:只有「常量 + 代码块」,不可执行。</li>
  * </ul>
  * 「加法之馏化」是唯一同时认识两者的图案 —— 它负责把原料拼成成品。
  *
@@ -84,9 +84,6 @@ public final class SwitchArithmetic implements Arithmetic {
         return IotaPredicate.ofType(SwitchIota.TYPE);
     }
 
-    private static IotaPredicate caseIota() {
-        return IotaPredicate.ofType(CaseIota.TYPE);
-    }
 
     private static IotaPredicate list() {
         return IotaPredicate.ofType(HexIotaTypes.LIST);
@@ -101,46 +98,31 @@ public final class SwitchArithmetic implements Arithmetic {
     // =======================================================================
 
     /**
-     * 「加法之馏化」对 switch 家族的四种用法。
+     * 「加法之馏化」对 switch 的两种用法。
      *
      * <ul>
-     *   <li>{@code add(case, case)} —— 把两条 case 组成一张表(类型须一致);</li>
-     *   <li>{@code add(表, case)} —— 往表里追加一条;</li>
-     *   <li>{@code add(表, 表)} —— 合并两张表(类型须一致,且至多一边有 default);</li>
+     *   <li>{@code add(表, 表)} —— 合并两张表(类型须一致,且至多一边有 default)。
+     *       因为一条分支本身就是"只有一条分支的表",这也覆盖了"追加一条"。</li>
      *   <li>{@code add(表, 列表)} —— 该列表成为 default。</li>
      * </ul>
+     *
+     * <p>未定类型的表(null 键组成的那些)可以被任何表吸收。
      */
     private Operator makeAdd() {
         IotaMultiPredicate accepts = IotaMultiPredicate.either(
-                IotaMultiPredicate.either(
-                        IotaMultiPredicate.pair(caseIota(), caseIota()),
-                        IotaMultiPredicate.pair(table(), caseIota())),
-                IotaMultiPredicate.either(
-                        IotaMultiPredicate.pair(table(), table()),
-                        IotaMultiPredicate.pair(table(), list())));
+                IotaMultiPredicate.pair(table(), table()),
+                IotaMultiPredicate.pair(table(), list()));
 
         return chain(2, accepts, args -> {
-            Iota first = args.get(0);
-            Iota second = args.get(1);
-
-            SwitchIota firstTable = (first instanceof SwitchIota t) ? t : null;
-            CaseIota firstCase = (first instanceof CaseIota c) ? c : null;
-
-            if (second instanceof CaseIota tailCase) {
-                // 左边是表 → 追加;左边是 case → 两条 case 组成一张新表
-                return List.of(firstTable != null
-                        ? appendCase(firstTable, tailCase)
-                        : SwitchIota.fromCases(List.of(firstCase, tailCase), null));
+            SwitchIota first = asTable(args.get(0));
+            if (args.get(1) instanceof SwitchIota second) {
+                return List.of(merge(first, second));
             }
-            if (second instanceof SwitchIota tailTable) {
-                return List.of(merge(firstTable, tailTable));
-            }
-            // 第二个参数是列表 → 它就是 default
-            return List.of(attachDefault(firstTable, asTreeList(args, 1, 2)));
+            return List.of(attachDefault(first, TreeList.from(OperatorUtils.getList(args, 1, 2))));
         });
     }
 
-    private static SwitchIota appendCase(SwitchIota table, CaseIota extra) {
+    private static SwitchIota appendCase(SwitchIota table, SwitchIota.Case extra) {
         SwitchMatchType caseType = extra.matchType();
         if (caseType == null) {
             throw new HexextraMishaps.CaseNotConstant(extra.getValue());
@@ -149,7 +131,7 @@ public final class SwitchArithmetic implements Arithmetic {
             throw new HexextraMishaps.CaseTypeMismatch(table.getMatchType().translationKey(), extra.getValue());
         }
 
-        List<CaseIota> out = new ArrayList<>(table.getCases());
+        List<SwitchIota.Case> out = new ArrayList<>(table.getCases());
         out.add(extra);
         return new SwitchIota(table.getMatchType(), out, table.getDefaultBody());
     }
@@ -163,7 +145,7 @@ public final class SwitchArithmetic implements Arithmetic {
             throw new HexextraMishaps.SwitchAlreadyHasDefault();
         }
 
-        List<CaseIota> merged = new ArrayList<>(a.getCases());
+        List<SwitchIota.Case> merged = new ArrayList<>(a.getCases());
         merged.addAll(b.getCases());
 
         TreeList<Iota> defaultBody = a.getDefaultBody() != null ? a.getDefaultBody() : b.getDefaultBody();
@@ -182,7 +164,7 @@ public final class SwitchArithmetic implements Arithmetic {
     // =======================================================================
 
     /**
-     * {@code index(表, i)} → 第 i 条 case,作为 {@link CaseIota} 取出。
+     * {@code index(表, i)} → 第 i 条 case,作为 {@link SwitchIota.Case} 取出。
      *
      * <p>越界返回 {@code NullIota},照搬原版列表版 {@code OperatorIndex} 的行为;
      * 下标是「取整、不校验整性」的。
@@ -195,11 +177,12 @@ public final class SwitchArithmetic implements Arithmetic {
             SwitchIota source = asTable(args.get(0));
             int i = (int) Math.round(OperatorUtils.getDouble(asList(args), 1, 2));
 
-            List<CaseIota> cases = source.getCases();
+            List<SwitchIota.Case> cases = source.getCases();
             if (i < 0 || i >= cases.size()) {
                 return List.of(new NullIota());
             }
-            return List.of(cases.get(i));
+            // 取出来的是一条分支 —— 它本身就是「只有一条分支的表」,可直接执行
+            return List.of(new SwitchIota(source.getMatchType(), List.of(cases.get(i)), null));
         });
     }
 
@@ -226,12 +209,12 @@ public final class SwitchArithmetic implements Arithmetic {
             // 原版用的是"要求整数值"的取值,对应 getInt
             int i = OperatorUtils.getInt(asList(args), 1, 2);
 
-            List<CaseIota> cases = source.getCases();
+            List<SwitchIota.Case> cases = source.getCases();
             if (i < 0 || i >= cases.size()) {
                 return List.of(source);
             }
 
-            List<CaseIota> out = new ArrayList<>(cases);
+            List<SwitchIota.Case> out = new ArrayList<>(cases);
             out.remove(i);
             return List.of(new SwitchIota(source.getMatchType(), out, source.getDefaultBody()));
         });
@@ -248,23 +231,27 @@ public final class SwitchArithmetic implements Arithmetic {
      * 类型必须与表一致。替换项是一条 case 而不是表 —— 所以它<b>不可能</b>自带 default。
      */
     private Operator makeReplace() {
-        return chain(3, IotaMultiPredicate.triple(table(), number(), caseIota()), args -> {
+        return chain(3, IotaMultiPredicate.triple(table(), number(), table()), args -> {
             SwitchIota source = asTable(args.get(0));
-            List<CaseIota> cases = source.getCases();
+            List<SwitchIota.Case> cases = source.getCases();
 
             int i = OperatorUtils.getPositiveIntUnder(asList(args), 1, cases.size(), 3);
 
-            CaseIota replacement = (CaseIota) args.get(2);
-            SwitchMatchType replacementType = replacement.matchType();
-            if (replacementType == null) {
-                throw new HexextraMishaps.CaseNotConstant(replacement.getValue());
+            // 替换项必须是一张「只有一条分支、且没有 default」的表
+            SwitchIota replacementTable = asTable(args.get(2));
+            if (replacementTable.getDefaultBody() != null || replacementTable.getCases().size() != 1) {
+                throw new HexextraMishaps.SwitchTypeMismatch(
+                        source.getMatchType() != null ? source.getMatchType().translationKey() : "hexextra.switch.type.unknown",
+                        "hexextra.switch.type.unknown");
             }
-            if (replacementType != source.getMatchType()) {
+            SwitchIota.Case replacement = replacementTable.getCases().get(0);
+            if (replacement.matchType() != null && source.getMatchType() != null
+                    && replacement.matchType() != source.getMatchType()) {
                 throw new HexextraMishaps.CaseTypeMismatch(
                         source.getMatchType().translationKey(), replacement.getValue());
             }
 
-            List<CaseIota> out = new ArrayList<>(cases);
+            List<SwitchIota.Case> out = new ArrayList<>(cases);
             out.set(i, replacement);
             return List.of(new SwitchIota(source.getMatchType(), out, source.getDefaultBody()));
         });

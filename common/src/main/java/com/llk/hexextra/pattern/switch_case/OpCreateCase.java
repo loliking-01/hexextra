@@ -10,9 +10,9 @@ import com.llk.hexextra.core.HexextraMishaps;
 import java.util.List;
 
 /**
- * 造一条 case:从栈上取「常量」和「代码块」,产出 <b>{@link CaseIota}</b>。
+ * 造一条 case:从栈上取「常量」和「代码块」,产出 <b>{@link SwitchIota.Case}</b>。
  *
- * <h2>为什么产出独立的 CaseIota 而不是"只含一条 case 的表"</h2>
+ * <h2>为什么产出独立的 SwitchIota.Case 而不是"只含一条 case 的表"</h2>
  * 如果产出表,那么「造一条 case」与「造一张表」就是同一种 iota,只有条数不同 ——
  * 玩家从类型上分不清手里是原料还是成品。分开以后:
  * <ul>
@@ -51,12 +51,14 @@ public final class OpCreateCase implements ConstMediaAction {
         // getList 会在参数不是列表时抛 MishapInvalidIota,并把错误定位到对应参数上
         TreeList<Iota> body = TreeList.from(OperatorUtils.getList(asList(args), 1, ARGC));
 
-        if (SwitchMatchType.of(value) == null) {
+        // null 是允许的键:它不决定表的类型,所以不参与"必须是常量"的检查
+        if (!(value instanceof at.petrak.hexcasting.api.casting.iota.NullIota)
+                && SwitchMatchType.of(value) == null) {
             // 列表 / 实体 / 向量这类值算不出规范键,不可能当 case 的匹配值
             throw new HexextraMishaps.CaseNotConstant(value);
         }
 
-        return List.of(new CaseIota(value, body));
+        return List.of(SwitchIota.fromCases(List.of(new SwitchIota.Case(value, body)), null));
     }
 
     /**

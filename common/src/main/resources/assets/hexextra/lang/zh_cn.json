@@ -1,5 +1,5 @@
 {
-  "hexcasting.action.hexextra:case": "凯斯之策略",
+  "hexcasting.action.hexextra:switch": "凯斯之策略",
   "hexcasting.action.hexextra:for_loop": "佛尔之策略",
   "hexcasting.action.hexextra:if_chain": "伊芙艾儿丝之策略",
   "hexextra.entry.for_loop": "简易元运行",
@@ -15,7 +15,6 @@
   "hexextra.mishap.switch_already_has_default": "这条 switch 已经有 default 了,一条 switch 只能有一个 default",
   "hexextra.mishap.switch_type_mismatch": "不能把「%s」型和「%s」型的两条 switch 合并起来",
   "hexextra.mishap.switch_value_type_mismatch": "这条 switch 匹配的是「%s」,但你给的值是 %s",
-  "hexextra.page.case": "造一条 case:匹配用的常量,加上命中时执行的代码块。$(br2)$(thing)先压常量,再压代码块/$——代码块在栈顶。$(br2)常量必须是数值、布尔、null 或图案;其它类型(列表 / 实体 / 向量)当场报错。",
   "hexextra.page.for_loop": "从栈上取循环次数和一段代码块,把代码块重复执行该次数。$(br2)$(thing)先压次数,再压代码块/$——代码块在栈顶。",
   "hexextra.page.for_loop.rule": "循环本身不耗$(media)媒质/$——耗多少取决于循环体里画了什么。$(br2)次数小于等于 0 时什么都不做,上限 10000 次。$(br2)循环体和外面共用同一个栈,所以每一轮都接着上一轮继续。$(br2)在循环体里画 $(action)卡戎之策略/$ 可以提前跳出来。",
   "hexextra.page.if_chain": "从栈上取一个条件块和一段代码块,把两者拼成一条条件链。$(br2)$(thing)先压条件块,再压代码块——代码块在栈顶。顺序写反不会报错,只会显得「什么都没发生」。$(br2)它只是把链放到栈上;要在链上画 $(action)赫尔墨斯之策略/$ 才会执行。",
@@ -70,5 +69,6 @@
   "hexextra.page.try_catch.intro": "法术里某一段出了错,通常整个法术就当场中断、只剩一段红字。$(br2)$(thing)崔凯之策略/$ 让那段报错不再中断法术,而是把它交给另一段代码去处理 —— 就像别的语言里的 try / catch。",
   "hexextra.page.try_catch": "$(br2)接受$(thing)一个列表/$,里面放$(thing)2 个或 3 个/$代码块,依次是 try、catch、可选的 finally。$(br2)图案画下就$(italic)直接开始执行/$ try 块,不需要再用别的图案去跑它。",
   "hexextra.page.try_catch.rule": "$(br2)$(thing)先跑 try/$。正常结束时跳过 catch;有 finally 就跑 finally。$(br2)try 里抛错时,$(italic)代价不会回滚/$ —— 已经花掉的媒质、改动的方块都保留 —— 但法术不会中断,而是接着跑 catch,再跑 finally。$(br2)catch 里可以用 $(action)艾若儿之精思/$ 取到那次报错。",
-  "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。"
+  "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。",
+  "hexextra.switch.type.unknown": "未定"
 }

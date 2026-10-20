@@ -17,7 +17,6 @@ import com.llk.hexextra.pattern.for_each.FrameForEach;
 import com.llk.hexextra.pattern.for_loop.LoopGetters;
 import com.llk.hexextra.pattern.if_else.OpCreateIfChain;
 import com.llk.hexextra.pattern.for_loop.OpForLoop;
-import com.llk.hexextra.pattern.switch_case.CaseIota;
 import com.llk.hexextra.pattern.switch_case.OpCreateCase;
 import com.llk.hexextra.pattern.switch_case.SwitchArithmetic;
 import com.llk.hexextra.pattern.switch_case.SwitchIota;
@@ -116,7 +115,6 @@ public final class HexextraContent {
     public static Iterable<Entry<IotaType<?>>> iotaTypes() {
         return java.util.List.of(
                 new Entry<>(SWITCH_IOTA_ID, SwitchIota.TYPE),
-                new Entry<>(CASE_IOTA_ID, CaseIota.TYPE),
                 new Entry<>(IF_ELSE_IOTA_ID, IfElseIota.TYPE),
       new Entry<>(EXCEPTION_IOTA_ID, com.llk.hexextra.pattern.try_catch.ExceptionIota.TYPE));
     }
@@ -157,7 +155,7 @@ public final class HexextraContent {
     // =======================================================================
 
     /** {@code hexextra:case} —— 造一条 case 的图案。 */
-    public static final ResourceLocation CASE_ACTION_ID = id("case");
+    public static final ResourceLocation SWITCH_ACTION_ID = id("switch");
 
     /** {@code hexextra:for_loop} —— for 循环的图案。 */
     public static final ResourceLocation FOR_LOOP_ACTION_ID = id("for_loop");
@@ -168,7 +166,7 @@ public final class HexextraContent {
 
     public static Iterable<Entry<ActionRegistryEntry>> actions() {
         return java.util.List.of(
-                new Entry<>(CASE_ACTION_ID, new ActionRegistryEntry(
+                new Entry<>(SWITCH_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase())),
                 new Entry<>(FOR_LOOP_ACTION_ID, new ActionRegistryEntry(

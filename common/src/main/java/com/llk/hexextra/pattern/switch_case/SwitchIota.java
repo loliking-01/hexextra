@@ -59,12 +59,115 @@ import java.util.List;
 public class SwitchIota extends Iota {
 
     /**
+     * 一条分支:匹配用常量 + 命中时执行的代码块。
+     *
+     * <h2>为什么是内部 record 而不是独立的 iota 类型</h2>
+     * 它只是表的一部分,永远不会单独出现在栈上 —— 所以不该是一个 iota。
+     * 早先它是独立类型({@code hexextra:case}),但那样"造一条分支"与"造一张表"
+     * 会产出两种类型,玩家分不清半成品与成品;现在统一成 switch 本身:
+     * 「斯维奇之策略」造出的就是<b>只有一条分支的 switch</b>,可以直接执行。
+     */
+    public record Case(Iota value, TreeList<Iota> body) {
+
+        public Iota getValue() {
+            return this.value;
+        }
+
+        public TreeList<Iota> getBody() {
+            return this.body;
+        }
+
+        /** 这条分支要求的匹配类型;null 表示 null 键(不决定类型)。 */
+        public @Nullable SwitchMatchType matchType() {
+            return SwitchMatchType.of(this.value);
+        }
+
+        /** 序列化成一个 {value, body} 的 compound。 */
+        public @NotNull Tag serialize() {
+            var out = new CompoundTag();
+            out.put("value", IotaType.serialize(this.value));
+            var bodyTag = new ListTag();
+            for (Iota iota : this.body) {
+                bodyTag.add(IotaType.serialize(iota));
+            }
+            out.put("body", bodyTag);
+            return out;
+        }
+
+        /** 从 {value, body} 反序列化。 */
+        public static @Nullable Case deserialize(Tag tag, ServerLevel world) {
+            var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
+            var value = IotaType.deserialize(HexUtils.downcast(ctag.get("value"), CompoundTag.TYPE), world);
+            var bodyTag = HexUtils.downcast(ctag.get("body"), ListTag.TYPE);
+            var body = new ArrayList<Iota>(bodyTag.size());
+            for (Tag sub : bodyTag) {
+                var iota = IotaType.deserialize(HexUtils.downcast(sub, CompoundTag.TYPE), world);
+                if (iota == null) {
+                    return null;
+                }
+                body.add(iota);
+            }
+            return new Case(value, TreeList.from(body));
+        }
+
+        /** 内存占用(与 ListIota 同口径)。 */
+        public int size() {
+            int total = 2;
+            for (Iota iota : this.body) {
+                total += iota.size();
+            }
+            return total;
+        }
+
+        /** 嵌套深度。 */
+        public int depth() {
+            int maxChild = this.value.depth();
+            for (Iota iota : this.body) {
+                maxChild = Math.max(maxChild, iota.depth());
+            }
+            return maxChild + 1;
+        }
+
+        /** 悬停显示:{@code case 值 -> {代码块}}。 */
+        public Component display() {
+            MutableComponent out = Component.empty();
+            out.append(Component.literal("case ").withStyle(ChatFormatting.GOLD));
+            out.append(this.value.display());
+            out.append(Component.literal(" -> {").withStyle(ChatFormatting.GOLD));
+            out.append(new ListIota(this.body).display());
+            out.append(Component.literal("}").withStyle(ChatFormatting.GOLD));
+            return out;
+        }
+
+        /** 从 tag 渲染(0.11.4 的显示入口是 Tag)。 */
+        public static Component displayFromTag(Tag tag) {
+            var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
+            MutableComponent out = Component.empty();
+            out.append(Component.literal("case ").withStyle(ChatFormatting.GOLD));
+            out.append(IotaType.getDisplay(HexUtils.downcast(ctag.get("value"), CompoundTag.TYPE)));
+            out.append(Component.literal(" -> {").withStyle(ChatFormatting.GOLD));
+            MutableComponent bodyOut = Component.empty();
+            var bodyTag = HexUtils.downcast(ctag.get("body"), ListTag.TYPE);
+            for (int i = 0; i < bodyTag.size(); i++) {
+                bodyOut.append(IotaType.getDisplay(HexUtils.downcast(bodyTag.get(i), CompoundTag.TYPE)));
+                if (i < bodyTag.size() - 1) {
+                    bodyOut.append(", ");
+                }
+            }
+            out.append(Component.translatable("hexcasting.tooltip.list_contents", bodyOut)
+                    .withStyle(ChatFormatting.DARK_PURPLE));
+            return out;
+        }
+    }
+
+
+    /**
      * payload:匹配类型 + case 表 + 可空的 default。
      *
      * <p>类型必须显式存 —— 空表(比如被「切除器之馏化」删光了)没有第一条 case 可以推类型。
      */
     public record SwitchData(SwitchMatchType matchType,
-                             List<CaseIota> cases,
+                             List<SwitchIota.Case> cases,
                              @Nullable TreeList<Iota> defaultBody) {
     }
 
@@ -77,7 +180,7 @@ public class SwitchIota extends Iota {
     private volatile transient CaseIndex cachedIndex;
 
     public SwitchIota(SwitchMatchType matchType,
-                      List<CaseIota> cases,
+                      List<SwitchIota.Case> cases,
                       @Nullable TreeList<Iota> defaultBody) {
         super(TYPE, new SwitchData(matchType, cases, defaultBody));
     }
@@ -86,11 +189,11 @@ public class SwitchIota extends Iota {
         return (SwitchData) this.payload;
     }
 
-    public SwitchMatchType getMatchType() {
+    public @Nullable SwitchMatchType getMatchType() {
         return this.data().matchType();
     }
 
-    public List<CaseIota> getCases() {
+    public List<SwitchIota.Case> getCases() {
         return this.data().cases();
     }
 
@@ -105,7 +208,7 @@ public class SwitchIota extends Iota {
      *         正常玩法走不到这里:表要么由 case 拼出来,要么由 remove_from 从已有表删空
      *         (后者保留原类型,不走这个工厂)。
      */
-    public static SwitchIota fromCases(List<CaseIota> cases, @Nullable TreeList<Iota> defaultBody) {
+    public static SwitchIota fromCases(List<SwitchIota.Case> cases, @Nullable TreeList<Iota> defaultBody) {
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("hexextra: 空 case 列表无法推出 switch 的匹配类型");
         }
@@ -156,10 +259,12 @@ public class SwitchIota extends Iota {
     @Override
     public @NotNull Tag serialize() {
         var out = new CompoundTag();
-        out.putString("match_type", this.getMatchType().name());
+        if (this.getMatchType() != null) {
+            out.putString("match_type", this.getMatchType().name());
+        }
 
         var casesTag = new ListTag();
-        for (CaseIota entry : this.getCases()) {
+        for (SwitchIota.Case entry : this.getCases()) {
             casesTag.add(entry.serialize());
         }
         out.put("cases", casesTag);
@@ -179,7 +284,7 @@ public class SwitchIota extends Iota {
     @Override
     public @Nullable Iterable<Iota> subIotas() {
         List<Iota> out = new ArrayList<>();
-        for (CaseIota entry : this.getCases()) {
+        for (SwitchIota.Case entry : this.getCases()) {
             out.add(entry.getValue());
             entry.getBody().forEach(out::add);
         }
@@ -194,7 +299,7 @@ public class SwitchIota extends Iota {
     @Override
     public int size() {
         int total = 2;   // 自身 + 类型
-        for (CaseIota entry : this.getCases()) {
+        for (SwitchIota.Case entry : this.getCases()) {
             total += entry.size();
         }
         TreeList<Iota> def = this.getDefaultBody();
@@ -210,7 +315,7 @@ public class SwitchIota extends Iota {
     @Override
     public int depth() {
         int maxChild = 1;
-        for (CaseIota entry : this.getCases()) {
+        for (SwitchIota.Case entry : this.getCases()) {
             maxChild = Math.max(maxChild, entry.depth());
         }
         TreeList<Iota> def = this.getDefaultBody();
@@ -259,7 +364,7 @@ public class SwitchIota extends Iota {
         // ---- 3) 类型必须与这张表声明的相符 ----
         // 刻意报错而不是"当作不命中、走 default":类型不符的值注定匹配不上任何 case,
         // 默默滑到 default 只会把玩家的错误盖住。
-        if (!this.getMatchType().accepts(scrutinee)) {
+        if (this.getMatchType() != null && !this.getMatchType().accepts(scrutinee)) {
             return this.mishap(new HexextraMishaps.SwitchValueTypeMismatch(
                     this.getMatchType().translationKey(), scrutinee), vm, continuation, rest);
         }
@@ -329,25 +434,27 @@ public class SwitchIota extends Iota {
         public @Nullable SwitchIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
             var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
 
-            // 匹配类型:名字认不出来就返回 null(→ NullIota),不悄悄回退
-            String typeName = ctag.getString("match_type");
+            // 匹配类型:缺省 = 未定(null 键组成的表);写了名字却认不出来才算存档损坏
             SwitchMatchType matchType = null;
-            for (SwitchMatchType candidate : SwitchMatchType.values()) {
-                if (candidate.name().equalsIgnoreCase(typeName)) {
-                    matchType = candidate;
-                    break;
+            if (ctag.contains("match_type", Tag.TAG_STRING)) {
+                String typeName = ctag.getString("match_type");
+                for (SwitchMatchType candidate : SwitchMatchType.values()) {
+                    if (candidate.name().equalsIgnoreCase(typeName)) {
+                        matchType = candidate;
+                        break;
+                    }
                 }
-            }
-            if (matchType == null) {
-                return null;
+                if (matchType == null) {
+                    return null;
+                }
             }
 
             var casesTag = HexUtils.downcast(ctag.get("cases"), ListTag.TYPE);
-            var cases = new ArrayList<CaseIota>(casesTag.size());
+            var cases = new ArrayList<SwitchIota.Case>(casesTag.size());
             for (Tag sub : casesTag) {
                 var csub = HexUtils.downcast(sub, CompoundTag.TYPE);
                 // 参数显式声明为 Tag,否则会被解析成静态的 IotaType.deserialize(CompoundTag, ...)(返回 Iota)
-                CaseIota entry = CaseIota.TYPE.deserialize((Tag) csub, world);
+                SwitchIota.Case entry = SwitchIota.Case.deserialize((Tag) csub, world);
                 if (entry == null) {
                     return null;
                 }
@@ -386,7 +493,7 @@ public class SwitchIota extends Iota {
             for (int i = 0; i < casesTag.size(); i++) {
                 var csub = HexUtils.downcast(casesTag.get(i), CompoundTag.TYPE);
                 out.append(Component.literal("\n"));
-                out.append(CaseIota.TYPE.display(csub));
+                out.append(SwitchIota.Case.displayFromTag(csub));
             }
 
             if (ctag.contains("default", Tag.TAG_LIST)) {

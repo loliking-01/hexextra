@@ -49,11 +49,11 @@ public final class CaseIndex {
      * @throws HexextraMishaps.CaseTypeMismatch case 的类型与表不符
      * @throws HexextraMishaps.DuplicateCase    同一个常量出现了两次
      */
-    public static CaseIndex build(SwitchMatchType type, List<CaseIota> cases) {
+    public static CaseIndex build(SwitchMatchType type, List<SwitchIota.Case> cases) {
         Map<Object, Integer> slots = new HashMap<>(Math.max(16, cases.size() * 2));
 
         for (int i = 0; i < cases.size(); i++) {
-            CaseIota entry = cases.get(i);
+            SwitchIota.Case entry = cases.get(i);
             Iota value = entry.getValue();
 
             // 常量类型必须与表声明的一致
