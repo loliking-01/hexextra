@@ -216,10 +216,20 @@ public class SwitchIota extends Iota {
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("hexextra: 空 case 列表无法推出 switch 的匹配类型");
         }
-        SwitchIota.MatchType type = cases.get(0).matchType();
-        if (type == null) {
-            // 第一条 case 的常量不是合法常量类型 —— 交给建表时报错不如在这里就抛清楚
-            throw new com.llk.hexextra.core.HexextraMishaps.CaseNotConstant(cases.get(0).getValue());
+        // null 键不决定类型:跳过它往后找;全是 null 键时这张表就是「未定类型」的,
+        // 之后可以接收任何类型的键。非 null 却不是常量的值仍然当场报错。
+        SwitchIota.MatchType type = null;
+        for (SwitchIota.Case c : cases) {
+            Iota v = c.getValue();
+            if (v instanceof NullIota) {
+                continue;
+            }
+            SwitchIota.MatchType t = SwitchIota.MatchType.of(v);
+            if (t == null) {
+                throw new com.llk.hexextra.core.HexextraMishaps.CaseNotConstant(v);
+            }
+            type = t;
+            break;
         }
         return new SwitchIota(type, cases, defaultBody);
     }

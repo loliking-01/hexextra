@@ -48,7 +48,9 @@ public final class OpCreateCase implements ConstMediaAction {
         // getList 会在参数不是列表时抛 MishapInvalidIota,并把错误定位到对应参数上
         TreeList<Iota> body = OperatorUtils.getList(args, 1, ARGC);
 
-        if (SwitchIota.MatchType.of(value) == null) {
+        // null 是允许的键:它不决定表的类型,所以不参与"必须是常量"的检查
+        if (!(value instanceof at.petrak.hexcasting.api.casting.iota.NullIota)
+                && SwitchIota.MatchType.of(value) == null) {
             // 列表 / 实体 / 向量这类值算不出规范键,不可能当 case 的匹配值
             throw new HexextraMishaps.CaseNotConstant(value);
         }
