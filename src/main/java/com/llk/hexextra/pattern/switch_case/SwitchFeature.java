@@ -47,7 +47,7 @@ public final class SwitchFeature {
 
     /** 「造一条 case」的注册项。名称键:{@code hexcasting.action.hexextra:case}。 */
     public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> CASE =
-            HexextraRegistries.ACTIONS.register("case", () -> {
+            HexextraRegistries.ACTIONS.register("switch", () -> {
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase());
