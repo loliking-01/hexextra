@@ -68,8 +68,7 @@ public record FrameTryCatch(
         @Nullable Iota exception
 ) implements ContinuationFrame {
 
-    /** 诊断开关:排查时临时打开。 */
-    private static final boolean TRACE = false;
+
 
     // =======================================================================
     // 在续延里查找
@@ -132,10 +131,7 @@ public record FrameTryCatch(
 
     @Override
     public CastResult evaluate(SpellContinuation continuation, ServerLevel level, CastingVM vm) {
-        if (TRACE) {
-            com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] evaluate stage={} 栈深={}",
-                    this.stage, vm.getImage().getStack().size());
-        }
+
         return switch (this.stage) {
             case 0 -> this.run(continuation, vm, this.tryBody, 1, null);
             case 1 -> this.finish(continuation, vm, null);

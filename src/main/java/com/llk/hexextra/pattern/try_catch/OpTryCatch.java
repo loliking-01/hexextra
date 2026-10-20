@@ -7,7 +7,6 @@ import at.petrak.hexcasting.api.casting.eval.vm.CastingImage;
 import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.iota.ListIota;
-import at.petrak.hexcasting.api.casting.mishaps.Mishap;
 import at.petrak.hexcasting.api.utils.TreeList;
 import at.petrak.hexcasting.common.lib.hex.HexEvalSounds;
 import com.llk.hexextra.core.CastingImages;
@@ -19,24 +18,18 @@ import java.util.List;
  * 「崔凯之策略」—— <b>直接执行</b>,不产出 iota。
  *
  * <h2>为什么不打包成 iota</h2>
- * try/catch 是控制流,它的语义是"现在就开始跑 try 块"。
- * 如果先打包成一个 iota,玩家还得再画一次「赫尔墨斯之策略」才真正执行 ——
- * 多一步、且中间那个值没地方放。所以这里直接在 {@link #operate} 里压帧,
- * 和 {@code for_loop} / {@code if_chain} 的执行方式一致。
+ * try/catch 是控制流,语义是"现在就开始跑 try 块"。若先打包成 iota,
+ * 玩家还得再画一次「赫尔墨斯之策略」才真正执行 —— 多一步,而且中间那个值没地方放。
  *
  * <h2>栈约定</h2>
  * 栈顶必须是一个列表,里面放 2 或 3 个代码块(依次 try、catch、可选 finally)。
- * 读完后把列表本身从栈上弹掉。
+ * 读完把列表本身弹掉。
  */
 public final class OpTryCatch implements Action {
 
     @Override
     public OperationResult operate(CastingEnvironment env, CastingImage image, SpellContinuation continuation) {
         TreeList<Iota> stack = image.getStack();
-        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 前栈: {} 项,合计 size={}",
-                stack.size(), totalSize(stack));
-        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 被调用,栈深={} 栈顶={}",
-                stack.size(), stack.isEmpty() ? "<空>" : stack.last().getClass().getSimpleName());
         if (stack.isEmpty()) {
             throw new HexextraMishaps.TryCatchBlocks(0);
         }
@@ -47,7 +40,6 @@ public final class OpTryCatch implements Action {
         }
 
         TreeList<Iota> blocks = list.getList();
-        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] 代码块个数={}", blocks.size());
         if (blocks.size() < 2 || blocks.size() > 3) {
             throw new HexextraMishaps.TryCatchBlocks(blocks.size());
         }
@@ -59,24 +51,11 @@ public final class OpTryCatch implements Action {
         // 弹出那个列表
         CastingImage next = CastingImages.withStack(image, stack.dropRight(1));
 
-        com.llk.hexextra.Hexextra.LOGGER.info("[try_catch] operate 后栈: {} 项,合计 size={};try={} catch={} finally={}",
-                next.getStack().size(), totalSize(next.getStack()),
-                tryBody.size(), catchBody.size(), finallyBody == null ? 0 : finallyBody.size());
-
         return new OperationResult(
                 next,
                 List.of(),
                 continuation.pushFrame(new FrameTryCatch(tryBody, catchBody, finallyBody, 0, null)),
                 HexEvalSounds.NORMAL_EXECUTE.get());
-    }
-
-    /** 栈上所有 iota 的 size() 之和 —— 就是咒法学判「超出栈的大小上限」的口径。 */
-    private static int totalSize(java.util.List<Iota> stack) {
-        int total = 0;
-        for (Iota iota : stack) {
-            total += iota.size();
-        }
-        return total;
     }
 
     /** 把一个元素当成代码块取出来;不是列表就当空块(和其它控制流图案同一口径)。 */
