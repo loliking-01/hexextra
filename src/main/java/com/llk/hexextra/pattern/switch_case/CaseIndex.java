@@ -79,7 +79,12 @@ public final class CaseIndex {
      * @throws HexextraMishaps.CaseTypeMismatch 某个 case 的类型与声明的类型不符
      * @throws HexextraMishaps.DuplicateCase    某个常量出现了不止一次
      */
-    public static CaseIndex build(SwitchIota.MatchType type, List<SwitchIota.Case> cases) {
+    public static CaseIndex build(@org.jetbrains.annotations.Nullable SwitchIota.MatchType type,
+                                  List<SwitchIota.Case> cases) {
+        if (type == null) {
+            // 未定类型的表:只可能有 null 键,永远不会有精确键,所以建空索引即可
+            return new CaseIndex(null);
+        }
         CaseIndex index = new CaseIndex(type);
 
         for (int i = 0; i < cases.size(); i++) {

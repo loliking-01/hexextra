@@ -161,6 +161,7 @@ public class SwitchIota extends Iota {
         }
     }
 
+    @Nullable
     private final MatchType matchType;
     private final List<Case> cases;
     @Nullable
@@ -194,7 +195,7 @@ public class SwitchIota extends Iota {
     }
 
     /** 本 switch 匹配的类型。 */
-    public MatchType getMatchType() {
+    public @Nullable MatchType getMatchType() {
         return this.matchType;
     }
 
@@ -297,7 +298,7 @@ public class SwitchIota extends Iota {
         // ---- 3) 类型必须与这条 switch 声明的相符 ----
         // 这里刻意报错而不是"当作不命中、走 default":类型不符的值注定匹配不上任何 case,
         // 默默滑到 default 只会把玩家的错误盖住。
-        if (!this.matchType.accepts(scrutinee)) {
+        if (this.matchType != null && !this.matchType.accepts(scrutinee)) {
             return this.mishap(new HexextraMishaps.SwitchValueTypeMismatch(
                             this.matchType.translationKey(), scrutinee),
                     vm, continuation, popped.getStack());

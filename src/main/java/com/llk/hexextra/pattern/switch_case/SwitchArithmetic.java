@@ -140,11 +140,19 @@ public final class SwitchArithmetic implements Arithmetic {
             throw new HexextraMishaps.SwitchAlreadyHasDefault();
         }
 
+        // 未定类型的表(null 键组成的那些)可以被任何表吸收;两边都确定了才比较
+        SwitchIota.MatchType aType = a.getMatchType();
+        SwitchIota.MatchType bType = b.getMatchType();
+        if (aType != null && bType != null && aType != bType) {
+            throw new HexextraMishaps.SwitchTypeMismatch(aType.translationKey(), bType.translationKey());
+        }
+        SwitchIota.MatchType mergedType = aType != null ? aType : bType;
+
         List<SwitchIota.Case> merged = new ArrayList<>(a.getCases());
         merged.addAll(b.getCases());
 
         TreeList<Iota> defaultBody = a.getDefaultBody() != null ? a.getDefaultBody() : b.getDefaultBody();
-        return new SwitchIota(a.getMatchType(), merged, defaultBody);
+        return new SwitchIota(mergedType, merged, defaultBody);
     }
 
     /** 给表接上 default。 */
