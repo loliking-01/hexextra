@@ -496,9 +496,11 @@ public class SwitchIota extends Iota {
             MutableComponent out = Component.empty();
 
             out.append(Component.literal("switch<").withStyle(ChatFormatting.GOLD));
-            out.append(Component.translatable(
-                    "hexextra.switch.type." + ctag.getString("match_type").toLowerCase()).withStyle(ChatFormatting.AQUA));
-            out.append(Component.literal(">{").withStyle(ChatFormatting.GOLD));
+            String typeName = ctag.getString("match_type");
+            // 缺省(未定类型)时显示「未定」,而不是拼出一个不存在的翻译键
+            out.append(Component.translatable(typeName.isEmpty()
+                    ? "hexextra.switch.type.unknown"
+                    : "hexextra.switch.type." + typeName.toLowerCase()).withStyle(ChatFormatting.AQUA));
 
             var casesTag = HexUtils.downcast(ctag.get("cases"), ListTag.TYPE);
             for (int i = 0; i < casesTag.size(); i++) {
