@@ -1,4 +1,4 @@
-﻿﻿# hexextra 的 NeoForge 元数据。
+# hexextra 的 NeoForge 元数据。
 # 下面的占位符由 build.gradle 的 generateModMetadata 任务,按 gradle.properties 的值替换。
 
 modLoader = "javafml"

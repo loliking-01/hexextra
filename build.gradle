@@ -211,3 +211,9 @@ idea {
 kotlin {
     jvmToolchain(21)
 }
+
+// 让 processResources 直接输出到 classes 目录。
+// 原因:NeoForge 的 FML 在开发环境里把 build/classes/java/main 当成"模组目录"来扫描,
+// 要求里面必须有 META-INF/neoforge.mods.toml。Gradle 默认把资源输出到 build/resources/main,
+// 于是 clean 之后跑 runServer 会报 "is not a valid mod file"。
+sourceSets.main.output.resourcesDir = file("${buildDir}/classes/java/main")
