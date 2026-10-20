@@ -409,7 +409,7 @@ public class SwitchIota extends Iota {
         MutableComponent out = Component.empty();
         out.append(Component.literal("switch<").withStyle(ChatFormatting.GOLD));
         // 把声明的类型显示出来 —— 否则玩家光看这条链不知道它匹配什么
-        out.append(Component.translatable(this.matchType.translationKey()).withStyle(ChatFormatting.AQUA));
+        out.append(Component.translatable(this.matchType != null ? this.matchType.translationKey() : "hexextra.switch.type.unknown").withStyle(ChatFormatting.AQUA));
         out.append(Component.literal(">{").withStyle(ChatFormatting.GOLD));
 
         for (SwitchIota.Case c : this.cases) {

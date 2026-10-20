@@ -71,5 +71,6 @@
   "hexextra.page.try_catch.rule": "$(br2)$(thing)先跑 try/$。正常结束时跳过 catch;有 finally 就跑 finally。$(br2)try 里抛错时,$(italic)代价不会回滚/$ —— 已经花掉的媒质、改动的方块都保留 —— 但法术不会中断,而是接着跑 catch,再跑 finally。$(br2)catch 里可以用 $(action)艾若儿之精思/$ 取到那次报错。",
   "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。",
   "hexcasting.action.hexextra:switch": "斯维奇之策略",
-  "hexextra.page.switch.null_key": "$(br2)$(thing)null 键/$是特殊的:它$(italic)不/$决定表的类型 ✗ 所以只用 null 键造出来的表处于「类型未定」状态 ✗ 之后可以往里面塞任意类型的键 ✓ 塞进某个表里时,它只匹配 null 值本身 ✓"
+  "hexextra.page.switch.null_key": "$(br2)$(thing)null 键/$是特殊的:它$(italic)不/$决定表的类型 ✗ 所以只用 null 键造出来的表处于「类型未定」状态 ✗ 之后可以往里面塞任意类型的键 ✓ 塞进某个表里时,它只匹配 null 值本身 ✓",
+  "hexextra.switch.type.unknown": "未定"
 }
