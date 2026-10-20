@@ -244,8 +244,10 @@ public final class SwitchArithmetic implements Arithmetic {
             // 替换项必须是一张「只有一条分支、且没有 default」的表
             SwitchIota replacementTable = asTable(args.get(2));
             if (replacementTable.getDefaultBody() != null || replacementTable.getCases().size() != 1) {
-                throw new HexextraMishaps.SwitchTypeMismatch(
-                        source.getMatchType().translationKey(), source.getMatchType().translationKey());
+                String typeKey = source.getMatchType() != null
+                        ? source.getMatchType().translationKey()
+                        : "hexextra.switch.type.unknown";
+                throw new HexextraMishaps.SwitchTypeMismatch(typeKey, typeKey);
             }
             SwitchIota.Case replacement = replacementTable.getCases().get(0);
             SwitchIota.MatchType replacementType = replacement.matchType();
