@@ -100,10 +100,6 @@ public final class HexextraContent {
 
     /** {@code hexextra:switch} —— switch 表的类型。 */
     public static final ResourceLocation SWITCH_IOTA_ID = id("switch");
-
-    /** {@code hexextra:case} —— 一条 case 的类型。 */
-    public static final ResourceLocation CASE_IOTA_ID = id("case");
-
     /** {@code hexextra:if_else} —— 条件链的类型。 */
     /** 异常 iota 的注册 id。 */
     public static final net.minecraft.resources.ResourceLocation EXCEPTION_IOTA_ID =

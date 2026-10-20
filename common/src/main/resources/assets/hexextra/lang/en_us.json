@@ -1,5 +1,5 @@
 {
-  "hexcasting.action.hexextra:switch": "Case's Strategy",
+  "hexcasting.action.hexextra:switch": "Switch Strategy",
   "hexcasting.action.hexextra:for_loop": "For's Strategy",
   "hexcasting.action.hexextra:if_chain": "If-Else's Strategy",
   "hexextra.entry.for_loop": "Simple Meta-Run",
