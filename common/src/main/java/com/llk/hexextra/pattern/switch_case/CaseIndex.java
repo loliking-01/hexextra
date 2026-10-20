@@ -50,12 +50,20 @@ public final class CaseIndex {
      * @throws HexextraMishaps.DuplicateCase    同一个常量出现了两次
      */
     public static CaseIndex build(SwitchMatchType type, List<SwitchIota.Case> cases) {
+        if (type == null) {
+            // 未定类型的表:只可能有 null 键,永远不会有精确键,建空索引即可
+            return new CaseIndex(new HashMap<>(16));
+        }
         Map<Object, Integer> slots = new HashMap<>(Math.max(16, cases.size() * 2));
 
         for (int i = 0; i < cases.size(); i++) {
             SwitchIota.Case entry = cases.get(i);
             Iota value = entry.getValue();
 
+            // null 是"万能键":不决定表的类型,在已定类型的表里也永远命中不到 —— 直接跳过
+            if (value instanceof at.petrak.hexcasting.api.casting.iota.NullIota) {
+                continue;
+            }
             // 常量类型必须与表声明的一致
             if (!type.accepts(value)) {
                 throw new HexextraMishaps.CaseTypeMismatch(type.translationKey(), value);

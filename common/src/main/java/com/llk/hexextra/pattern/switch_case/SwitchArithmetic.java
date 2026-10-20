@@ -137,10 +137,13 @@ public final class SwitchArithmetic implements Arithmetic {
     }
 
     private static SwitchIota merge(SwitchIota a, SwitchIota b) {
-        if (a.getMatchType() != b.getMatchType()) {
-            throw new HexextraMishaps.SwitchTypeMismatch(
-                    a.getMatchType().translationKey(), b.getMatchType().translationKey());
+        // 未定类型的表(null 键组成的那些)可以被任何表吸收;两边都确定了才比较
+        SwitchMatchType aType = a.getMatchType();
+        SwitchMatchType bType = b.getMatchType();
+        if (aType != null && bType != null && aType != bType) {
+            throw new HexextraMishaps.SwitchTypeMismatch(aType.translationKey(), bType.translationKey());
         }
+        SwitchMatchType mergedType = aType != null ? aType : bType;
         if (a.getDefaultBody() != null && b.getDefaultBody() != null) {
             throw new HexextraMishaps.SwitchAlreadyHasDefault();
         }
@@ -149,7 +152,7 @@ public final class SwitchArithmetic implements Arithmetic {
         merged.addAll(b.getCases());
 
         TreeList<Iota> defaultBody = a.getDefaultBody() != null ? a.getDefaultBody() : b.getDefaultBody();
-        return new SwitchIota(a.getMatchType(), merged, defaultBody);
+        return new SwitchIota(mergedType, merged, defaultBody);
     }
 
     private static SwitchIota attachDefault(SwitchIota table, TreeList<Iota> defaultBody) {

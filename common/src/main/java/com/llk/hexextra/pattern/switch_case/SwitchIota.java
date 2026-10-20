@@ -212,9 +212,20 @@ public class SwitchIota extends Iota {
         if (cases.isEmpty()) {
             throw new IllegalArgumentException("hexextra: 空 case 列表无法推出 switch 的匹配类型");
         }
-        SwitchMatchType type = cases.get(0).matchType();
-        if (type == null) {
-            throw new HexextraMishaps.CaseNotConstant(cases.get(0).getValue());
+        // null 键不决定类型:跳过它往后找;全是 null 键时这张表就是「未定类型」的,
+        // 之后可以接收任何类型的键。非 null 却不是常量的值仍然当场报错。
+        SwitchMatchType type = null;
+        for (SwitchIota.Case c : cases) {
+            Iota v = c.getValue();
+            if (v instanceof at.petrak.hexcasting.api.casting.iota.NullIota) {
+                continue;
+            }
+            SwitchMatchType t = SwitchMatchType.of(v);
+            if (t == null) {
+                throw new HexextraMishaps.CaseNotConstant(v);
+            }
+            type = t;
+            break;
         }
         return new SwitchIota(type, cases, defaultBody);
     }
