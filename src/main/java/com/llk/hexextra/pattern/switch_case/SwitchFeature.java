@@ -2,6 +2,7 @@ package com.llk.hexextra.pattern.switch_case;
 
 import at.petrak.hexcasting.api.casting.ActionRegistryEntry;
 import at.petrak.hexcasting.api.casting.arithmetic.Arithmetic;
+import at.petrak.hexcasting.api.casting.eval.vm.ContinuationFrame;
 import at.petrak.hexcasting.api.casting.iota.BooleanIota;
 import at.petrak.hexcasting.api.casting.iota.DoubleIota;
 import at.petrak.hexcasting.api.casting.iota.Iota;
@@ -42,14 +43,23 @@ public final class SwitchFeature {
     /**
      * 造一条分支的图案:2 参(键 + 代码块)。
      *
-     * <p>形状沿用最早的「凯斯之策略」—— 那时它产出的是独立的 CaseIota,
-     * 现在产出的是<b>只有一条分支的 switch</b>。语义是同一件事(造一条分支),
-     * 所以形状保持不变,只把注册 id 与显示名换成了 switch。
+     * <p>形状 {@code awddaada},起始方向东南。
      */
-    public static final String SWITCH_PATTERN_ANGLES = "dawwaqw";
+    public static final String SWITCH_PATTERN_ANGLES = "awddaada";
+
+    /**
+     * 取回分派值的图案:0 参,只在 case / default 体里有效。
+     *
+     * <p>形状 {@code dawwaqw} —— 就是最早「凯斯之策略」用的那个,现在让位给取值。
+     */
+    public static final String CASE_GETVALUE_ANGLES = "dawwaqw";
 
     /** 起始方向:东南(与已有图案同一家族)。 */
     public static final HexDir PATTERN_START_DIR = HexDir.SOUTH_EAST;
+
+    /** 续延帧类型 —— 帧会被写进存档与网络同步,不注册就会失败。 */
+    public static final DeferredHolder<ContinuationFrame.Type<?>, ContinuationFrame.Type<?>> FRAME =
+            HexextraRegistries.CONTINUATION_TYPES.register("switch_body", () -> FrameSwitchBody.TYPE);
 
     /** 「造一张单分支的表」的注册项。名称键:{@code hexcasting.action.hexextra:switch}。 */
     public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> SWITCH =
@@ -57,6 +67,14 @@ public final class SwitchFeature {
                 return new ActionRegistryEntry(
                         HexPattern.fromAngleString(SWITCH_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase());
+            });
+
+    /** 「取回分派值」的注册项。名称键:{@code hexcasting.action.hexextra:case_getvalue}。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> CASE_GETVALUE =
+            HexextraRegistries.ACTIONS.register("case_getvalue", () -> {
+                return new ActionRegistryEntry(
+                        HexPattern.fromAngleString(CASE_GETVALUE_ANGLES, PATTERN_START_DIR),
+                        new OpGetSwitchValue());
             });
 
     /**

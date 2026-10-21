@@ -510,9 +510,11 @@ public class SwitchIota extends Iota {
 
         SpellContinuation next = continuation;
         if (chosen != null) {
-            // 只压入选中的那一个代码块的求值帧;跑完之后本 iota 无需再做任何事,
-            // 控制权自然交回下层续延。
-            next = next.pushFrame(new FrameEvaluate(chosen, true));
+            // 分支体运行期间,续延上要一直挂着携带受控值的帧 ——
+            // 「凯斯之精思」就是顺着续延找到它取值。帧在下面,求值帧压在上面先跑。
+            next = next
+                    .pushFrame(new FrameSwitchBody(scrutinee))
+                    .pushFrame(new FrameEvaluate(chosen, true));
         }
 
         return new CastResult(

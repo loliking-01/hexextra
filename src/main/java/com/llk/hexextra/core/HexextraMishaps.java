@@ -448,6 +448,35 @@ public final class HexextraMishaps {
     }
 
     /**
+     * 「凯斯之精思」不在任何 switch 分支里。
+     *
+     * <p>分派值只有 switch 正在跑某条分支时才有 —— 在外面调用它,
+     * 说明玩家把取值图案放错了位置,例如:
+     * <pre>
+     *   凯斯之精思      ← 这不在任何分支里
+     *   ...
+     *   斯维奇之策略
+     * </pre>
+     */
+    public static final class NoActiveSwitch extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public TreeList<Iota> execute(CastingEnvironment env, Mishap.Context errorCtx, TreeList<Iota> stack) {
+            return stack;
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.no_active_switch");
+        }
+    }
+
+    /**
      * catch 块自己也抛了错:finally 跑完之后用它把那次错抛出法术。
      *
      * <p>为什么不直接放行原来的 Mishap:原对象不能安全存进续延(要序列化),

@@ -72,5 +72,8 @@
   "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。",
   "hexcasting.action.hexextra:switch": "斯维奇之策略",
   "hexextra.page.switch.null_key": "$(br2)$(thing)null 键/$是特殊的:它$(italic)不/$决定表的类型 ✗ 所以只用 null 键造出来的表处于「类型未定」状态 ✗ 之后可以往里面塞任意类型的键 ✓ 塞进某个表里时,它只匹配 null 值本身 ✓",
-  "hexextra.switch.type.unknown": "未定"
+  "hexextra.switch.type.unknown": "未定",
+  "hexcasting.action.hexextra:case_getvalue": "凯斯之精思",
+  "hexextra.mishap.no_active_switch": "「凯斯之精思」只能在 switch 的某条分支里使用",
+  "hexextra.page.case_getvalue": "取回这条 switch $(thing)正在分派的那个值/$。$(br2)它在 case 体与 default 体里都有效 ✗ 取到的是喂给 switch 的那个值本身 ✓$(br2)不在任何分支里使用时,$(thing)会遭遇事故/$ ✗ 而不是悄悄给你一个 null ✓"
 }
