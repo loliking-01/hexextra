@@ -69,7 +69,7 @@ public final class CaseIndex {
                 throw new HexextraMishaps.CaseTypeMismatch(type.translationKey(), value);
             }
 
-            Object key = type.keyFor(value);
+            Object key = type.keyOf(value);
             if (key == null) {
                 // accepts 已经保证能生成键,走到这里说明 MatchType 实现有 bug
                 throw new IllegalStateException("hexextra: 无法为 case 生成规范键: " + value);
@@ -104,7 +104,7 @@ public final class CaseIndex {
         if (type == null) {
             return null;
         }
-        return type.keyFor(iota);
+        return type.keyOf(iota);
     }
 
     /** case 条数(方便自检与调试)。 */

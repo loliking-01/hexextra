@@ -271,7 +271,7 @@ public class SwitchIota extends Iota {
     public @NotNull Tag serialize() {
         var out = new CompoundTag();
         if (this.getMatchType() != null) {
-            out.putString("match_type", this.getMatchType().name());
+            out.putString("match_type", this.getMatchType().id());
         }
 
         var casesTag = new ListTag();
@@ -449,12 +449,7 @@ public class SwitchIota extends Iota {
             SwitchMatchType matchType = null;
             if (ctag.contains("match_type", Tag.TAG_STRING)) {
                 String typeName = ctag.getString("match_type");
-                for (SwitchMatchType candidate : SwitchMatchType.values()) {
-                    if (candidate.name().equalsIgnoreCase(typeName)) {
-                        matchType = candidate;
-                        break;
-                    }
-                }
+                matchType = SwitchMatchType.fromId(typeName);
                 if (matchType == null) {
                     return null;
                 }
