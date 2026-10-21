@@ -172,6 +172,9 @@ public final class HexextraContent {
                 new Entry<>(SWITCH_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(SWITCH_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase())),
+                new Entry<>(CASE_GETVALUE_ACTION_ID, new ActionRegistryEntry(
+                        HexPattern.fromAngles(CASE_GETVALUE_PATTERN_ANGLES, PATTERN_START_DIR),
+                        new com.llk.hexextra.pattern.switch_case.OpGetSwitchValue())),
                 new Entry<>(FOR_LOOP_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(FOR_LOOP_PATTERN_ANGLES, FOR_LOOP_START_DIR),
                         new OpForLoop())),
