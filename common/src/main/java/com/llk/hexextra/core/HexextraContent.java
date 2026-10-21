@@ -53,7 +53,10 @@ public final class HexextraContent {
     // =======================================================================
 
     /** 「凯斯之策略」:2 参,造一条 case。 */
-    public static final String CASE_PATTERN_ANGLES = "dawwaqw";
+    public static final String SWITCH_PATTERN_ANGLES = "awddaada";
+
+    /** 「凯斯之精思」:0 参,取回分派值。形状沿用最早的「凯斯之策略」。 */
+    public static final String CASE_GETVALUE_PATTERN_ANGLES = "dawwaqw";
 
     /** 「佛尔之策略」:2 参,循环。 */
     public static final String FOR_LOOP_PATTERN_ANGLES = "qaweedwaqqwde";
@@ -134,7 +137,8 @@ public final class HexextraContent {
                 new Entry<>(FOR_LOOP_FRAME_ID, FrameForLoop.TYPE),
                 new Entry<>(hexId("for_each"), FrameForEach.TYPE),
                 new Entry<>(IF_ELSE_FRAME_ID, FrameIfElse.TYPE),
-                new Entry<>(hexId("try_catch"), com.llk.hexextra.pattern.try_catch.FrameTryCatch.TYPE));
+                    new Entry<>(hexId("try_catch"), com.llk.hexextra.pattern.try_catch.FrameTryCatch.TYPE),
+                    new Entry<>(hexId("switch_body"), com.llk.hexextra.pattern.switch_case.FrameSwitchBody.TYPE));
     }
 
     /** {@code hexextra:if_else} —— 给已有图案补上条件链的算子。 */
@@ -153,6 +157,9 @@ public final class HexextraContent {
     /** {@code hexextra:case} —— 造一条 case 的图案。 */
     public static final ResourceLocation SWITCH_ACTION_ID = id("switch");
 
+    /** {@code hexextra:case_getvalue} —— 取回 switch 分派值的图案。 */
+    public static final ResourceLocation CASE_GETVALUE_ACTION_ID = id("case_getvalue");
+
     /** {@code hexextra:for_loop} —— for 循环的图案。 */
     public static final ResourceLocation FOR_LOOP_ACTION_ID = id("for_loop");
 
@@ -163,7 +170,7 @@ public final class HexextraContent {
     public static Iterable<Entry<ActionRegistryEntry>> actions() {
         return java.util.List.of(
                 new Entry<>(SWITCH_ACTION_ID, new ActionRegistryEntry(
-                        HexPattern.fromAngles(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
+                        HexPattern.fromAngles(SWITCH_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase())),
                 new Entry<>(FOR_LOOP_ACTION_ID, new ActionRegistryEntry(
                         HexPattern.fromAngles(FOR_LOOP_PATTERN_ANGLES, FOR_LOOP_START_DIR),

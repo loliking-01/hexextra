@@ -413,7 +413,23 @@ public final class HexextraMishaps {
         }
     }
 
-    /** get_exception 不在任何 catch 块里。 */
+    /** 凯斯之精思不在任何 switch 分支里。 */
+    public static final class NoActiveSwitch extends Mishap {
+
+        @Override
+        public FrozenPigment accentColor(CastingEnvironment env, Mishap.Context errorCtx) {
+            return dyeColor(DyeColor.ORANGE);
+        }
+
+        @Override
+        public void execute(CastingEnvironment env, Mishap.Context errorCtx, List<Iota> stack) {
+        }
+
+        @Override
+        protected Component errorMessage(CastingEnvironment env, Mishap.Context errorCtx) {
+            return Component.translatable("hexextra.mishap.no_active_switch");
+        }
+    }
     public static final class NoActiveException extends Mishap {
 
         @Override

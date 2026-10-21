@@ -19,6 +19,14 @@
                       "output":  "evaluatable"
                   },
                   {
+                      "type":  "hexcasting:pattern",
+                      "op_id":  "hexextra:case_getvalue",
+                      "anchor":  "hexextra:case_getvalue",
+                      "text":  "hexextra.page.case_getvalue",
+                      "input":  "",
+                      "output":  "any"
+                  },
+                  {
                       "type":  "patchouli:text",
                       "text":  "hexextra.page.switch.rule"
                   },

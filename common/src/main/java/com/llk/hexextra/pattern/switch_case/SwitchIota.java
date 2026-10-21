@@ -398,7 +398,9 @@ public class SwitchIota extends Iota {
         // ---- 5) 只压入选中的那一个代码块的求值帧 ----
         SpellContinuation next = continuation;
         if (chosen != null) {
-            next = next.pushFrame(new FrameEvaluate(new SpellList.LList(chosen), true));
+            next = next
+                    .pushFrame(new FrameSwitchBody(scrutinee))
+                    .pushFrame(new FrameEvaluate(new SpellList.LList(chosen), true));
         }
 
         return new CastResult(
