@@ -241,9 +241,15 @@ public class SwitchIota extends Iota {
             public Object keyOf(Iota iota) {
                 // 0.12.0 没有 IotaType.serialize(Tag 那套是 0.11.4 的),
                 // 走类型化编解码器:任何 iota 都能编码成 Tag。
-                return at.petrak.hexcasting.api.casting.iota.IotaType.TYPED_CODEC
-                        .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, iota)
-                        .getOrThrow();
+                try {
+                    return at.petrak.hexcasting.api.casting.iota.IotaType.TYPED_CODEC
+                            .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, iota)
+                            .getOrThrow();
+                } catch (RuntimeException e) {
+                    // 极少数 iota 可能编码失败(值过大 / 类型实现有 bug)。
+                    // 那不该把服务端崩掉,而应当让玩家看到一条普通的事故提示。
+                    throw new HexextraMishaps.CaseNotConstant(iota);
+                }
             }
         }
 
@@ -314,7 +320,9 @@ public class SwitchIota extends Iota {
             // 其余一律按"外部类型"处理,类型 id 运行时从它自己身上读
             var id = at.petrak.hexcasting.common.lib.hex.HexIotaTypes.REGISTRY.getKey(sample.getType());
             if (id == null) {
-                throw new IllegalStateException("hexextra: 无法确定 iota 的类型 id: " + sample.getType());
+                // 理论上走不到(能出现在栈上的 iota 一定已注册);
+                // 真遇到也报事故,不要抛 IllegalStateException 把服务端崩掉。
+                throw new HexextraMishaps.CaseNotConstant(sample);
             }
             return new Foreign(id);
         }

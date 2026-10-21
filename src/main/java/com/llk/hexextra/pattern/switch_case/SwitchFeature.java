@@ -114,6 +114,21 @@ public final class SwitchFeature {
                 null);
         mixedTable.index();   // ← 若 null 分支被类型校验拦下,这里会抛
 
+        // ---- 2.6) 非核心类型的 iota 也必须能当键 ----
+        // 这里用列表 iota 冒充"外部类型"(它的注册 id 是 hexcasting:list)。
+        // 真正的外部类型(如 MoreIotas 的字符串)走的是完全同一条路径:
+        // 类型 id 运行时从 iota 自己身上读,键用序列化后的 Tag。
+        var foreignKey = new at.petrak.hexcasting.api.casting.iota.ListIota(
+                TreeList.from(List.of(new DoubleIota(1.0))));
+        SwitchIota foreignTable = SwitchIota.fromCases(
+                List.of(new SwitchIota.Case(foreignKey, body)), null);
+        if (foreignTable.getMatchType() == null
+                || foreignTable.getMatchType() instanceof SwitchIota.MatchType.Core) {
+            throw new IllegalStateException("hexextra: 列表 iota 应当被识别成外部类型,实际是 "
+                    + foreignTable.getMatchType());
+        }
+        foreignTable.index();   // ← 若外部类型的键算不出来,这里会抛
+
         // ---- 3) 悬停显示 ----
         String shown = table.display().getString();
         if (shown.isEmpty() || !shown.contains("\n")) {
