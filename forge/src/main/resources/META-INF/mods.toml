@@ -5,7 +5,7 @@ issueTrackerURL = "https://github.com/loliking-01/hexextra/issues"
 
 [[mods]]
 modId = "hexextra"
-version = "0.0.2-alpha"
+version = "0.0.3-alpha"
 displayName = "hexextra"
 displayURL = "https://modrinth.com/mod/hexextra"
 authors = "I_am_a_lolikong"
