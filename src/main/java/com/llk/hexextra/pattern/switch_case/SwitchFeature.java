@@ -39,17 +39,23 @@ import java.util.List;
  */
 public final class SwitchFeature {
 
-    /** 造一条 case 的图案:2 参。 */
-    public static final String CASE_PATTERN_ANGLES = "dawwaqw";
+    /**
+     * 造一条分支的图案:2 参(键 + 代码块)。
+     *
+     * <p>形状沿用最早的「凯斯之策略」—— 那时它产出的是独立的 CaseIota,
+     * 现在产出的是<b>只有一条分支的 switch</b>。语义是同一件事(造一条分支),
+     * 所以形状保持不变,只把注册 id 与显示名换成了 switch。
+     */
+    public static final String SWITCH_PATTERN_ANGLES = "dawwaqw";
 
     /** 起始方向:东南(与已有图案同一家族)。 */
     public static final HexDir PATTERN_START_DIR = HexDir.SOUTH_EAST;
 
-    /** 「造一条 case」的注册项。名称键:{@code hexcasting.action.hexextra:case}。 */
-    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> CASE =
+    /** 「造一张单分支的表」的注册项。名称键:{@code hexcasting.action.hexextra:switch}。 */
+    public static final DeferredHolder<ActionRegistryEntry, ActionRegistryEntry> SWITCH =
             HexextraRegistries.ACTIONS.register("switch", () -> {
                 return new ActionRegistryEntry(
-                        HexPattern.fromAngleString(CASE_PATTERN_ANGLES, PATTERN_START_DIR),
+                        HexPattern.fromAngleString(SWITCH_PATTERN_ANGLES, PATTERN_START_DIR),
                         new OpCreateCase());
             });
 
