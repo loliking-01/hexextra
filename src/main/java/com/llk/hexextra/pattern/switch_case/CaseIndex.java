@@ -121,6 +121,10 @@ public final class CaseIndex {
      * @return 命中的 case 下标;{@code null} 表示没有 case 命中(调用方应转去 default)
      */
     public @Nullable Integer lookup(Iota value) {
+        // 未定类型的表(null 键组成的那些)索引是空的,任何值都不会命中
+        if (this.type == null) {
+            return null;
+        }
         if (!this.type.accepts(value)) {
             return null;
         }

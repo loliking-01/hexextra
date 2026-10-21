@@ -492,7 +492,14 @@ public class SwitchIota extends Iota {
             return this.mishap(buildFailure, vm, continuation, popped.getStack());
         }
 
-        Integer hit = index.lookup(scrutinee);
+        Integer hit;
+        try {
+            hit = index.lookup(scrutinee);
+        } catch (Mishap lookupFailure) {
+            // 外部类型的键要现场序列化受控值,极少数 iota 可能失败;
+            // 同样必须折进 CastResult,不能从 execute 里抛出去。
+            return this.mishap(lookupFailure, vm, continuation, popped.getStack());
+        }
         TreeList<Iota> chosen;
         if (hit != null) {
             chosen = this.cases.get(hit).getBody();
