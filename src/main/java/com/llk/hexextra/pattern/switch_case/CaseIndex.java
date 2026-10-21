@@ -98,10 +98,10 @@ public final class CaseIndex {
             if (!type.accepts(value)) {
                 // 类型不符在这里就拦下 —— 照 Java 的定位,这类错误该在建造期发现,
                 // 而不是等到执行时"默默不命中"
-                throw new HexextraMishaps.CaseTypeMismatch(type.translationKey(), value);
+                throw new HexextraMishaps.CaseTypeMismatch(type.displayKey(), value);
             }
 
-            Object key = index.keyFor(value);
+            Object key = cases.get(i).keyFor(type);
             // putIfAbsent 返回旧值:非 null 就说明这个键已经被占了。
             // 不能用 get() == null 判断 —— 下标 0 是合法值、本身不是 null,所以这里安全。
             if (index.slots.putIfAbsent(key, i) != null) {
@@ -121,43 +121,9 @@ public final class CaseIndex {
      * @return 命中的 case 下标;{@code null} 表示没有 case 命中(调用方应转去 default)
      */
     public @Nullable Integer lookup(Iota value) {
-        Object key = this.keyFor(value);
-        return key == null ? null : this.slots.get(key);
-    }
-
-    /**
-     * 把一个 iota 折成规范化的精确键;类型不符则返回 {@code null}。
-     *
-     * <p>键的实际类型随声明类型而定:数值用 {@code Long}(位模式)、布尔用 {@code Boolean}、
-     * null 用哨兵对象、图案用 {@code HexSignature}(它自己实现了 equals/hashCode,
-     * 咒法学自己的图案注册表就是按签名索引的)。
-     */
-    private @Nullable Object keyFor(Iota value) {
-        return switch (this.type) {
-            case NUMBER -> (value instanceof DoubleIota d) ? numberKey(d.getDouble()) : null;
-            case BOOLEAN -> (value instanceof BooleanIota b) ? b.getBool() : null;
-            case PATTERN -> (value instanceof PatternIota p) ? p.getPattern().getSignature() : null;
-        };
-    }
-
-    /**
-     * 把一个双精度数折成"精确"的键。
-     *
-     * <p>两个细节:
-     * <ul>
-     *   <li>用 {@link Double#doubleToLongBits} 而不是 {@code Double.hashCode} ——
-     *       后者把 64 位压成 32 位,不同数值可能撞键,那样就得在同键上再比一次,
-     *       平白多一层复杂度。位模式对非 NaN 值是双射,不会撞。</li>
-     *   <li>把 {@code -0.0} 归一到 {@code 0.0}:Java 的 {@code ==} 认为 -0.0 等于 0.0,
-     *       所以 {@code switch(-0.0)} 理应命中 {@code case 0.0}。而两者位模式不同,
-     *       不归一就会漏掉。</li>
-     * </ul>
-     *
-     * <p>NaN 不用特别处理:{@code DoubleIota.getDouble()} 已经过 {@code fixNAN},
-     * 建表与查表两边取的都是它,所以内部自洽。
-     */
-    private static long numberKey(double v) {
-        double normalized = (v == 0.0) ? 0.0 : v;
-        return Double.doubleToLongBits(normalized);
+        if (!this.type.accepts(value)) {
+            return null;
+        }
+        return this.slots.get(this.type.keyOf(value));
     }
 }

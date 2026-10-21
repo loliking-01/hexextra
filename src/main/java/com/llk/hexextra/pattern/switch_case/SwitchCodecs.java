@@ -53,31 +53,25 @@ public final class SwitchCodecs {
     /**
      * 匹配类型的 NBT 编解码器。
      *
-     * <p>用 {@code comapFlatMap} 而不是 {@code xmap}:名字不认识时应当明确报错,
-     * 而不是悄悄回退到某个默认类型。
+     * <p>核心三型写 {@code NUMBER} / {@code BOOLEAN} / {@code PATTERN};
+     * 外部类型写它的注册 id(如 {@code moreiotas:string})——
+     * 这样任何模组的 iota 都能当键,而我们不需要编译期依赖对方。
+     * 解析不出来时明确报错,不悄悄回退到某个默认类型。
      */
     public static final Codec<SwitchIota.MatchType> MATCH_TYPE = Codec.STRING.comapFlatMap(
             name -> {
-                for (SwitchIota.MatchType type : SwitchIota.MatchType.values()) {
-                    if (type.name().equalsIgnoreCase(name)) {
-                        return DataResult.success(type);
-                    }
-                }
-                return DataResult.error(() -> "hexextra: 未知的 switch 匹配类型 '" + name + "'");
+                SwitchIota.MatchType type = SwitchIota.MatchType.fromId(name);
+                return type != null
+                        ? DataResult.success(type)
+                        : DataResult.error(() -> "hexextra: 无法解析 switch 匹配类型 '" + name + "'");
             },
-            SwitchIota.MatchType::name);
+            SwitchIota.MatchType::id);
 
-    /** 可空的匹配类型:用 {@code -1} 表示「未定」。 */
+    /** 可空的匹配类型:空串表示「未定」。 */
     public static final StreamCodec<ByteBuf, SwitchIota.MatchType> NULLABLE_MATCH_TYPE_STREAM =
-            StreamCodec.of(
-                    (ByteBuf buf, SwitchIota.MatchType type) ->
-                            buf.writeByte(type == null ? -1 : type.ordinal()),
-                    (ByteBuf buf) -> {
-                        int id = buf.readByte();
-                        return (id < 0 || id >= SwitchIota.MatchType.values().length)
-                                ? null
-                                : SwitchIota.MatchType.values()[id];
-                    });
+            ByteBufCodecs.STRING_UTF8.map(
+                    (String s) -> s.isEmpty() ? null : SwitchIota.MatchType.fromId(s),
+                    (SwitchIota.MatchType type) -> type == null ? "" : type.id());
 
     /** 整张表的 NBT 编解码器:匹配类型(可缺省)+ 分支表 + default(可空)。 */
     public static final MapCodec<SwitchIota> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(

@@ -139,8 +139,8 @@ public final class SwitchArithmetic implements Arithmetic {
         // 未定类型的表(null 键组成的那些)可以被任何表吸收;两边都确定了才比较
         SwitchIota.MatchType aType = a.getMatchType();
         SwitchIota.MatchType bType = b.getMatchType();
-        if (aType != null && bType != null && aType != bType) {
-            throw new HexextraMishaps.SwitchTypeMismatch(aType.translationKey(), bType.translationKey());
+        if (aType != null && bType != null && !aType.equals(bType)) {
+            throw new HexextraMishaps.SwitchTypeMismatch(aType.displayKey(), bType.displayKey());
         }
         SwitchIota.MatchType mergedType = aType != null ? aType : bType;
 
@@ -245,16 +245,16 @@ public final class SwitchArithmetic implements Arithmetic {
             SwitchIota replacementTable = asTable(args.get(2));
             if (replacementTable.getDefaultBody() != null || replacementTable.getCases().size() != 1) {
                 String typeKey = source.getMatchType() != null
-                        ? source.getMatchType().translationKey()
+                        ? source.getMatchType().displayKey()
                         : "hexextra.switch.type.unknown";
                 throw new HexextraMishaps.SwitchTypeMismatch(typeKey, typeKey);
             }
             SwitchIota.Case replacement = replacementTable.getCases().get(0);
             SwitchIota.MatchType replacementType = replacement.matchType();
             SwitchIota.MatchType sourceType = source.getMatchType();
-            if (replacementType != null && sourceType != null && replacementType != sourceType) {
+            if (replacementType != null && sourceType != null && !replacementType.equals(sourceType)) {
                 throw new HexextraMishaps.CaseTypeMismatch(
-                        sourceType.translationKey(), replacement.getValue());
+                        sourceType.displayKey(), replacement.getValue());
             }
 
             List<SwitchIota.Case> out = new ArrayList<>(cases);

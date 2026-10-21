@@ -74,13 +74,33 @@ public class SwitchIota extends Iota {
     /**
      * 一条分支:匹配用常量 + 命中时执行的代码块。
      *
-     * <h2>为什么是内部 record 而不是独立的 iota 类型</h2>
+     * <h2>为什么是内部类而不是独立的 iota 类型</h2>
      * 它只是 switch 表的一部分,永远不会单独出现在栈上 —— 所以不该是一个 iota。
      * 早先它确实是独立类型({@code hexextra:case}),但那样"造一条分支"与"造一张表"
      * 会产出两种类型,玩家分不清手里的是半成品还是成品;现在统一成 switch 本身:
      * 「斯维奇之策略」造出的是<b>只有一条分支的 switch</b>,可以直接执行。
+     *
+     * <h2>为什么缓存键</h2>
+     * 外部类型(其它模组的 iota)的键要序列化整棵 NBT 才能算出来,几十上百微秒。
+     * 表本身不可变,但用「加法之馏化」构造新表时分支对象是<b>从旧表拷贝过来的同一个对象</b>
+     * —— 缓存下来就能跨表复用,不必每建一次表就重新序列化一遍。
      */
-    public record Case(Iota value, TreeList<Iota> body) {
+    public static final class Case {
+
+        private final Iota value;
+        private final TreeList<Iota> body;
+
+        /**
+         * 惰性缓存的查表键。
+         *
+         * <p>{@code volatile} 只为避免看到半初始化引用;并发重复计算的结果等价。
+         */
+        private volatile @Nullable Object cachedKey;
+
+        public Case(Iota value, TreeList<Iota> body) {
+            this.value = value;
+            this.body = body;
+        }
 
         /** 匹配用的常量。 */
         public Iota getValue() {
@@ -92,9 +112,23 @@ public class SwitchIota extends Iota {
             return this.body;
         }
 
-        /** 这条分支要求的匹配类型;常量类型不支持时为 null。 */
+        /** 这条分支要求的匹配类型;null 键时为 null(不决定类型)。 */
         public @Nullable SwitchIota.MatchType matchType() {
             return SwitchIota.MatchType.of(this.value);
+        }
+
+        /**
+         * 在给定类型的表里,这个分支的查表键。
+         *
+         * <p>结果缓存:同一个分支对象被重复建表时不再重复序列化。
+         */
+        public Object keyFor(MatchType type) {
+            Object k = this.cachedKey;
+            if (k == null) {
+                k = type.keyOf(this.value);
+                this.cachedKey = k;
+            }
+            return k;
         }
 
         /** 悬停显示:{@code case 值 -> {代码块}}。 */
@@ -107,60 +141,182 @@ public class SwitchIota extends Iota {
             out.append(net.minecraft.network.chat.Component.literal("}").withStyle(net.minecraft.ChatFormatting.GOLD));
             return out;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Case other
+                    && this.value.equals(other.value)
+                    && this.body.equals(other.body);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * this.value.hashCode() + this.body.hashCode();
+        }
     }
 
 
     /**
-     * 一条 switch 匹配什么类型 —— 在<b>建造期</b>用一个样例常量的类型声明下来。
+     * 一条 switch 匹配什么类型 —— 在<b>建造期</b>用一个样例键的类型声明下来。
      *
-     * <h2>为什么要显式声明类型</h2>
-     * <ol>
-     *   <li><b>让派发表变成单桶</b>:类型定死了,查表就是一次直接的 {@code get},
-     *       不需要再按类型分派;</li>
-     *   <li><b>把类型错误提前到建造期</b>:往数值型的 switch 里塞图案 case 会当场报错,
-     *       而不是等到执行时"默默不命中";</li>
-     *   <li><b>贴合 Java 的定位</b>:在 Java 里,一个 switch 的受控类型是固定的 ——
-     *       在 {@code int} 上 switch 就不能有 {@code String} 的 case。</li>
-     * </ol>
+     * <h2>为什么是密封接口而不是枚举</h2>
+     * 枚举只有固定的几种,而 iota 类型是<b>开放</b>的:任何模组都能注册新的。
+     * 若写死成枚举,「用 MoreIotas 的字符串当键」就永远无法支持;
+     * 若改成「一种万能类型」,又破坏了"一张表只匹配一种类型"这条约束。
      *
-     * <p>只有这四种能算出规范的精确键(见 {@link CaseIndex} 的长注释),所以只有这四种。
+     * <p>所以类型有两种:
+     * <ul>
+     *   <li>{@link Core} —— 咒法学自带的三种,键用精确的原生形式(位模式 / 布尔 / 图案签名);</li>
+     *   <li>{@link Foreign} —— 其它任何 iota 类型,按它的<b>注册 id</b> 区分,
+     *       键用序列化后的 {@code Tag}(自带精确 equals/hashCode)。</li>
+     * </ul>
+     *
+     * <p>{@code Foreign} 的 id 是<b>运行时从 iota 自己身上读出来的</b>
+     * ({@code HexIotaTypes.REGISTRY.getKey(iota.getType())})—— 我们不写死任何外部 id,
+     * 也就不需要编译期依赖对方。
      */
-    public enum MatchType {
-        NUMBER,
-        BOOLEAN,
-        PATTERN;
+    public sealed interface MatchType {
 
-        /** 用于本地化提示的类型名键,例如 {@code hexextra.switch.type.number}。 */
-        public String translationKey() {
-            return "hexextra.switch.type." + this.name().toLowerCase(java.util.Locale.ROOT);
+        /** 核心三型。 */
+        enum Kind { NUMBER, BOOLEAN, PATTERN }
+
+        /** 咒法学自带的三种可精确分派的类型。 */
+        record Core(Kind kind) implements MatchType {
+
+            @Override
+            public String translationKey() {
+                return "hexextra.switch.type." + this.kind.name().toLowerCase(java.util.Locale.ROOT);
+            }
+
+            @Override
+            public boolean accepts(Iota iota) {
+                return switch (this.kind) {
+                    case NUMBER -> iota instanceof DoubleIota;
+                    case BOOLEAN -> iota instanceof BooleanIota;
+                    case PATTERN -> iota instanceof PatternIota;
+                };
+            }
+
+            /**
+             * 原生精确键。
+             *
+             * <p>数值用 64 位位模式而不是 {@code DoubleIota.hashCode()}:后者把 double 压成 int,
+             * 存在撞键;同时把 {@code -0.0} 归一成 {@code 0.0}(Java 的 {@code ==} 认为两者相等,
+             * 但位模式不同)。
+             */
+            @Override
+            public Object keyOf(Iota iota) {
+                return switch (this.kind) {
+                    case NUMBER -> Double.doubleToLongBits(
+                            ((DoubleIota) iota).getDouble() == 0.0 ? 0.0 : ((DoubleIota) iota).getDouble());
+                    case BOOLEAN -> ((BooleanIota) iota).getBool();
+                    case PATTERN -> ((PatternIota) iota).getPattern().getSignature();
+                };
+            }
         }
 
-        /** 这个 iota 是否属于本类型。 */
-        public boolean accepts(Iota iota) {
-            return switch (this) {
-                case NUMBER -> iota instanceof DoubleIota;
-                case BOOLEAN -> iota instanceof BooleanIota;
-                case PATTERN -> iota instanceof PatternIota;
-            };
+        /** 其它模组(或其它类型)注册的 iota,按注册 id 区分。 */
+        record Foreign(net.minecraft.resources.ResourceLocation iotaTypeId) implements MatchType {
+
+            /** 外部类型没有本地化名,直接显示 id。 */
+            @Override
+            public String translationKey() {
+                return null;
+            }
+
+            @Override
+            public boolean accepts(Iota iota) {
+                return this.iotaTypeId.equals(
+                        at.petrak.hexcasting.common.lib.hex.HexIotaTypes.REGISTRY.getKey(iota.getType()));
+            }
+
+            /**
+             * 序列化后的 {@code Tag} 作键。
+             *
+             * <p>这是<b>唯一</b>不依赖对方实现的通用做法:任何 iota 都能序列化,
+             * 而 {@code CompoundTag} 自带精确的 equals/hashCode(不含容差)。
+             * 它同时天然是快照 —— 矩阵被原地改动也不会影响已经算好的键。
+             */
+            @Override
+            public Object keyOf(Iota iota) {
+                // 0.12.0 没有 IotaType.serialize(Tag 那套是 0.11.4 的),
+                // 走类型化编解码器:任何 iota 都能编码成 Tag。
+                return at.petrak.hexcasting.api.casting.iota.IotaType.TYPED_CODEC
+                        .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, iota)
+                        .getOrThrow();
+            }
+        }
+
+        // 常用的核心类型常量(省去到处 new Core(...))
+        Core NUMBER = new Core(Kind.NUMBER);
+        Core BOOLEAN = new Core(Kind.BOOLEAN);
+        Core PATTERN = new Core(Kind.PATTERN);
+
+        /** 本地化名所用的翻译键;外部类型返回 null(显示 id)。 */
+        @Nullable String translationKey();
+
+        /**
+         * 报错文案与 tooltip 里用的类型名。
+         *
+         * <p>核心三型给翻译键(由语言文件本地化);外部类型直接给注册 id
+         * ({@code moreiotas:string}),因为它本来也没有本地化名。
+         */
+        default String displayKey() {
+            String key = this.translationKey();
+            return key != null ? key : ((Foreign) this).iotaTypeId().toString();
         }
 
         /**
-         * 从一个样例常量推出类型。
+         * 存档里用的类型标识。
          *
-         * @return 四种常量之一对应的类型;样例不是常量(列表/实体/向量等)时返回 {@code null}
+         * <p>核心三型就是 {@code NUMBER} / {@code BOOLEAN} / {@code PATTERN};
+         * 外部类型是它的注册 id,例如 {@code moreiotas:string}。
          */
-        public static @Nullable MatchType of(Iota sample) {
+        default String id() {
+            return this instanceof Core core ? core.kind().name() : ((Foreign) this).iotaTypeId().toString();
+        }
+
+        /**
+         * 从存档里的标识解析类型。
+         *
+         * @return null 表示认不出来(存档损坏),由调用方决定怎么报错
+         */
+        static @Nullable MatchType fromId(String s) {
+            for (Kind kind : Kind.values()) {
+                if (kind.name().equalsIgnoreCase(s)) {
+                    return new Core(kind);
+                }
+            }
+            // 不是核心三型 → 当作外部类型的注册 id
+            var rl = net.minecraft.resources.ResourceLocation.tryParse(s);
+            return rl == null ? null : new Foreign(rl);
+        }
+
+        /** 这个 iota 是否属于本类型。 */
+        boolean accepts(Iota iota);
+
+        /** 在这个类型的表里,该 iota 的查表键。 */
+        Object keyOf(Iota iota);
+
+        /**
+         * 从一个样例键推出类型。
+         *
+         * @return null 表示「未定」—— 样例是 null 键(可进任何表)
+         */
+        static @Nullable MatchType of(Iota sample) {
             // null 不是一种"类型":它作为键时可以进任何类型的表。
-            // 这里返回 null 表示「未定」,而不是某个 NULL 类型。
             if (sample instanceof NullIota) {
                 return null;
             }
-            for (MatchType type : values()) {
-                if (type.accepts(sample)) {
-                    return type;
-                }
+            if (sample instanceof DoubleIota) return NUMBER;
+            if (sample instanceof BooleanIota) return BOOLEAN;
+            if (sample instanceof PatternIota) return PATTERN;
+            // 其余一律按"外部类型"处理,类型 id 运行时从它自己身上读
+            var id = at.petrak.hexcasting.common.lib.hex.HexIotaTypes.REGISTRY.getKey(sample.getType());
+            if (id == null) {
+                throw new IllegalStateException("hexextra: 无法确定 iota 的类型 id: " + sample.getType());
             }
-            return null;
+            return new Foreign(id);
         }
     }
 
@@ -313,7 +469,7 @@ public class SwitchIota extends Iota {
         // 默默滑到 default 只会把玩家的错误盖住。
         if (this.matchType != null && !this.matchType.accepts(scrutinee)) {
             return this.mishap(new HexextraMishaps.SwitchValueTypeMismatch(
-                            this.matchType.translationKey(), scrutinee),
+                            this.matchType.displayKey(), scrutinee),
                     vm, continuation, popped.getStack());
         }
 
@@ -380,7 +536,7 @@ public class SwitchIota extends Iota {
     protected boolean toleratesOther(Iota that) {
         return typesMatch(this, that)
                 && that instanceof SwitchIota other
-                && this.matchType == other.matchType
+                && Objects.equals(this.matchType, other.matchType)
                 && this.cases.equals(other.cases)
                 && Objects.equals(this.defaultBody, other.defaultBody);
     }
@@ -409,7 +565,12 @@ public class SwitchIota extends Iota {
         MutableComponent out = Component.empty();
         out.append(Component.literal("switch<").withStyle(ChatFormatting.GOLD));
         // 把声明的类型显示出来 —— 否则玩家光看这条链不知道它匹配什么
-        out.append(Component.translatable(this.matchType != null ? this.matchType.translationKey() : "hexextra.switch.type.unknown").withStyle(ChatFormatting.AQUA));
+        // 外部类型没有翻译键,displayKey() 会退回成它的注册 id(如 moreiotas:string)
+        out.append(Component.literal("")
+                .append(Component.translatable(this.matchType != null
+                        ? this.matchType.displayKey()
+                        : "hexextra.switch.type.unknown"))
+                .withStyle(ChatFormatting.AQUA));
         out.append(Component.literal(">{").withStyle(ChatFormatting.GOLD));
 
         for (SwitchIota.Case c : this.cases) {
