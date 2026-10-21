@@ -22,7 +22,13 @@
                       "type":  "hexcasting:pattern",
                       "op_id":  "hexextra:case_getvalue",
                       "anchor":  "hexextra:case_getvalue",
-                      "text":  "hexextra.page.case_getvalue"
+                      "text":  "hexextra.page.case_getvalue",
+                      "input":  "",
+                      "output":  "any"
+                  },
+                  {
+                      "type":  "patchouli:text",
+                      "text":  "hexextra.page.switch.example"
                   },
                   {
                       "type":  "patchouli:text",
@@ -41,7 +47,7 @@
                       "type":  "hexcasting:pattern",
                       "op_id":  "hexcasting:add",
                       "text":  "hexextra.page.switch.overload.add",
-                      "input":  "case, case|switch, case|switch, switch|switch, list",
+                      "input":  "switch, switch | switch, list",
                       "output":  "switch"
                   },
                   {
@@ -55,7 +61,7 @@
                       "type":  "hexcasting:pattern",
                       "op_id":  "hexcasting:replace",
                       "text":  "hexextra.page.switch.overload.replace",
-                      "input":  "switch, num, case",
+                      "input":  "switch, num, switch",
                       "output":  "switch"
                   },
                   {
@@ -63,7 +69,7 @@
                       "op_id":  "hexcasting:index",
                       "text":  "hexextra.page.switch.overload.index",
                       "input":  "switch, num",
-                      "output":  "case"
+                      "output":  "switch"
                   },
                   {
                       "type":  "hexcasting:pattern",

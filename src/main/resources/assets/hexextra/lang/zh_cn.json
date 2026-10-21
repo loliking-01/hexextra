@@ -41,7 +41,7 @@
   "hexextra.page.overload.abs": "分支数量。最终的 else 咒术不计入。",
   "hexextra.page.overload.splat": "把链摊开:每个分支压成一条单分支链;若原链带 else,最后再压一个「仅 else 链」。",
   "hexextra.page.overload.last_n_list": "若栈顶那 n 个都是条件链,把它们一次性串成一条——等价于连续做加法。$(br2)否则保持原行为:打包成一个列表。",
-  "hexextra.page.switch": "用 $(action)斯维奇之策略/$ 造出一张$(thing)只有一条分支的 switch/$:两个参数依次是「匹配用的常量」和「命中时执行的代码块」。$(br2)再用 $(action)加法之馏化/$ 把两张表拼成一张(类型须相同,且至多一边带 default),或者把一段可执行 iota 接成 default。$(br2)表的匹配类型由$(italic)第一条分支/$决定,之后塞入类型不符的分支会当场报错。",
+  "hexextra.page.switch": "用 $(action)斯维奇之策略/$ 造出一张$(thing)只有一条分支的 switch/$。两个参数依次是「匹配用的键」和「命中时执行的代码块」。$(br2)再用 $(action)加法之馏化/$ 把两张表拼成一张(类型须相同,且至多一边带 default);或者把一段可执行 iota 接成 default。$(br2)表的匹配类型由$(italic)第一条分支/$决定,之后塞入类型不符的分支会当场报错。$(br2)键不限于数值、布尔、图案 —— 其它模组注册的 iota 类型也能当键,类型按它的注册 id 区分。$(br2)分派到某条分支之后,用 $(action)凯斯之精思/$ 可以把分派值取回来。",
   "hexcasting.action.hexextra:for_down": "佛尔循环之策略二型",
   "hexcasting.action.hexextra:get_index": "茵蒂克丝之精思",
   "hexcasting.action.hexextra:get_remaining": "芮麦宁之策略",
@@ -71,9 +71,10 @@
   "hexextra.page.try_catch.rule": "$(br2)$(thing)先跑 try/$。正常结束时跳过 catch;有 finally 就跑 finally。$(br2)try 里抛错时,$(italic)代价不会回滚/$ —— 已经花掉的媒质、改动的方块都保留 —— 但法术不会中断,而是接着跑 catch,再跑 finally。$(br2)catch 里可以用 $(action)艾若儿之精思/$ 取到那次报错。",
   "hexextra.page.get_exception": "$(br2)只在$(thing)catch 块里/$有效:把当前这次报错压到栈上。它的显示与咒法学平时抛给玩家的那段红字$(italic)完全一致/$。$(br2)不在任何 catch 块里使用会遭遇事故。",
   "hexcasting.action.hexextra:switch": "斯维奇之策略",
-  "hexextra.page.switch.null_key": "$(br2)$(thing)null 键/$是特殊的:它$(italic)不/$决定表的类型 ✗ 所以只用 null 键造出来的表处于「类型未定」状态 ✗ 之后可以往里面塞任意类型的键 ✓ 塞进某个表里时,它只匹配 null 值本身 ✓",
+  "hexextra.page.switch.null_key": "$(thing)null 键/$是特殊的:它$(italic)不/$决定表的类型,所以只用 null 键造出来的表处于「类型未定」状态,之后可以往里面塞任意类型的键。而塞进某张已经确定类型的表里时,它只匹配 null 值本身。",
   "hexextra.switch.type.unknown": "未定",
   "hexcasting.action.hexextra:case_getvalue": "凯斯之精思",
   "hexextra.mishap.no_active_switch": "「凯斯之精思」只能在 switch 的某条分支里使用",
-  "hexextra.page.case_getvalue": "取回这条 switch $(thing)正在分派的那个值/$。$(br2)它在 case 体与 default 体里都有效 ✗ 取到的是喂给 switch 的那个值本身 ✓$(br2)不在任何分支里使用时,$(thing)会遭遇事故/$ ✗ 而不是悄悄给你一个 null ✓"
+  "hexextra.page.case_getvalue": "取回这条 switch $(thing)正在分派的那个值/$。$(br2)它在 case 体与 default 体里都有效,取到的是喂给 switch 的那个值本身。$(br2)要提醒的是:switch 消费掉的那个值不会自动回到栈上,想要它就得明确地画这枚图案。$(br2)不在任何分支里使用时,$(thing)会遭遇事故/$,而不是悄悄给你一个 null —— 那只会把「放错位置」变成难查的数据问题。",
+  "hexextra.page.switch.example": "一个最小的例子:先造两条分支,第一条匹配 1、第二条匹配 2,然后合并成一张表。$(br2)把这张表执行时,如果喂进去的是 2,就只有第二条分支的代码块会被求值;在那里面画 $(action)凯斯之精思/$ 能拿回 2。$(br2)如果喂进去的是 99,既不匹配 1 也不匹配 2,那么有 default 就跑 default(default 里同样能取回 99),没有 default 就什么都不做。"
 }
