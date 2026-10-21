@@ -6,7 +6,7 @@
   "hexextra.mishap.chain_already_has_else": "这条链已经有 else 块了,一条链只能有一个最终 else",
   "hexextra.mishap.replacement_has_else": "作为分支替换项的链不能自带 else 块",
   "hexextra.mishap.duplicate_case": "%s 这个值在 switch 里出现了不止一次,每个 case 的常量必须唯一",
-  "hexextra.mishap.case_not_constant": "case 的匹配值必须是数值、布尔、null 或图案,实际是 %s",
+  "hexextra.mishap.case_not_constant": "%s 这个值没法当作 switch 的键(它没能被序列化),换一个键试试",
   "hexextra.mishap.case_type_mismatch": "这条 switch 匹配的是「%s」,不能塞进类型不符的 case(实际是 %s)",
   "hexextra.mishap.switch_value_type_mismatch": "这条 switch 匹配的是「%s」,但你给的值是 %s",
   "hexextra.mishap.switch_type_mismatch": "不能把「%s」型和「%s」型的两条 switch 合并起来",
